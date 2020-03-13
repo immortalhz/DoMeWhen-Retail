@@ -1,0 +1,431 @@
+-- local DMW = DMW
+-- DMW.Helpers.HealComm = {}
+-- local HealComm = DMW.Helpers.HealComm
+-- local HealCommLib = LibStub("DMWLibHealComm-4.0", true)
+-- -- local CLH = LibStub("LibCombatLogHealth-2.0")
+-- -- CLH.RegisterCallback("DMW", "COMBAT_LOG_HEALTH", function(event, unit, eventType)
+-- --     local Pointer = DMW.Tables.Misc.unit2pointerF(unit)
+-- --     if Pointer then
+-- --         if DMW.Units[Pointer] then
+-- --             local health = CLH.UnitHealth(unit)
+-- --             DMW.Units[Pointer].Health = health
+-- --             DMW.Units[Pointer].HealthDeficit = DMW.Units[Pointer].HealthMax - health
+-- --         end
+-- --     end
+
+-- --     -- print(event, unit, health)
+-- -- end)
+-- --     UnitHealth = CLH.UnitHealth
+--         -- table.insert(config.HealthBarColor.assignto, "health2")
+
+-- HealComm.Settings = {
+--     timeframe = 3,
+--     showHots = false,
+-- }
+
+
+-- -- HealComm.PartyGUIDs = {}
+-- -- HealComm.PartyGUIDs.Init = false
+-- function HealComm:OnInitialize()
+--     -- if DMW.Player.Class == "SHAMAN" or DMW.Player.Class == "PRIEST" or DMW.Player.Class == "DRUID" or DMW.Player.Class == "PALADIN" then
+--         HealCommLib.RegisterCallback(self, "HealComm_HealStarted", "HealComm_HealUpdated")
+--         HealCommLib.RegisterCallback(self, "HealComm_HealStopped", "HealComm_HealUpdated")
+--         HealCommLib.RegisterCallback(self, "HealComm_HealDelayed", "HealComm_HealUpdated")
+--         HealCommLib.RegisterCallback(self, "HealComm_HealUpdated", "HealComm_HealUpdated")
+--         HealCommLib.RegisterCallback(self, "HealComm_ModifierChanged")
+--         HealCommLib.RegisterCallback(self, "HealComm_GUIDDisappeared")
+--         -- HealCommLib.RegisterCallback(self, "HealComm_HealCustom", "HealComm_UnitUpdate")
+--     -- end
+-- end
+
+-- function HealComm:HealComm_UnitUpdate(...)
+--     -- print("HealComm_HealUpdated")
+--     -- print(...)
+--     local amount, destGUID = select(3,...)
+--     local Pointer = DMW.Tables.Misc.guid2pointerF(destGUID)
+--     if Pointer then
+--         DMW.Units[Pointer].Health = min(DMW.Units[Pointer].Health + amount, DMW.Units[Pointer].HealthMax)
+--         DMW.Units[Pointer].HealthDeficit = DMW.Units[Pointer].HealthMax - DMW.Units[Pointer].Health
+--         -- print(DMW.Units[Pointer].HealthDeficit)
+--     end
+-- end
+
+-- -- function HealsPlayer(unit)
+-- --     return (HealComm:GetHealAmount(guid, 1, heals_timeband and GetTime()+heals_timeband) or 0) * (HealComm:GetHealModifier(guid) or 1)
+-- -- end
+
+-- function HealComm:HealComm_HealUpdated(...)
+--     -- local destGUID = ...
+--     -- local DMWUnit = DMW.Units[DMW.Table.Misc.guid2pointerF(destGUID)]
+--     -- if DMWUnit then
+--     --     DMW.Unit
+--     -- end
+-- 	self:UpdateIncoming(...)
+-- end
+
+
+
+-- function HealComm:HealComm_HealStopped(...)
+--     local destUnit = ...
+--     -- print("combatlogHeal",DMW.Time)
+
+--     -- local PredictUnit = DMW.Units[DMW.Tables.Misc.guid2pointerF(destUnit)]
+--     -- if PredictUnit.HealPredicted then
+--     --     PredictUnit.Health = min((PredictUnit.Health + PredictUnit.HealPredicted), PredictUnit.HealthMax)
+--     --     PredictUnit.HealthDeficit = PredictUnit.HealthMax - PredictUnit.Health
+--     --     -- PredictUnit.HealPredicted = nil
+--     --     print(DMW.Time,PredictUnit.HealthDeficit)
+--     -- end
+
+
+
+--     -- local PredictUnit = DMW.Units[DMW.Tables.Misc.guid2pointerF(destUnit)]
+--     -- if PredictUnit.HealPredicted then
+--     --     local health = min((PredictUnit.Health + PredictUnit.HealPredicted), PredictUnit.HealthMax)
+--     --     local healthDeficit = PredictUnit.HealthMax - health
+--     --     PredictUnit.HealPredicted = nil
+--     --     -- print("old",healthDeficit)
+--     -- end
+--     -- print("HealComm_HealStopped")
+--     -- print(destUnit)
+--     -- print("HealComm_HealStopped", (HealCommLib:GetHealAmount(destUnit,1, DMW.Time + 1) or 0) * (HealCommLib:GetHealModifier(destUnit) or 1))
+
+--     -- local HealAmount = HealCommLib:GetCasterHealAmount(destUnit, 1, DMW.Time + 1)
+--     -- print(HealAmount)
+--     -- WriteFile("checkychecky.txt", "HealComm_HealStopped , ".. DMW.Time .. " , ".. DMW.Player.Target.Health.."\n", true)
+-- 	self:UpdateIncoming(...)
+-- end
+
+
+-- function HealComm:HealComm_ModifierChanged( guid)
+--     -- print("HealComm_ModifierChanged")
+
+-- 	self:UpdateIncoming(guid)
+-- end
+
+-- function HealComm:HealComm_GUIDDisappeared( guid)
+--     -- print("HealComm_GUIDDisappeared")
+
+-- 	self:UpdateIncoming(guid)
+-- end
+
+-- -- function HealComm:Update(unit)
+--     -- local amount, targetGUID, num, frame, unitframe, healType
+--     -- if self.Settings.showHots then
+-- 	-- 	healType = HealCommLib.ALL_HEALS
+-- 	-- else
+-- 	-- 	healType = HealCommLib.CASTED_HEALS
+--     -- end
+--     -- local amount = (HealCommLib:GetHealAmount(DMW.Friends.Units[unit].GUID, healType, DMW.Time + self.Settings.timeframe) or 0) * (HealCommLib:GetHealModifier(targetGUID) or 1)
+--     -- DMW.Friends.Units[unit].GUID.PredictedHeal = amount
+-- -- end
+
+-- function HealComm:Update(unit)
+--     if UnitExists(unit) then
+--         for k, Friend in pairs(DMW.Friends.Units) do
+--             if Friend.GUID == ObjectGUID(unit) and (Friend.PredTime and DMW.Time > Friend.PredTime) then
+--                 print(Friend.Name.." and "..Friend.HealthDeficit)
+--                 Friend.PredictedHeal = nil
+--                 Friend.PredTime = nil
+--                 Friend.Health = UnitHealth(unit)
+--                 break
+--             end
+--         end
+--     end
+--     -- local guid = DMW.Tables.Misc.unit2guid[unit]
+--     -- if guid then
+--     --     local pointer = DMW.Tables.Misc.guid2pointer[guid]
+--     --     local unitTable = DMW.Units[pointer]
+--     --     if unitTable.PredictedHeal ~= nil and DMW.Time > unitTable.PredTime then
+--     --         unitTable.PredictedHeal = nil
+--     --         unitTable.Health = UnitHealth(unit)
+--     --         print(unitTable.Name)
+--     --     end
+--     -- end
+-- end
+
+-- function HealComm:UpdateIncoming(...)
+--     local arg1, arg2, arg3, arg4, arg5, arg6 = ...
+--     if arg1 == "HealComm_HealStarted" and arg4 == 1 then
+--         print("HealComm_HealUpdated", arg2, DMW.Time,arg5)
+--         local predCaster = arg2
+--         local predHeal = arg3
+--         local predTime = arg5
+--         local predTarget = arg6
+--         -- print(predHeal, predTime, predTarget)
+--         local Pointer = DMW.Tables.Misc.guid2pointerF(predTarget)
+--         if Pointer then
+--             local Unit = DMW.Units[Pointer]
+--             if Unit then
+--                 if not Unit.HealthPredicted then
+--                     Unit.HealthPredicted = {}
+--                 end
+--                 local PredictionTable = {
+--                     time = arg5,
+--                     amount = arg3,
+--                     caster = arg2
+--                 }
+--                 tinsert(Unit.HealthPredicted, PredictionTable)
+--                 -- print(arg5)
+--             end
+--         end
+--     elseif arg1 == "HealComm_HealStopped" and arg5 == true then
+--         -- print(...)
+--         local Pointer = DMW.Tables.Misc.guid2pointerF(arg6)
+--         if Pointer then
+--             local Unit = DMW.Units[Pointer]
+--             if Unit and Unit.HealthPredicted then
+--                 -- for k, v in ipairs(Unit.HealthPredicted) do
+--                 --     if v.caster == arg2 then
+--                 --         -- print("asdasd")
+--                 --         -- v = nil
+--                 --         print(k)
+--                 --         tremove(Unit.HealthPredicted, k)
+--                 --     end
+--                 -- end
+--                 for i = #Unit.HealthPredicted, 1 do
+--                     local table = Unit.HealthPredicted[i]
+--                     if table.caster == arg2 then
+--                         tremove(Unit.HealthPredicted,i)
+--                     end
+--                 end
+--                 if #Unit.HealthPredicted == 0 then Unit.HealthPredicted = nil;print("delete") end
+--                 print("HealComm_HealInterrupted", arg2, DMW.Time)
+
+--             end
+--         end
+--     elseif arg1 == "HealComm_HealDelayed" then
+--         --"HealComm_HealDelayed", casterGUID, pending.spellID, pending.bitType, pending.endTime, unpack(tempPlayerList)
+--         local Pointer = DMW.Tables.Misc.guid2pointerF(arg6)
+--         if Pointer then
+--             local Unit = DMW.Units[Pointer]
+--             if Unit and Unit.HealthPredicted then
+--                 for i = #Unit.HealthPredicted, 1 do
+--                     local table = Unit.HealthPredicted[i]
+--                     if table.caster == arg2 then
+--                         table.time = arg5
+--                     end
+--                     print("HealComm_HealDelayed", arg2, DMW.Time)
+
+--                 end
+--             end
+--         end
+--     else
+--         -- print(...)
+--     -- elseif arg1 == "HealComm_HealDelayed" and arg5 == true then
+--     end
+
+
+--     -- local amount, targetGUID, healType
+-- 	-- if self.Settings.showHots then
+-- 	-- 	healType = HealCommLib.ALL_HEALS
+-- 	-- else
+-- 	-- 	healType = HealCommLib.CASTED_HEALS
+-- 	-- end
+--     -- for i=1, select("#", ...) do
+--     --     targetGUID = select(i, ...)
+--     --     amount = (HealCommLib:GetHealAmount(targetGUID, healType, DMW.Time + self.Settings.timeframe) or 0) * (HealCommLib:GetHealModifier(targetGUID) or 1)
+--     --     -- print(targetGUID.."  "..amount)
+--     --     if amount > 0 then
+--     --         for k,v in pairs(DMW.Friends.Units) do
+--     --             if v.GUID == targetGUID then
+--     --                 v.PredictedHeal = amount
+--     --                 v.PredTime = DMW.Time + self.Settings.timeframe
+--     --                 v.Health = v.Health + v.PredictedHeal
+--     --             end
+--     --         end
+--     --     end
+--     -- end
+-- end
+-- --Health Update Checks
+-- -- Health statuses update function
+-- local statuses = {}
+
+-- function HealComm.UpdateHealth(Pointer)
+--     local DMWUnit = DMW.Units[Pointer]
+--     if DMWUnit then
+--         local health = HealComm.QuickHealth(Pointer)
+--         if health then
+--             DMWUnit.HealthMax = UnitHealthMax(DMWUnit.Pointer)
+--             DMWUnit.Health = health
+--             -- if DMWUnit.HealthPredicted then
+--             --         for i = #DMWUnit.HealthPredicted, 1 do
+--             --             local table = DMWUnit.HealthPredicted[i]
+--             --             if table.Remove or DMW.Time >= table.time + 0.3 then
+--             --                 tremove(DMWUnit.HealthPredicted,i)
+--             --             elseif DMW.Time >= table.time - 0.3 then
+--             --                 local newHealth = DMWUnit.Health + table.amount
+--             --                 DMWUnit.Health = newHealth >= DMWUnit.HealthMax and DMWUnit.HealthMax or newHealth
+--             --             end
+--             --         end
+--             --         DMWUnit.HealthPredictedCheck = true
+--             --         if #DMWUnit.HealthPredicted == 0 then DMWUnit.HealthPredicted = nil;print("delete") end
+--             -- end
+--             -- if DMWUnit.HealthPredicted and not DMWUnit.HealthPredictedCheck then --and not DMWUnit.HealthPredictedCheck then
+--             --     for _, v in ipairs(DMWUnit.HealthPredicted) do
+--             --         if v.Remove then
+
+--             --         elseif DMW.Time >= v.time - 0.2 then
+--             --             DMWUnit.Health = max(DMWUnit.Health + v.amount, DMWUnit.HealthMax)
+--             --         end
+--             --     end
+--             --     DMWUnit.HealthPredictedCheck = true
+--             -- end
+
+--             DMWUnit.HealthDeficit = DMWUnit.HealthMax - DMWUnit.Health
+--             -- DMWUnit.HealthPredictedCheck = nil
+--             -- DMWUnit.HealthPredictedCheck = nil
+--         else
+--             print("UpdateHealth", "health", Pointer)
+--         end
+--     else
+--         print("UpdateHealth", "DMWUnit", Pointer)
+--     end
+-- end
+
+-- -- function HealComm.UpdateHealthUnit(Unit)
+-- --     -- print(DMW.Units[Pointer].Name)
+-- --     -- if DMW.Units[Pointer] then
+-- --     --     print(DMW.Units[Pointer].Name)
+-- --     -- else
+-- --     --     print(Pointer)
+-- --     -- end
+-- --     -- print(Unit)
+-- --     local Pointer = DMW.Tables.Misc.unit2pointerF(Unit)
+-- --     if Pointer then
+-- --         local DMWUnit = DMW.Units[Pointer]
+-- --         if DMWUnit then
+-- --             local health = HealComm.QuickHealth(Pointer)
+-- --             if health then
+-- --                 DMWUnit.Health = health
+-- --                 DMWUnit.HealthDeficit = DMWUnit.HealthMax - health
+-- --                 -- if DMWUnit.HealPredicted then DMWUnit.HealPredicted = nil end
+-- --             else
+-- --                 print("123", Pointer)
+-- --             end
+-- --         else
+-- --             print("1234", Pointer)
+-- --         end
+-- --     end
+-- -- end
+
+-- -- function HealComm.UNIT_HEALTH(self, event, unit)
+
+-- -- end
+-- -- Events management
+--     local RegisterEvent, UnregisterEvent
+-- 	local frame
+-- 	local Events = {}
+-- 	function RegisterEvent(event, func)
+-- 		if not frame then
+-- 			frame = CreateFrame("Frame")
+-- 			frame:SetScript( "OnEvent",  function(_, event, ...) Events[event](...) end )
+-- 		end
+-- 		if not Events[event] then frame:RegisterEvent(event) end
+-- 		Events[event] = func
+-- 	end
+-- -- Quick/Instant Health management
+-- 	-- local roster_units = Grid2.roster_units
+-- 	-- local UnitHealthOriginal = UnitHealth
+-- 	-- local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
+-- 	-- local min = math.min
+-- 	-- local max = math.max
+-- 	-- local strlen = strlen
+-- 	local health_cache = {}
+-- 	local HealthEvents = { SPELL_DAMAGE = -15, RANGE_DAMAGE = -15, SPELL_PERIODIC_DAMAGE = -15,
+-- 						   DAMAGE_SHIELD = -15, DAMAGE_SPLIT = -15, ENVIRONMENTAL_DAMAGE = -13,
+-- 						   SWING_DAMAGE = -12, SPELL_PERIODIC_HEAL = 15, SPELL_HEAL = 15 }
+-- 	function HealComm.QuickHealth(Pointer)
+-- 		return health_cache[Pointer] or UnitHealth(Pointer)
+-- 	end
+-- 	local function RosterUpdateEvent()
+-- 		wipe(health_cache)
+-- 	end
+--     local function HealthChangedEvent(Unit)
+--         local Pointer = DMW.Tables.Misc.unit2pointerF(Unit)
+--         if Pointer then
+--             -- local Unit = DMW.Units[Pointer]
+--             -- if Unit and Unit.HealthPredicted then
+--             --     -- for k, v in ipairs(Unit.HealthPredicted) do
+--             --     --     if v.caster == arg2 then
+--             --     --         -- print("asdasd")
+--             --     --         -- v = nil
+--             --     --         print(k)
+--             --     --         tremove(Unit.HealthPredicted, k)
+--             --     --     end
+--             --     -- end
+--             --     for i = #Unit.HealthPredicted, 1 do
+--             --         local table = Unit.HealthPredicted[i]
+--             --         if table.Remove or (table.caster == arg2 and DMW.Time >= table.time + 0.5) then
+--             --             tremove(Unit.HealthPredicted,i)
+--             --         end
+--             --     end
+--             --     if #Unit.HealthPredicted == 0 then Unit.HealthPredicted = nil;print("delete") end
+--             -- end
+-- 			local h = UnitHealth(Pointer)
+-- 			if h==health_cache[Pointer] then return end
+-- 			health_cache[Pointer] = h
+-- 			HealComm.UpdateHealth(Pointer)
+-- 		end
+-- 	end
+--     local function CombatLogEventReal(...)
+--         --timeStamp, param, hideCaster, source, sourceName, sourceFlags, sourceRaidFlags, destination, destName, destFlags, destRaidFlags, spell, spellName, _, spellType
+--         local event = select(2,...)
+-- 		local sign = HealthEvents[event]
+--         if sign then
+--             local GUID = select(8,...)
+--             if DMW.Tables.Misc.guid2unit[GUID] == nil then return end
+
+--             -- print(GUID)
+--             -- local unit = DMW.Tables.Misc.guid2unit[select(8,...)]
+--             local AFFILIATION_IN_GROUP = bit.bor(COMBATLOG_OBJECT_AFFILIATION_MINE, COMBATLOG_OBJECT_AFFILIATION_PARTY, COMBATLOG_OBJECT_AFFILIATION_RAID)
+--             local dstFlags = select(10,...)
+
+--             local friendly = bit.band(dstFlags, AFFILIATION_IN_GROUP) > 0
+--             -- if bit.band(dstFlags, AFFILIATION_IN_GROUP) > 0 then
+--             --     print("friendly")
+--             -- end
+--             -- if friendly then
+--                 local Pointer = DMW.Tables.Misc.guid2pointerF(GUID)
+--                 if Pointer then
+--                     local health
+--                     if sign>0 then
+--                         local Unit = DMW.Units[Pointer]
+--                         local caster = select(4,...)
+--                         if Unit and Unit.HealthPredicted and event == "SPELL_HEAL" then
+--                             for k, v in ipairs(Unit.HealthPredicted) do
+--                                 if v.caster == caster then
+--                                     -- v.Remove = true
+--                                     v.amount = select(15,...)
+--                                     print("HealCombatlog", caster, DMW.Time)
+--                                     --break
+--                                 end
+--                             end
+--                         end
+--                         -- health = min((health_cache[Pointer] or UnitHealth(Pointer)) + select(sign,...), UnitHealthMax(Pointer) )
+--                         -- print("combatlogHeal",DMW.Time)
+--                     elseif sign<0 then
+--                         health = max((health_cache[Pointer] or UnitHealth(Pointer)) - select(-sign,...), 0 )
+--                     end
+--                     if health~=health_cache[Pointer] then
+--                         health_cache[Pointer] = health
+--                         -- print("combatLog", health)
+
+--                     end
+--                     HealComm.UpdateHealth(Pointer)
+--                 end
+--             -- end
+-- 		end
+-- 	end
+-- 	local function CombatLogEvent()
+-- 		CombatLogEventReal(CombatLogGetCurrentEventInfo())
+--     end
+
+
+-- 	-- function EnableQuickHealth()
+-- 		-- if HealthCurrent.dbx.quickHealth then
+--     RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", CombatLogEvent)
+--     RegisterEvent("GROUP_ROSTER_UPDATE", RosterUpdateEvent)
+--     RegisterEvent("UNIT_HEALTH_FREQUENT", HealthChangedEvent)
+--     RegisterEvent("UNIT_HEALTH", HealthChangedEvent)
+--     RegisterEvent("UNIT_MAXHEALTH", HealthChangedEvent)
