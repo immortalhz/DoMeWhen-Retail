@@ -44,7 +44,7 @@ function LocalPlayer:New(Pointer)
 
 end
 
-functio
+-- functio
 
 function LocalPlayer:UpdateVariables()
     self.SpecID = DMW.Enums.ClassSpec[GetSpecializationInfo(GetSpecialization())][2]
