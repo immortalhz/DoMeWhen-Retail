@@ -57,7 +57,33 @@ Spells.WARRIOR = {
 
         },
         Talents = {
-			BoomingVoice                          = {202743},
+			IntoTheFray = 15760, -- 202603
+			Punish = 15759, -- 275334
+			ImpendingVictory = 15774, -- 202168
+
+			CracklingThunder = 22373, -- 203201
+			BoundingStride = 22629, -- 202163
+			Safeguard = 22409, -- 223657
+
+			BestServedCold = 22378, -- 202560
+			UnstoppableForce = 22626, -- 275336
+			DragonRoar = 23260, -- 118000
+
+			Indomitable = 23096, -- 202095
+			NeverSurrender = 23261, -- 202561
+			Bolster = 22488, -- 280001
+
+			Menace = 22384, -- 275338
+			RumblingEarth = 22631, -- 275339
+			StormBolt = 22800, -- 107570
+
+			BoomingVoice = 22395, -- 202743
+			Vengeance = 22544, -- 202572
+			Devastator = 22401, -- 236279
+
+			AngerManagement = 21204, -- 152278
+			HeavyRepercussions = 22406, -- 203177
+			Ravager = 23099, -- 228920
 
         }
     },
@@ -66,13 +92,10 @@ Spells.WARRIOR = {
         Abilities = {
 			Recklessness                          = {1719},
 			FuriousSlash                          = {100130},
-			RecklessAbandon                       = {202751},
+			-- RecklessAbandon                       = {202751},
 			HeroicLeap                            = {6544},
 			Siegebreaker                          = {280772},
 			Rampage                               = {184367},
-			FrothingBerserker                     = {215571},
-			Carnage                               = {202922},
-			Massacre                              = {206315},
 			Execute                               = {5308, 280735},
 			Bloodthirst                           = {23881},
 			RagingBlow                            = {85288},
@@ -98,8 +121,6 @@ Spells.WARRIOR = {
 			FocusedAzeriteBeam                    = {295258},
 			GuardianofAzeroth                     = {295840},
 			ReapingFlames                         = {310690},
-			RazorCoralDebuff                      = {303568},
-			ConductiveInkDebuff                   = {302565}
         },
         Buffs = {
 			Recklessness                      = {1719},
@@ -120,21 +141,46 @@ Spells.WARRIOR = {
 
         },
         Debuffs = {
-			ConcentratedFlameBurn                 = {295368},
+			ConcentratedFlameBurn                 = 295368,
+			RazorCoralDebuff                      = 303568,
+			ConductiveInkDebuff                   = 302565,
+			ColdSteelHotBlood = 288091
+
 
         },
         Talents = {
-			WarMachine                        = {262228},
-			-- EndlessRage                   = {278826},
-			-- FreshMeat             = {242188},
-			-- ImpendingVictory                   = {260708},
-			-- StormBolt                       = {275540},
-			-- InnerRage                       = {52437},
-			-- SuddenDeath                        = {225947},
-			-- FuriousSlash                     = {302932},
-			-- OverpowerBuff                         = {7384},
-			-- FervorofBattle                        = {202316},
-        }
+
+			WarMachine = 22632, -- 262231
+			EndlessRage = 22633, -- 202296
+			FreshMeat = 22491, -- 215568
+
+			DoubleTime = 19676, -- 103827
+			ImpendingVictory = 22625, -- 202168
+			StormBolt = 23093, -- 107570
+
+			InnerRage = 22379, -- 215573
+			SuddenDeath = 22381, -- 280721
+			FuriousSlash = 23372, -- 100130
+
+			FuriousCharge = 23097, -- 202224
+			BoundingStride = 22627, -- 202163
+			Warpaint = 22382, -- 208154
+
+			Carnage = 22383, -- 202922
+			Massacre = 22393, -- 206315
+			FrothingBerserker = 19140, -- 215571
+
+			MeatCleaver = 22396, -- 280392
+			DragonRoar = 22398, -- 118000
+			Bladestorm = 22400, -- 46924
+
+			RecklessAbandon = 22405, -- 202751
+			AngerManagement = 22402, -- 152278
+			Siegebreaker = 16037, -- 280772
+		},
+		Traits = {
+			ColdSteel = 176
+		}
     },
     --Arms
     Arms = {
@@ -232,27 +278,10 @@ Spells.WARRIOR = {
 			Ravager                        = 152277,
         }
     },
-    LowLevel = {
-        Abilities = {
-			Charge = {100},
-			-- VictoryRush = {34428},
-			-- VictoryRush = {34428},
-			Execute = {163201},
-			MortalStrike = {12294},
-			Slam = {1464},
-			VictoryRush = {34428},
-        },
-        Buffs = {
-			VictoryRush = {32216},
-        },
-        Debuffs = {
-
-        }
-	},
 	Shared = {
         Abilities = {
 			BattleShout = {6673},
-			-- VictoryRush = {34428},
+			VictoryRush = {34428},
 			-- VictoryRush = {34428},
 
         },

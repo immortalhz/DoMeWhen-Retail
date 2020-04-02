@@ -107,6 +107,13 @@ Label.Update = function(self)
     self:SetText("Position - X: " .. round(DMW.Player.PosX, 2) .. " - Y: " .. round(DMW.Player.PosY, 2) .. " - Z: " .. round(DMW.Player.PosZ, 2))
 end
 Frame:AddChild(Label)
+--Position stuff
+Label = AceGUI:Create("Label")
+Label:SetFullWidth(true)
+Label.Update = function(self)
+    self:SetText("CombatReach: " .. DMW.Player.CombatReach .. " - BoundingRadius " .. DMW.Player.BoundingRadius.. " - Scale " .. DMW.Player.Scale)
+end
+Frame:AddChild(Label)
 --Facing
 Label = AceGUI:Create("Label")
 Label:SetFullWidth(true)
@@ -184,12 +191,24 @@ Label = AceGUI:Create("Label")
 Label:SetFullWidth(true)
 Label.Update = function(self)
     if DMW.Player.Target then
-        self:SetText("Distance: " .. round(DMW.Player.Target.Distance, 2) .. " - Raw Distance: " .. round(DMW.Player.Target:RawDistance(), 2))
+        -- self:SetText("Distance: " .. round(DMW.Player.Target.Distance, 2) .. " - Raw Distance: " .. round(DMW.Player.Target:RawDistance(), 2))
+        self:SetText("Distance: " .. DMW.Player.Target.Distance .. " - Raw Distance: " .. DMW.Player.Target:RawDistance() )--.. "-BR Dist " .. DMW.Player.Target:BRDistance())
     else
         self:SetText("")
     end
 end
 Frame:AddChild(Label)
+-- --Distance stuff
+-- Label = AceGUI:Create("Label")
+-- Label:SetFullWidth(true)
+-- Label.Update = function(self)
+--     if DMW.Player.Target then
+--         self:SetText("MeleeR"..DMW.Player.Target.MeleeRange .. " - CReach: " .. DMW.Player.Target.CombatReach .. " - BRadius " .. DMW.Player.Target.BoundingRadius.. " - Scale " .. DMW.Player.Target.Scale)
+--     else
+--         self:SetText("")
+--     end
+-- end
+-- Frame:AddChild(Label)
 --Facing
 Label = AceGUI:Create("Label")
 Label:SetFullWidth(true)

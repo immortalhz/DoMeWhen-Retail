@@ -885,7 +885,7 @@ local Options = {
                     type = "range",
                     order = 4,
                     name = "Interrupt Delay",
-                    desc = "Set desired delay in sec for interrupting enemy casts, will randomize around value",
+                    -- desc = "Set desired delay in sec for interrupting enemy casts, will randomize around value",
                     width = "full",
                     min = 0,
                     max = 2,
@@ -901,9 +901,9 @@ local Options = {
                     type = "select",
                     order = 6,
                     name = "Interrupt Target",
-                    desc = "Select desired target setting for interrupts",
-                    width = "full",
-                    values = {"Any", "Target"},
+                    -- desc = "Select desired target setting for interrupts",
+                    width = "0,6",
+                    values = {"Any", "Target", "Focus", "Mark"},
                     style = "dropdown",
                     get = function()
                         return DMW.Settings.profile.Enemy.InterruptTarget
@@ -912,11 +912,29 @@ local Options = {
                         DMW.Settings.profile.Enemy.InterruptTarget = value
                     end
                 },
+                InterruptMark = {
+                    type = "select",
+                    order = 7,
+                    name = "Interrupt Mark",
+                    -- desc = "Select desired Mark for interrupts",
+                    width = "0,6",
+                    hidden  = function()
+                        return DMW.Settings.profile.Enemy.InterruptTarget ~= 4
+                    end,
+                    values = {"Star", "Circle", "Diamond", "Triangle", "Moon", "Square", "Cross", "Skull"},
+                    style = "dropdown",
+                    get = function()
+                        return DMW.Settings.profile.Enemy.InterruptMark
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Enemy.InterruptMark = value
+                    end
+                },
                 InterruptSpellNames = {
                     type = "input",
-                    order = 7,
-                    name = "Alert",
-                    desc = "Only Interrupt Those Spells if Toggled",
+                    order = 8,
+                    name = "Spell name to Interrupt using White List",
+                    -- desc = "Only Interrupt Those Spells if Toggled",
                     width = "full",
                     multiline = true,
                     get = function()
@@ -924,6 +942,155 @@ local Options = {
                     end,
                     set = function(info, value)
                         DMW.Settings.profile.Enemy.InterruptSpellNames = value
+                    end
+                },
+                SortingHeader = {
+                    type = "header",
+                    order = 9,
+                    name = "Sorting Options"
+                },
+                SortingEnemyScore = {
+                    type = "toggle",
+                    order = 10,
+                    name = "Enemy Score",
+                    -- desc = "Will auto face instant cast spells on target",
+                    width = "full",
+                    get = function()
+                        return DMW.Settings.profile.Enemy.SortingEnemyScore
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Enemy.SortingEnemyScore = value
+                    end
+                },
+                SortingTarget = {
+                    type = "toggle",
+                    order = 11,
+                    name = "Target",
+                    -- desc = "Will auto face instant cast spells on target",
+                    width = "full",
+                    get = function()
+                        return DMW.Settings.profile.Enemy.SortingTarget
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Enemy.SortingTarget = value
+                    end
+                },
+                SortingLowestHealth = {
+                    type = "toggle",
+                    order = 12,
+                    name = "Lowest Health",
+                    -- desc = "Will auto face instant cast spells on target",
+                    width = "full",
+                    get = function()
+                        return DMW.Settings.profile.Enemy.SortingLowestHealth
+                    end,
+                    set = function(info, value)
+                        if value then DMW.Settings.profile.Enemy.SortingHighestHealth = false end
+                        DMW.Settings.profile.Enemy.SortingLowestHealth = value
+                    end
+                },
+                SortingHighestHealth = {
+                    type = "toggle",
+                    order = 13,
+                    name = "Highest Health",
+                    -- desc = "Will auto face instant cast spells on target",
+                    width = "full",
+                    get = function()
+                        return DMW.Settings.profile.Enemy.SortingHighestHealth
+                    end,
+                    set = function(info, value)
+                        if value then DMW.Settings.profile.Enemy.SortingLowestHealth = false end
+                        DMW.Settings.profile.Enemy.SortingHighestHealth = value
+                    end
+                },
+                SortingAuraID = {
+                    type = "toggle",
+                    order = 14,
+                    name = "Debuffs",
+                    -- desc = "Will auto face instant cast spells on target",
+                    width = "full",
+                    get = function()
+                        return DMW.Settings.profile.Enemy.SortingAuraID
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Enemy.SortingAuraID = value
+                    end
+                },
+                SortingAuraIDString = {
+                    type = "input",
+                    order = 15,
+                    name = "Has those Debuffs ID to Sort",
+                    -- desc = "Only Interrupt Those Spells if Toggled",
+                    hidden  = function()
+                        return not DMW.Settings.profile.Enemy.SortingAuraID
+                    end,
+                    width = "full",
+                    multiline = true,
+                    get = function()
+                        return DMW.Settings.profile.Enemy.SortingAuraIDString
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Enemy.SortingAuraIDString = value
+                    end
+                },
+                SortingAuraName = {
+                    type = "toggle",
+                    order = 16,
+                    name = "Has Buffs",
+                    -- desc = "Will auto face instant cast spells on target",
+                    width = "full",
+                    get = function()
+                        return DMW.Settings.profile.Enemy.SortingAuraName
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Enemy.SortingAuraName = value
+                    end
+                },
+                SortingAuraNameString = {
+                    type = "input",
+                    order = 17,
+                    name = "Has those Buffs ID to Sort",
+                    -- desc = "Only Interrupt Those Spells if Toggled",
+                    hidden  = function()
+                        return not DMW.Settings.profile.Enemy.SortingAuraName
+                    end,
+                    width = "full",
+                    multiline = true,
+                    get = function()
+                        return DMW.Settings.profile.Enemy.SortingAuraNameString
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Enemy.SortingAuraNameString = value
+                    end
+                },
+                SortingObjectIDs = {
+                    type = "toggle",
+                    order = 18,
+                    name = "Object IDs",
+                    -- desc = "Will auto face instant cast spells on target",
+                    width = "full",
+                    get = function()
+                        return DMW.Settings.profile.Enemy.SortingObjectIDs
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Enemy.SortingObjectIDs = value
+                    end
+                },
+                SortingObjectIDsString = {
+                    type = "input",
+                    order = 19,
+                    name = "",
+                    -- desc = "Only Interrupt Those Spells if Toggled",
+                    hidden  = function()
+                        return not DMW.Settings.profile.Enemy.SortingObjectIDs
+                    end,
+                    width = "full",
+                    multiline = true,
+                    get = function()
+                        return DMW.Settings.profile.Enemy.SortingObjectIDsString
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Enemy.SortingObjectIDsString = value
                     end
                 },
             }

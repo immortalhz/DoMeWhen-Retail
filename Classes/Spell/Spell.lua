@@ -5,7 +5,7 @@ function Spell:New(SpellID, CastType)
     self.SpellID = SpellID
     self.SpellCache = {GetSpellInfo(self.SpellID)}
     self.SpellName = self.SpellCache[1]
-    print(self.SpellName)
+    -- print(self.SpellName)
     self.BaseCD = GetSpellBaseCooldown(self.SpellID) / 1000
     self.BaseGCD = select(2, GetSpellBaseCooldown(self.SpellID)) / 1000
     self.MinRange = self.SpellCache[5] or 0
@@ -100,18 +100,18 @@ end
 function Spell:IsCastable(Range, AoESpell, Unit)
     if Range then
         if Range == "Melee" then Range = 5 end
-        local CastUnit = Unit or Target
+        -- local CastUnit = Unit or DMW.Player.Target
         return self:IsAvailableF() and self:CDUp() and self:IsInRange(Range)
     else
-        local Range = self.MaxRange > 0 and self.MaxRange or 5
+        --local Range = self.MaxRange > 0 and self.MaxRange or 5
 
-        return self:IsAvailableF() and self:CDUp() and self:IsInRange(Range)
+        return self:IsAvailableF() and self:CDUp()
     end
 end
 
-function Spell:IsReady(Range, AoESpell, ThisUnit)
+function Spell:IsReady(Range)
     -- if self:IsCastable() and self:Usable() then return true end
-    return self:IsCastable(Range, AoESpell, ThisUnit) and self:Usable()
+    return self:IsCastable(Range) and self:Usable()
 end
 -- function Spell:IsUsableP(Offset)
 --     local CostTable = self:CostTable()
@@ -139,7 +139,7 @@ function Spell:Charges() return GetSpellCharges(self.SpellID) end
 
 function Spell:ChargesFrac()
     local Charges, MaxCharges, Start, Duration
-    Charges, MaxCharges, Start, Duration = GetSpellCharges(self.SpellName)
+    Charges, MaxCharges, Start, Duration = GetSpellCharges(self.SpellID)
     if Charges ~= MaxCharges then
         return Charges + (1 - (Start + Duration - DMW.Time) / Duration)
     else
@@ -177,7 +177,11 @@ function Spell:Known()
     return GetSpellInfo(self.SpellName)
 end
 
-function Spell:Usable() return IsUsableSpell(self.SpellID) end
+function Spell:Usable()
+    -- print(self?)
+    if self.Key == "Execute" then return true end
+    return IsUsableSpell(self.SpellID)
+end
 
 -- function Spell:HighestRank()
 --     for i = #self.Ranks, 1, -1 do

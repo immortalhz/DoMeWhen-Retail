@@ -3,6 +3,10 @@ local DMW = DMW
 local AlertTimer = GetTime()
 DMW.Helpers.QuestieHelper = {}
 DMW.Cache.QuestieCache = {}
+local BadPotion
+local VisionsPotionsTable = {
+
+}
 
 function DMW.Helpers.DrawLineDMWC(sx, sy, sz, ex, ey, ez)
     local function WorldToScreen(wX, wY, wZ)
@@ -187,13 +191,14 @@ local function QuestieLogUpdate() --private
 	end
 	QuestieCacheThrottle = C_Timer.NewTimer (2, QuestieCacheUpdate)
 end
-
 function DMW.Helpers.QuestieHelper.isQuestObject(objectID, Pointer) --Ty Ssateneth
     if objectID == 325958 or objectID == 325962 or objectID == 325963 or objectID == 325959 or objectID == 335703 or objectID == 152692 or objectID == 163757 or objectID == 290542 or objectID == 113768 or objectID == 113771 or objectID == 113769 or objectID == 113770 or objectID == 153290 or
         objectID == 322413 or objectID == 326395 or objectID == 326399 or objectID == 326418 or objectID == 326413 or objectID == 327577 or objectID == 327576 or objectID == 327578 or objectID == 325799 or
         objectID == 326417 or objectID == 326411 or objectID == 326412 or objectID == 326413 or objectID == 326414 or objectID == 326415 or objectID == 326416 or objectID == 326417 or objectID == 326418 or objectID == 326419 or objectID == 326420 or objectID == 326403 or objectID == 326408 or objectID == 326407 or -- nasjatar chests
         objectID == 325662 or objectID == 325659 or objectID == 325660 or objectID == 325661 or objectID == 325663 or objectID == 325664 or objectID == 325665 or objectID == 325666 or objectID == 325667 or objectID == 325668 or -- mechagon chests
-        objectID == 151166 -- algan units
+		objectID == 151166 -- algan units
+		or objectID == 335709 or objectID == 334237 or objectID == 334228 or objectID == 334229 or objectID == 334232-- Uldum chest
+		or (BadPotion ~= nil and objectID ~= BadPotion and VisionsPotionsTable[objectID])
     then return true end
     local glow = ObjectDescriptor(Pointer,GetOffset("CGObjectData__DynamicFlags"),"uint")
     if glow and (bit.band(glow,0x4)~=0 or bit.band(glow,0x20)~=0) then

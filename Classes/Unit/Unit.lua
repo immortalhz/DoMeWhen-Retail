@@ -32,11 +32,18 @@ function Unit:New(Pointer)
         self.Class = select(2, UnitClass(Pointer)):gsub("%s+", "")
     end
     self.HealthMax = UnitHealthMax(self.Pointer)
-    self.CombatReach = UnitCombatReach(Pointer)
+    -- self.CombatReach = UnitCombatReach(Pointer)
+    -- self.BoundingRadius = UnitBoundingRadius(Pointer)
+    -- print(self.Name)
+    -- local range = DMW.Player.CombatReach + self.CombatReach + 4/3
+    -- self.MeleeRange = math.max(range, 5)
+    -- self.Scale = ObjectDescriptor(Pointer, GetOffset("CGObjectData__Scale"), "float")
     self.PosX, self.PosY, self.PosZ = ObjectPosition(Pointer)
     if not self.Player then
         self.ObjectID = ObjectID(Pointer)
     end
+    self:IsDummy()
+    self:NoLoS()
     self.Level = UnitLevel(Pointer)
     -- self.DistanceAggro = self:AggroDistance()
     self.CreatureType = DMW.Enums.CreatureType[UnitCreatureTypeID(Pointer)]
@@ -48,9 +55,13 @@ function Unit:New(Pointer)
 
     DMW.Tables.Misc.guid2pointer[self.GUID] = Pointer
     DMW.Tables.Misc.pointer2guid[Pointer] = self.GUID
+    self.Cache = {}
     DMW.Helpers.Swing.AddUnit(Pointer)
-    self.UnitName = GetUnitName(Pointer)
-
+    -- self.UnitName = GetUnitName(Pointer)
+    --NoTouchChecks
+    if DMW.Player.Instance then
+        self:NoTouchDungeons()
+    end
 end
 
 function Unit:Update()
@@ -60,11 +71,12 @@ function Unit:Update()
         self.NextUpdate = DMW.Time + (math.random(300, 1500) / 10000)
     end
     self:UpdatePosition()
-    if DMW.Tables.AuraUpdate[self.GUID] then
+    if DMW.Tables.AuraUpdate[self.GUID] and self.Pointer ~= DMW.Player.Pointer then
         DMW.Functions.AuraCache.Refresh(self.Pointer, self.GUID)
         DMW.Tables.AuraUpdate[self.GUID] = nil
     end
     self.Distance = self:GetDistance()
+
     -- if RealMobHealth_CreatureHealthCache and self.ObjectID > 0 and RealMobHealth_CreatureHealthCache[self.ObjectID .. "-" .. self.Level] then
     --     self.HealthMax = RealMobHealth_CreatureHealthCache[self.ObjectID .. "-" .. self.Level]
     --     self.RealHealth = true
@@ -86,7 +98,7 @@ function Unit:Update()
         -- end
     -- end
     self.HP = self.Health / self.HealthMax * 100
-    self.Dead = self.HP == 0 or UnitIsDeadOrGhost(self.Pointer)
+    self.Dead = self.Health == 0 or UnitIsDeadOrGhost(self.Pointer)
     self.TTD = self:GetTTD()
     self.LoS = false
     if self.Distance < 50 and not self.Dead then
@@ -96,13 +108,13 @@ function Unit:Update()
     -- if self.PredictTime then self.PredictTime = nil end
     self.CanAttack = UnitCanAttack("player", self.Pointer)
     self.Attackable = self.LoS and self.CanAttack or false
-    self.ValidEnemy = self.Attackable and self:IsEnemy() or false
+    self.ValidEnemy = self.Attackable and self.CreatureType ~= "Critter" and self:IsEnemy() or false
     self.Target = UnitTarget(self.Pointer)
     self.Moving = self:HasMovementFlag(DMW.Enums.MovementFlags.Moving)
-    self.Facing = UnitIsFacing("Player", self.Pointer, 75)
-    if not self.Quest or (DMW.Cache.QuestieCache.CacheTimer and DMW.Time > DMW.Cache.QuestieCache.CacheTimer) then
+    -- self.Facing = UnitIsFacing("Player", self.Pointer, 75)
+    -- if not self.Quest or (DMW.Cache.QuestieCache.CacheTimer and DMW.Time > DMW.Cache.QuestieCache.CacheTimer) then
         self.Quest = self:IsQuest()
-    end
+    -- end
     self.Trackable = self:IsTrackable()
     if self.Name == "Unknown" then
         self.Name = UnitName(self.Pointer)
@@ -121,6 +133,7 @@ function Unit:Update()
     -- if self.DrawCleaveInfo then
     --     self:DrawCleave()
     -- end
+    self.Mark = self:MarkCheck()
 end
 
 function Unit:UpdateHealth(predict, amount)
@@ -137,12 +150,17 @@ function Unit:UpdateHealth(predict, amount)
 end
 
 function Unit:UpdatePosition()
+    -- local offset = self:HasMovementFlag(DMW.Enums.MovementFlags.Hover) and
     self.PosX, self.PosY, self.PosZ = ObjectPosition(self.Pointer)
 end
 
 function Unit:LineOfSight(OtherUnit)
-    local losFlags = bit.bor(0x10, 0x100, 0x1)
-    if DMW.Enums.LoS[self.ObjectID] then
+    -- local losFlags = bit.bor(0x10, 0x100, 0x1)
+    -- return true
+    -- if DMW.Enums.LoS[self.ObjectID] then
+    --     return true
+    -- end
+    if self.NoLoS then
         return true
     end
     OtherUnit = OtherUnit or DMW.Player
@@ -156,7 +174,7 @@ function Unit:LineOfSight(OtherUnit)
 end
 
 function Unit:IsEnemy()
-    return self.LoS and self.Attackable and self:HasThreat() and ((not self.Friend and not self:CCed()) or UnitIsUnit(self.Pointer, "target"))
+    return self:HasThreat() and ((not self.Friend and not self:CCed()) or UnitIsUnit(self.Pointer, "target"))
 end
 
 function Unit:IsBoss()
@@ -183,7 +201,7 @@ function Unit:HasThreat()
         return true
     elseif DMW.Player.Instance ~= "none" and UnitAffectingCombat(self.Pointer) then
         return true
-    elseif DMW.Player.Instance == "none" and (DMW.Enums.Dummy[self.ObjectID] or (UnitIsVisible("target") and UnitIsUnit(self.Pointer, "target"))) then
+    elseif DMW.Player.Instance == "none" and (self.Dummy or (UnitIsVisible("target") and UnitIsUnit(self.Pointer, "target"))) then
         return true
     end
     if not self.Player and self.Target and (UnitIsUnit(self.Target, "player") or UnitIsUnit(self.Target, "pet") or UnitInParty(self.Target) or UnitInRaid(self.Target) ~= nil) then
@@ -197,7 +215,7 @@ function Unit:GetEnemies(Yards, TTD, RawDistance)
     local Count = 0
     TTD = TTD or 0
     for _, Unit in pairs(DMW.Enemies) do
-        if RawDistance and self:RawDistance(v) <= Yards and Unit.TTD >= TTD then
+        if RawDistance and self:RawDistance(Unit) <= Yards and Unit.TTD >= TTD then
             table.insert(Table, Unit)
             Count = Count + 1
         elseif self:GetDistance(Unit) <= Yards and Unit.TTD >= TTD then
@@ -255,31 +273,12 @@ end
 
 function Unit:Interrupt()
     local InterruptTarget = DMW.Settings.profile.Enemy.InterruptTarget
-    if DMW.Settings.profile.HUD.Interrupts == 3 or (InterruptTarget == 2 and not UnitIsUnit(self.Pointer, "target")) then
+    if DMW.Settings.profile.HUD.Interrupts == 3 or (InterruptTarget == 2 and not UnitIsUnit(self.Pointer, "target")) or
+    (InterruptTarget == 3 and not UnitIsUnit(self.Pointer, "focus")) or
+    (InterruptTarget == 4 and (not GetRaidTargetIndex(self.Pointer) or GetRaidTargetIndex(self.Pointer) ~= DMW.Settings.profile.Enemy.InterruptMark)) then
         return false
     end
-    local Settings = DMW.Settings.profile
-    local StartTime, EndTime, SpellID, Type
-    local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = self:CastingInfo()
-    if name then
-        if endTime and not notInterruptible then
-            StartTime = startTime / 1000
-            EndTime = endTime / 1000
-            SpellID = spellID
-            Type = "Cast"
-        end
-    else
-        name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID = self:ChannelInfo()
-        if name then
-            if endTime and not notInterruptible then
-                StartTime = startTime / 1000
-                SpellID = spellID
-                Type = "Channel"
-            end
-        else
-            return false
-        end
-    end
+    Unit:IsInterruptible()
     local checkInterrupts = false
     if DMW.Settings.profile.HUD.Interrupts == 2 then
         for k in string.gmatch(DMW.Settings.profile.Enemy.InterruptSpellNames, "([^,]+)") do
@@ -387,7 +386,7 @@ function Unit:AuraByID(SpellID, OnlyPlayer)
         end
         return unpack(AuraReturn)
     end
-    return nil
+    return false
 end
 
 function Unit:AuraByName(SpellName, OnlyPlayer)
@@ -415,9 +414,12 @@ function Unit:CCed()
 end
 
 function Unit:IsQuest()
+    if not self.QuestCached or (DMW.Cache.QuestieCache.CacheTimer and self.Cache.QuestTime < DMW.Cache.QuestieCache.CacheTimer) then
+        self.QuestCached = DMW.Helpers.QuestieHelper.isQuestieUnit(self.Pointer, self.GUID)
+        self.Cache.QuestTime = DMW.Time
 
-    if DMW.Helpers.QuestieHelper.isQuestieUnit(self.Pointer, self.GUID) then return true end
-    return false
+    end
+    return self.QuestCached
 end
 
 function Unit:CastingInfo()
@@ -529,26 +531,70 @@ function Unit:IsDummy()
     end
 end
 
-function Unit:IsExecutable()
-    if DMW.Player.Target and (DMW.Player.Buffs.SuddenDeathBuff:Exist() or DMW.Player.Target.HP < 20) then
-        return true
-    elseif self.HP < 20 and (not DMW.Player.Target or DMW.Player.Target.HP > 20) then
-
-        if UnitExists("target") then
-            local OldTarget = DMW.Player.Target.Pointer
-            TargetUnit(self.Pointer)
-            DMW.Player.Target = self
-            DMW.Player.Spells.Execute:Cast(self)
-            C_Timer.After(0.5, function() if not UnitIsUnit("target", OldTarget) then TargetUnit(OldTarget) end end)
-            return true
+function Unit:NoLoS()
+    if self.NoLos == nil then
+        if DMW.Enums.LoS[self.ObjectID] then
+            self.NoLoS = true
         else
-            TargetUnit(self.Pointer)
-            DMW.Player.Target = self
-            DMW.Player.Spells.Execute:Cast(self)
-            return true
+            self.NoLoS = false
         end
+    else
+        return self.NoLoS
     end
-    return false
 end
 
+-- function Unit:IsExecutable()
+--     if DMW.Player.Target and (DMW.Player.Buffs.SuddenDeathBuff:Exist() or DMW.Player.Target.HP < 20) then
+--         return true
+--     elseif self.HP < 20 and (not DMW.Player.Target or DMW.Player.Target.HP > 20) then
+
+--         if UnitExists("target") then
+--             local OldTarget = DMW.Player.Target.Pointer
+--             TargetUnit(self.Pointer)
+--             DMW.Player.Target = self
+--             DMW.Player.Spells.Execute:Cast(self)
+--             C_Timer.After(0.5, function() if not UnitIsUnit("target", OldTarget) then TargetUnit(OldTarget) end end)
+--             return true
+--         else
+--             TargetUnit(self.Pointer)
+--             DMW.Player.Target = self
+--             DMW.Player.Spells.Execute:Cast(self)
+--             return true
+--         end
+--     end
+--     return false
+-- end
+
+function Unit:MarkCheck()
+    if not self.MarkCached or (DMW.Cache.CacheMarkTimer and self.MarkCachedPulse < DMW.Cache.CacheMarkTimer) then
+        self.MarkCached = GetRaidTargetIndex(self.Pointer) or 0
+        self.MarkCachedPulse = DMW.Pulses
+    end
+    return self.MarkCached
+end
+
+function Unit:Facing()
+    if self.FacingCheck == nil or (self.CacheFacingPulse and self.CacheFacingPulse < DMW.Pulses) then
+        self.FacingCheck = UnitIsFacing("player", self.Pointer)--, 75)
+        self.CacheFacingPulse = DMW.Pulses
+    end
+    return self.FacingCheck
+
+end
+function Unit:NoTouchDungeons()
+    if DMW.Player.Instance == "party" then
+        if DMW.Enums.DoNotTouchListDungeons[DMW.Player.InstanceID] ~= nil then
+            local instance = DMW.Enums.DoNotTouchListDungeons[DMW.Player.InstanceID]
+            if instance[self.ObjectID] ~= nil then
+                if instance[self.ObjectID].Buff ~= nil then
+                    self.NoTouchCheck = "Buff"
+                elseif instance[self.ObjectID].NoBuff ~= nil then
+                    self.NoTouchCheck = "No Buff"
+                else
+                    self.NoTouchCheck = "None"
+                end
+            end
+        end
+    end
+end
 

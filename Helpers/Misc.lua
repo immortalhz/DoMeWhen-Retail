@@ -111,12 +111,20 @@ DMW.Enums.ClassPowerTypes = {
         "SoulShards"
     },
     WARRIOR = {
-        "Rage",
+        "Rage"
+        -- "Alternate",
     },
     DEATHKNIGHT = {
         "RunicPower",
         "Runes"
     },
+    ROGUE = {
+        "Energy",
+        "ComboPoints"
+    },
+    DEMONHUNTER = {
+        "Fury"
+    }
 }
 
 DMW.Enums.PowerTypes = {
@@ -143,6 +151,9 @@ DMW.Enums.PowerTypes = {
     -- Obsolete2 = 15,
 }
 
+function Misc.TrackerInstanceIdCheck()
+
+end
 
 
 
@@ -152,74 +163,73 @@ DMW.Enums.PowerTypes = {
 
 
 
+-- --Honor Tracking
 
---Honor Tracking
+-- local baseRankHonorTable = {
+-- 	[0] = "199",
+-- 	[5] = "199",
+-- 	[6] = "210",
+-- 	[7] = "221",
+-- 	[8] = "233",
+-- 	[9] = "246",
+-- 	[10] = "260",
+-- 	[11] = "274",
+-- 	[12] = "289",
+-- 	[13] = "305",
+-- 	[14] = "321",
+-- 	[15] = "339",
+-- 	[16] = "357",
+-- 	[17] = "377",
+-- 	[18] = "398"
+-- }
 
-local baseRankHonorTable = {
-	[0] = "199",
-	[5] = "199",
-	[6] = "210",
-	[7] = "221",
-	[8] = "233",
-	[9] = "246",
-	[10] = "260",
-	[11] = "274",
-	[12] = "289",
-	[13] = "305",
-	[14] = "321",
-	[15] = "339",
-	[16] = "357",
-	[17] = "377",
-	[18] = "398"
-}
+-- local baseLevelHonorTable = {
+-- 	[60] = "1",
+-- 	[59] = ".9",
+-- 	[58] = ".8",
+-- 	[57] = ".7",
+-- 	[56] = ".6",
+-- 	[55] = ".5",
+-- 	[54] = ".47",
+-- 	[53] = ".35",
+-- 	[52] = ".32",
+-- 	[51] = ".28",
+-- 	[50] = ".05",
+-- 	[49] = ".03",
+-- 	[48] = ".02"
+-- }
 
-local baseLevelHonorTable = {
-	[60] = "1",
-	[59] = ".9",
-	[58] = ".8",
-	[57] = ".7",
-	[56] = ".6",
-	[55] = ".5",
-	[54] = ".47",
-	[53] = ".35",
-	[52] = ".32",
-	[51] = ".28",
-	[50] = ".05",
-	[49] = ".03",
-	[48] = ".02"
-}
-
-local Unit = DMW.Classes.Unit
-local loaded = false
-local f = CreateFrame("Frame", "MyAddon", UIParent)
-f:SetScript(
-    "OnUpdate",
-    function(self, elapsed)
-        if not loaded then
+-- local Unit = DMW.Classes.Unit
+-- local loaded = false
+-- local f = CreateFrame("Frame", "MyAddon", UIParent)
+-- f:SetScript(
+--     "OnUpdate",
+--     function(self, elapsed)
+--         if not loaded then
 
 
-            if IsAddOnLoaded("HPH") then
-                local HPH = LibStub("AceAddon-3.0"):GetAddon("HPH")
-                hooksecurefunc(Unit, "New", function(Table, Pointer)
-                    if Table.Player and Table.Level >= 48 and UnitCanAttack("player", Table.Pointer) then
-                        -- Table.rankPVP = UnitPVPRank(Pointer);
-                        -- Table.UnitName = GetUnitName(Pointer)
-                        local timesKilled = HPH.GetTimesKilled(HPH.GetName(Table.Name))
-                        local discountRate, _ = HPH.GetDiscountRate(timesKilled)
-                        local rHonor = baseRankHonorTable[UnitPVPRank(Pointer)] *
-                        baseLevelHonorTable[Table.Level]
-                        * (1 - discountRate)
-                        -- print(rHonor)
+--             if IsAddOnLoaded("HPH") then
+--                 local HPH = LibStub("AceAddon-3.0"):GetAddon("HPH")
+--                 hooksecurefunc(Unit, "New", function(Table, Pointer)
+--                     if Table.Player and Table.Level >= 48 and UnitCanAttack("player", Table.Pointer) then
+--                         -- Table.rankPVP = UnitPVPRank(Pointer);
+--                         -- Table.UnitName = GetUnitName(Pointer)
+--                         local timesKilled = HPH.GetTimesKilled(HPH.GetName(Table.Name))
+--                         local discountRate, _ = HPH.GetDiscountRate(timesKilled)
+--                         local rHonor = baseRankHonorTable[UnitPVPRank(Pointer)] *
+--                         baseLevelHonorTable[Table.Level]
+--                         * (1 - discountRate)
+--                         -- print(rHonor)
 
-                        Table.RealisticHonor = rHonor
-                        -- self.PVPRank = self.rankPVP >= 5 and (self.rankPVP - 4) or 0
-                    end
-                end)
-                loaded = true
-                --hook here
-            end
-        end
-    end
-)
+--                         Table.RealisticHonor = rHonor
+--                         -- self.PVPRank = self.rankPVP >= 5 and (self.rankPVP - 4) or 0
+--                     end
+--                 end)
+--                 loaded = true
+--                 --hook here
+--             end
+--         end
+--     end
+-- )
 
 

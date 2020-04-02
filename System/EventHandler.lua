@@ -9,7 +9,6 @@ EHFrame:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
 EHFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
 EHFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 EHFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
-EHFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
 EHFrame:RegisterEvent("LOOT_OPENED")
 EHFrame:RegisterEvent("LOOT_CLOSED")
 EHFrame:RegisterEvent("GET_ITEM_INFO_RECEIVED")
@@ -28,10 +27,11 @@ EHFrame:RegisterEvent("UNIT_ATTACK_SPEED")
 EHFrame:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player")
 -- EHFrame:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
 EHFrame:RegisterUnitEvent("UNIT_MAXPOWER", "player")
+
 EHFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
--- if class == "SHAMAN" then
---     TotemList = LibStub("LibTotemInfo-2.0").TotemSpells
--- end
+EHFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+EHFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
+
 EHFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
 local function EventHandler(self, event, ...)
     if GetObjectWithGUID then
@@ -49,8 +49,13 @@ local function EventHandler(self, event, ...)
             DMW.Player.CombatLeft = false
         elseif event == "PLAYER_EQUIPMENT_CHANGED" then
             --DMW.Player:UpdateEquipment()
-        elseif event == "CHARACTER_POINTS_CHANGED" then
-            DMW.Player:GetTalents()
+        elseif event == "CHARACTER_POINTS_CHANGED" or event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "PLAYER_TALENT_UPDATE" then
+            if DMW.Player then
+                C_Timer.After(0.3, function() DMW.Player:UpdateVariables() end)
+            end
+            if DMW.Player.GetTalents  then DMW.Player:GetTalents() end
+        elseif event == "RAID_TARGET_UPDATE" then
+            DMW.Player.UpdateMarkCache()
         elseif event == "LOOT_OPENED" then
             DMW.Player.Looting = true
         elseif event == "LOOT_CLOSED" then
@@ -71,12 +76,12 @@ local function EventHandler(self, event, ...)
         elseif event == "UNIT_POWER_FREQUENT" then --or event == "PLAYER_TALENT_UPDATE" then --or event == "UNIT_POWER_UPDATE" then
             local _, powerType = ...
             -- print(event, powerType)
-            if DMW.Player and DMW.Player.UpdatePower then DMW.Player:UpdatePower("Current", powerType) end
+            if DMW.Player and DMW.Player.UpdatePower and powerType ~= 10 then DMW.Player:UpdatePower("Current", powerType) end
             -- print(event,...)
         elseif event == "UNIT_MAXPOWER" then
             local _, powerType = ...
             -- print(event, powerType)
-            if DMW.Player then DMW.Player:UpdatePower("Max", powerType) end
+            if DMW.Player and DMW.Player.UpdatePower then DMW.Player:UpdatePower("Max", powerType) end
             -- print(event,...)
             -- local a, b = ...
             -- -- print(...)
@@ -87,8 +92,8 @@ local function EventHandler(self, event, ...)
             --     -- EHFrame:UnregisterEvent("UNIT_POWER_FREQUENT")
             --     end
             -- end
-        elseif event == "SKILL_LINES_CHANGED" and DMW.Player.UpdateProfessions then
-            DMW.Player:UpdateProfessions()
+        -- elseif event == "SKILL_LINES_CHANGED" and DMW.Player.UpdateProfessions then
+        --     DMW.Player:UpdateProfessions()
         -- elseif PlayerIsHealer and (event == "UNIT_MAXHEALTH" or event == "UNIT_HEALTH_FREQUENT") then --event == "UNIT_HEALTH" or
         --     local unit = ...
         --     local Pointer = DMW.Tables.Misc.unit2pointerF(unit)
@@ -101,14 +106,14 @@ local function EventHandler(self, event, ...)
 
             -- end
             -- DMW.Helpers.HealComm:Update(unit)
-        elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
-            if DMW.Player.Class == "SHAMAN" then
-                local _, _, spellID = ...
-                -- WriteFile("checkychecky.txt", event .. " , "..spellID.. " , " .. DMW.Time .. " , " .. UnitHealth(DMW.Player.Target.Pointer).."\n", true)
-                if TotemList[spellID] ~= nil then
-                    DMW.Player:NewTotem(spellID)
-                end
-            end
+        -- elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
+        --     if DMW.Player.Class == "SHAMAN" then
+        --         local _, _, spellID = ...
+        --         -- WriteFile("checkychecky.txt", event .. " , "..spellID.. " , " .. DMW.Time .. " , " .. UnitHealth(DMW.Player.Target.Pointer).."\n", true)
+        --         if TotemList[spellID] ~= nil then
+        --             DMW.Player:NewTotem(spellID)
+        --         end
+        --     end
             -- DMW.Helpers.Swing.ResetSpell(spellID)
         elseif event == "PLAYER_TOTEM_UPDATE" then
             -- need fixes
@@ -137,16 +142,16 @@ local function EventHandler(self, event, ...)
 end
 EHFrame:SetScript("OnEvent", EventHandler)
 
-if class == "SHAMAN" then
-    hooksecurefunc(DMW, "Remove", function(pointer)
-        -- print(UnitName(pointer))
-            for _, Element in pairs(DMW.Player.Totems) do
-                -- if Element.Unit then
-                    if Element.Pointer == pointer then
-                        -- print("delete")
-                        table.wipe(Element)
-                    end
-                -- end
-            end
-    end)
-end
+-- if class == "SHAMAN" then
+--     hooksecurefunc(DMW, "Remove", function(pointer)
+--         -- print(UnitName(pointer))
+--             for _, Element in pairs(DMW.Player.Totems) do
+--                 -- if Element.Unit then
+--                     if Element.Pointer == pointer then
+--                         -- print("delete")
+--                         table.wipe(Element)
+--                     end
+--                 -- end
+--             end
+--     end)
+-- end

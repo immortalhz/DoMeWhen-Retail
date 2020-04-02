@@ -4,15 +4,34 @@ local Spell = DMW.Classes.Spell
 local Buff = DMW.Classes.Buff
 local Debuff = DMW.Classes.Debuff
 
+local function HasSpell(id)
+    return select(7,GetSpellInfo(GetSpellInfo(id))) == id
+ end
+
 function LocalPlayer:GetSpells()
-    if self.Class == "SHAMAN"  then
-        self.Totems = {}
-        DMW.Tables.Totems = {}
-        DMW.Tables.Totems.Elements = {"Fire", "Earth", "Water", "Air"}
+    -- if self.Class == "SHAMAN"  then
+    --     self.Totems = {}
+    --     DMW.Tables.Totems = {}
+    --     DMW.Tables.Totems.Elements = {"Fire", "Earth", "Water", "Air"}
+    -- end
+    if self.Spells then
+        table.wipe(self.Spells)
+    else
+        self.Spells = {}
     end
-    self.Spells = {}
-    self.Buffs = {}
-    self.Debuffs = {}
+    if self.Buffs then
+        table.wipe(self.Buffs)
+    else
+        self.Buffs = {}
+    end
+    if self.Debuffs then
+        table.wipe(self.Debuffs)
+    else
+        self.Debuffs = {}
+    end
+    -- self.Spells = {}
+    -- self.Buffs = {}
+    -- self.Debuffs = {}
     local CastType, Duration
     for k, v in pairs(DMW.Enums.Spells) do
         local table = (k == "GLOBAL" and v) or (k == self.Class and (v[self.SpecID]) or v["Shared"])
@@ -21,9 +40,19 @@ function LocalPlayer:GetSpells()
                 if SpellType == "Abilities" then
                     for SpellName, SpellInfo in pairs(SpellTable) do
                         -- print(SpellName)
-                        CastType = SpellInfo[2] or "Normal"
-                        self.Spells[SpellName] = Spell(SpellInfo[1], CastType)
-                        -- self.Spells[SpellName].Key = SpellName
+                        CastType = type(SpellInfo[#SpellInfo]) ~= "number" and SpellInfo[#SpellInfo] or "Normal"
+                        if #SpellInfo >= 2 then
+                            for _, spellID in pairs(SpellInfo) do
+                                if type(spellID) == "number" and HasSpell(spellID) then
+                                    self.Spells[SpellName] = Spell(spellID, CastType)
+                                    self.Spells[SpellName].Key = SpellName
+                                    break
+                                end
+                            end
+                        else
+                            self.Spells[SpellName] = Spell(SpellInfo[1], CastType)
+                            self.Spells[SpellName].Key = SpellName
+                        end
                         -- if SpellInfo.Totem ~= nil then
                         --     for i = 1, #SpellInfo.Ranks do
                         --         DMW.Tables.Totems[SpellInfo.Ranks[i]] = {}
@@ -39,12 +68,20 @@ function LocalPlayer:GetSpells()
                     end
                 elseif SpellType == "Buffs" then
                     for SpellName, SpellInfo in pairs(SpellTable) do
-                        self.Buffs[SpellName] = Buff(SpellInfo[1])
+                        if #SpellInfo >= 2 then
+                            for _, spellID in pairs(SpellInfo) do
+                                if type(spellID) == "number" and HasSpell(spellID) then
+                                    self.Buffs[SpellName] = Buff(spellID)
+                                    break
+                                end
+                            end
+                        else
+                            self.Buffs[SpellName] = Buff(SpellInfo[1])
+                        end
                     end
                 elseif SpellType == "Debuffs" then
                     for SpellName, SpellInfo in pairs(SpellTable) do
-                        Duration = SpellInfo[2] or nil
-                        self.Debuffs[SpellName] = Debuff(SpellInfo[1], Duration)
+                        self.Debuffs[SpellName] = Debuff(SpellInfo)
                     end
                 end
             end
@@ -52,34 +89,97 @@ function LocalPlayer:GetSpells()
     end
 end
 
+--https://github.com/simulationcraft/simc/blob/bfa-dev/engine/dbc/generated/sc_talent_data.inc
 function LocalPlayer:GetTalents()
-    if self.SpecID == "LowLevel" then return end
     if self.Talents then
         table.wipe(self.Talents)
     else
         self.Talents = {}
     end
-    local foundInTier
-    for k, v in pairs(DMW.Enums.Spells[self.Class][self.SpecID].Talents) do
-            local specGroup = GetActiveSpecGroup()
-            for r = 1, 7 do --search each talent row
-                for c = 1, 3 do -- search each talent column
-                    local learned, _ , id = select(4,GetTalentInfo(r,c,specGroup))
-                    if v == id then
-                        foundInTier = true
-                        -- Add All Matches to Talent List for Boolean Checks
-                        self.Talents[k] = true
-                        -- Add All Active Ability Matches to Ability/Spell List for Use Checks
-                        -- if not IsPassiveSpell(v) then
-                        --     self.spell['abilities'][k] = v
-                        --     self.spell[k] = v
-                        -- end
-                        break;
+    if DMW.Enums.Spells[self.Class][self.SpecID].Talents then
+        for k, v in pairs(DMW.Enums.Spells[self.Class][self.SpecID].Talents) do
+            local learned = select(10, GetTalentInfoByID(v))
+            if learned then
+                self.Talents[k] = true
+            else
+                self.Talents[k] = false
+            end
+        end
+    end
+end
+
+
+--https://github.com/simulationcraft/simc/blob/bfa-dev/engine/dbc/generated/azerite.inc
+function LocalPlayer:GetTraits()
+    if self.Traits then
+        table.wipe(self.Traits)
+    else
+        self.Traits = {}
+    end
+    if AzeriteUtil.AreAnyAzeriteEmpoweredItemsEquipped() and DMW.Enums.Spells[self.Class][self.SpecID]["Traits"] then
+        local isSelected
+        for _, itemLocation in AzeriteUtil.EnumerateEquipedAzeriteEmpoweredItems() do
+            for k, v in pairs(DMW.Enums.Spells[self.Class][self.SpecID]["Traits"]) do
+                isSelected = C_AzeriteEmpoweredItem.IsPowerSelected(itemLocation, v)
+                if not self.Traits[k] then
+                    self.Traits[k] = 0
+                end
+                if isSelected then
+                    self.Traits[k] = self.Traits[k] + 1
+                end
+            end
+        end
+    end
+end
+
+function LocalPlayer:GetAzerite()
+    if self.Essences then
+        table.wipe(self.Essences.Major)
+        table.wipe(self.Essences.Minor)
+    else
+        self.Essences = {}
+        self.Essences.Major = {}
+        self.Essences.Minor = {}
+    end
+
+    local table = C_AzeriteEssence.GetMilestones()
+    if table then
+        for i = 1, #table do
+            local essenceTable = table[i]
+            if essenceTable.unlocked then
+                if essenceTable.slot ~= nil then
+                    local essence = C_AzeriteEssence.GetMilestoneEssence(essenceTable.ID)
+                    if essence ~= nil then
+                        local eachEssence = C_AzeriteEssence.GetEssenceInfo(essence)
+                        local rank = eachEssence.rank
+                        local ID = eachEssence.ID
+                        if essenceTable.slot == 0 then
+                            local essence = DMW.Enums.Spells.GLOBAL.Essences[ID]
+                            if essence ~= nil then
+                                local tempEssence = {}
+                                tempEssence.Name = essence[1]
+                                tempEssence.Rank = rank
+                                -- self.Essences.Major.Name = essence[1]
+                                -- self.Essences.Major.Rank = rank
+                                tinsert(self.Essences.Major,tempEssence)
+                                self.Spells[essence[1]] = Spell(essence[2])
+                            end
+                        else
+                            local essence = DMW.Enums.Spells.GLOBAL.Essences[ID]
+                            if essence ~= nil then
+                                local tempEssence = {}
+                                tempEssence.Name = essence[1]
+                                tempEssence.Rank = rank
+                                -- self.Essences.Major.Name = essence[1]
+                                -- self.Essences.Major.Rank = rank
+                                tinsert(self.Essences.Minor,tempEssence)
+
+                            end
+                        end
                     end
                 end
-                -- If we found the talent, then stop looking for it.
-                if foundInTier then break end
             end
+        end
     end
 end
 

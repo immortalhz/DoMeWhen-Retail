@@ -6,7 +6,7 @@ function Unit:GetTTD(targetPercentage)
     if targetPercentage == nil then targetPercentage = 0 end
     local value
     if self.HP == 0 then return -1 end
-    if self.HP == 100 then return 999 end
+    if self.HP == 100 or self.Dummy then return 999 end
     -- if self.Player then return 999 end
     local timeNow = DMW.Time
     -- Reset unit if HP is higher

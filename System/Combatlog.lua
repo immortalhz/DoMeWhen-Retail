@@ -20,9 +20,9 @@ function frame:Reader(event, ...)
             ...
         Locals()
         DMW.Functions.AuraCache.Event(...)
-        if source == Player.GUID or destination == Player.GUID then
-            local sourceobj = DMW.Tables.Misc.guid2pointer[source]
-            local destobj = DMW.Tables.Misc.guid2pointer[destination]
+        -- if source == Player.GUID or destination == Player.GUID then
+        --     local sourceobj = DMW.Tables.Misc.guid2pointer[source]
+        --     local destobj = DMW.Tables.Misc.guid2pointer[destination]
             -- if Player.Class == "WARRIOR" and source == Player.GUID and destobj then
 
             --     if string.match(param, "_MISSED") then
@@ -69,7 +69,7 @@ function frame:Reader(event, ...)
             --     --     end
             --     end
             -- end
-        end
+        -- end
         -- if param == "SPELL_PERIODIC_DAMAGE" and destination == Player.GUID then
         --     if DMW.Tables.AuraCache[Player.GUID][spellName] ~= nil then
         --         if not Player.DOTed then Player.DOTed = {} end

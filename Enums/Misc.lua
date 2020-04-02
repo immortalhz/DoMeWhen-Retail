@@ -1,4 +1,4 @@
-DMW.Enums.MeleeSpell = {WARRIOR = 5308, ROGUE = 1752}
+DMW.Enums.MeleeSpell = {WARRIOR = 23881, ROGUE = 193315, DEMONHUNTER = 162243}
 
 DMW.Enums.CreatureType = {
     [1] = "Beast",
@@ -30,7 +30,7 @@ DMW.Enums.PowerTypesToCheck =
 	SOUL_SHARDS = {Enum.PowerType.SoulShards, "SoulShards"},
 	LUNAR_POWER = {Enum.PowerType.LunarPower, "LunarPower"},
 	HOLY_POWER = {Enum.PowerType.HolyPower, "HolyPower"},
-	ALTERNATE = {Enum.PowerType.Alternate, "Alternate"},
+	-- ALTERNATE = {Enum.PowerType.Alternate, "Alternate"},
 	MAELSTROM = {Enum.PowerType.Maelstrom, "Maelstrom"},
 	CHI = {Enum.PowerType.Chi, "Chi"},
 	ARCANE_CHARGES = {Enum.PowerType.ArcaneCharges, "ArcaneCharges"},

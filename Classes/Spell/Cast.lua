@@ -3,8 +3,8 @@ local Spell = DMW.Classes.Spell
 local CastTimer = GetTime()
 
 function Spell:FacingCast(Unit)
-	if DMW.Settings.profile.Enemy.AutoFace and self:CastTime() == 0 and not Unit.Facing and not UnitIsUnit("Player", Unit.Pointer) then
-		local Facing = ObjectFacing("Player")
+	if DMW.Settings.profile.Enemy.AutoFace and not UnitIsUnit("player", Unit.Pointer) and self:CastTime() == 0 and not Unit:Facing() then
+		local Facing = ObjectFacing("player")
 		local MouselookActive = false
 		if IsMouselooking() then
 			MouselookActive = true
@@ -24,6 +24,27 @@ function Spell:FacingCast(Unit)
 	end
 end
 
+function Spell:FacingCastRevenge(Facing)
+	if DMW.Settings.profile.Enemy.AutoFace  then
+		local FacingOld = ObjectFacing("Player")
+		local MouselookActive = false
+		if IsMouselooking() then
+			MouselookActive = true
+			MouselookStop()
+		end
+		FaceDirection(Facing, true)
+        CastSpellByName(self.SpellName)
+		FaceDirection(FacingOld)
+		if MouselookActive then
+			MouselookStart()
+		end
+		C_Timer.After(0.1, function()
+			FaceDirection(ObjectFacing("player"), true)
+        end)
+        return true
+	end
+end
+
 function Spell:Cast(Unit)
     if not Unit then
         if self.IsHarmful and DMW.Player.Target then
@@ -34,7 +55,7 @@ function Spell:Cast(Unit)
             return false
         end
     end
-    if self:Known() and self:Usable() and self:IsReady() and ((Unit.Distance <= self.MaxRange and (self.MinRange == 0 or Unit.Distance >= self.MinRange)) or IsSpellInRange(self.SpellName, Unit.Pointer) == 1) then
+    if self:Known() and self:IsReady() and ((Unit.Distance <= self.MaxRange and (self.MinRange == 0 or Unit.Distance >= self.MinRange)) or IsSpellInRange(self.SpellName, Unit.Pointer) == 1) then
         -- if IsAutoRepeatSpell(DMW.Player.Spells.Shoot.SpellName) and self:CD(Rank) < 0.2 then
         --     MoveForwardStart()
         --     MoveForwardStop()
