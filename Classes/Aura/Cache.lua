@@ -84,7 +84,33 @@ function AuraCache.Event(...)
 
                     end
                 end
-
+                if DMW.Player.SpecID == "Assassination" then
+                    if sourceGUID == DMW.Player.GUID and (spellID == 1943 or spellID == 703) then
+                        local destobj = DMW.Tables.Misc.guid2pointer[destGUID]
+                        if spellID == 1943 and DMW.Units[destobj] and DMW.Units[destobj].ExsanguinatedRupture then
+                            DMW.Units[destobj].ExsanguinatedRupture = nil
+                            -- print("exsang nil rupture")
+                        end
+                        if spellID == 703 and DMW.Units[destobj] and DMW.Units[destobj].ExsanguinatedGarrote then
+                            DMW.Units[destobj].ExsanguinatedGarrote = nil
+                            -- print("exsang nil garrote")
+                        end
+                        if event == "SPELL_AURA_APPLIED" or event == "SPELL_AURA_REFRESH" then
+                            local destobj = DMW.Tables.Misc.guid2pointer[destGUID]
+                            local multiplier = 1
+                            if DMW.Player.Talents.Subterfuge and spellID == 703 and (DMW.Player.Buffs.Subterfuge:Exist() or DMW.Player.Buffs.Stealth:Exist() or DMW.Player.Buffs.Vanish:Exist()) then
+                                multiplier = 1.8
+                            elseif DMW.Player.Talents.Nightstalker and (DMW.Player.Buffs.Stealth:Exist() or DMW.Player.Buffs.Vanish:Exist()) then
+                                multiplier = 1.5
+                            end
+                            if spellID == 703 then
+                                DMW.Units[destobj].BleedMultiplierGarrote = multiplier
+                            else
+                                DMW.Units[destobj].BleedMultiplierRupture = multiplier
+                            end
+                        end
+                    end
+                end
         -- DMW.Tables.AuraUpdate[destGUID] = true
         -- if destGUID == DMW.Player.GUID then
         --     DMW.Player.AuraUpdate = true
@@ -99,6 +125,20 @@ function AuraCache.Event(...)
     --     if DMW.Tables.AuraCache[destGUID] and DMW.Tables.AuraCache[destGUID][dispelledName] then
     --         DMW.Tables.AuraCache[destGUID][dispelledName] = nil
     --     end
+
+    --exsang checks
+    elseif DMW.Player.SpecID == "Assassination" then
+        if event == "SPELL_CAST_SUCCESS" and sourceGUID == DMW.Player.GUID and spellID == 200806 then
+            local destobj = DMW.Tables.Misc.guid2pointer[destGUID]
+            if DMW.Player.Debuffs.Rupture:Exist(DMW.Units[destobj]) then
+                DMW.Units[destobj].ExsanguinatedRupture = true
+                -- print("exsang rupture")
+            end
+            if DMW.Player.Debuffs.Garrote:Exist(DMW.Units[destobj]) then
+                DMW.Units[destobj].ExsanguinatedGarrote = true
+                -- print("exsang garrote")
+            end
+        end
     end
 end
 

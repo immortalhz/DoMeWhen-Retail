@@ -55,8 +55,11 @@ end
 function GameObject:IsTrackable() --TODO: enums
     if DMW.Settings.profile.Tracker.Trackable and DMW.Enums.Trackable[self.ObjectID] then
         return true
-    end
-    if DMW.Settings.profile.Tracker.TrackObjects and DMW.Settings.profile.Tracker.TrackObjects ~= "" then
+    elseif DMW.Enums.VisionsPots[self.ObjectID] and DMW.Player.BadPotion and DMW.Player.BadPotion ~= self.ObjectID then
+        return true
+    elseif DMW.Enums.horrificVisionChests[self.ObjectID] then
+        return true
+    elseif DMW.Settings.profile.Tracker.TrackObjects and DMW.Settings.profile.Tracker.TrackObjects ~= "" then
         for k in string.gmatch(DMW.Settings.profile.Tracker.TrackObjects, "([^,]+)") do
             if strmatch(string.lower(self.Name), string.lower(string.trim(k))) then
                 return true

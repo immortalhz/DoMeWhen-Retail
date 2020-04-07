@@ -100,3 +100,63 @@ DMW.Enums.Trackable = {
     [181085] = {Name = "Stratholme Supply Crate", SkillReq = 0},
     [176224] = {Name = "Supply Crate", SkillReq = 0}
 }
+
+DMW.Enums.VisionsPots = {
+    [341337] = true, -- black
+    [341338] = true, -- blue
+    [341339] = true, -- green
+    [341340] = true, -- purple
+    [341341] = true -- red
+}
+
+DMW.Enums.horrificVisionChests = { --br (C)
+        [332704] = true, -- Corrupted Chest
+        [334758] = true, -- Corrupted Chest
+        [334760] = true, -- Corrupted Chest
+        [334761] = true, -- Corrupted Chest
+        [334762] = true, -- Corrupted Chest
+        [334763] = true, -- Corrupted Chest
+        [339327] = true, -- Corrupted Chest
+        [339328] = true, -- Corrupted Chest
+        [339341] = true, -- Black Empire Cache
+        [339342] = true, -- Black Empire Cache
+        [339343] = true, -- Black Empire Cache
+        [342134] = true, -- Black Empire Cache
+        [342135] = true, -- Black Empire Cache
+        [342136] = true, -- Black Empire Cache
+        [342137] = true, -- Black Empire Cache
+        [342203] = true, -- Black Empire Cache
+        [342204] = true, -- Black Empire Cache
+        [342205] = true, -- Black Empire Cache
+        [342206] = true,
+        [341367] = true,
+        [341368] = true,
+        [341369] = true,
+        [341370] = true,
+        [341371] = true,
+        [341372] = true,
+        [341373] = true,
+        [341374] = true,
+        [341375] = true,
+        [341376] = true,-- Black Empire Cache
+        [326974] = true,
+        [325080] = true,
+        [326924] = true,
+        [326755] = true,
+        [327053] = true,
+        [339462] = true,
+        [339410] = true
+    }
+
+
+        -- -- Stormwind
+        -- 161293, -- Neglected Guild Bank
+		-- 157700, -- Agustus Moulaine
+		-- 160404, -- Angry Bear Rug Spirit
+        -- 161324, -- Experimental Buff Mine
+        -- -- Orgrimmar
+        -- 158588, -- Gamon (Pool ol' Gamon)
+		-- 158565, -- Naros
+		-- 161140, -- Bwemba
+		-- 161198 -- Warpweaver Dushar (Need ObjectID of the gate that summons him)
+

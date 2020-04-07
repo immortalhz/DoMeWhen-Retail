@@ -22,7 +22,8 @@ Spells.ROGUE = {
             ToxicBlade                  = {245388},
             Vendetta                    = {79140},
             WoundPoison                 = {8679},
-            Stealth                     = {1784, 115191}
+            Stealth                     = {1784, 115191},
+            Vanish                      = {1856},
         },
         Buffs = {
             Blindside                   = {111240},
@@ -77,10 +78,11 @@ Spells.ROGUE = {
             CrimsonTempest = 23174,
         },
         Traits = {
-            DoubleDose                  = 273007,
-            EchoingBlades               = 287649,
-            SharpenedBlades             = 272911,
-            ShroudedSuffocation         = 278666,
+            DoubleDose                  = 136,
+            EchoingBlades               = 407,
+            -- SharpenedBlades             = 272911,
+            ShroudedSuffocation         = 408,
+            ScentOfBlood                = 406
         }
     },
     --Fury

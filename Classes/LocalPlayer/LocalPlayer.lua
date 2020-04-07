@@ -21,10 +21,8 @@ function LocalPlayer:New(Pointer)
     self.Items = {}
     self.Looting = false
     self.Instance = select(2, IsInInstance())
-    if self.Instance == "party" or self.Instance == "scenario" or self.Instance == "raid" or self.Instance == "pvp" then self.InstanceID = select(8, GetInstanceInfo()) end
-    if self.InstanceID == 2212 or self.InstanceID == 2212 then
 
-    end
+
     self:UpdateVariables()
     -- self:UpdateProfessions()
 
@@ -100,7 +98,8 @@ function LocalPlayer:Update()
     --     end
     -- end
     self.Instance = select(2, IsInInstance())
-    if self.Instance == "party" or self.Instance == "pvp" then self.InstanceMap = GetInstanceInfo() end
+    if self.Instance ~= "none" then self.InstanceID = select(8, GetInstanceInfo()) end
+    -- if self.Instance == "party" or self.Instance == "pvp" then self.InstanceMap = GetInstanceInfo() end
     self.Moving = self:HasMovementFlag(DMW.Enums.MovementFlags.Moving)
     self.PetActive = UnitIsVisible("pet")
     self.InGroup = IsInGroup()
@@ -127,6 +126,29 @@ function LocalPlayer:Update()
     --     self.SwingMH = DMW.Tables.Swing.Units[self.Pointer].SwingMH
     --     self.SwingOH = DMW.Tables.Swing.Units[self.Pointer].SwingOH
     -- end
+    if self.InstanceID == 2212 or self.InstanceID == 2213 then
+        if not self.BadPotion then
+            local shortestRange, badPot
+            for _, GameObject in pairs(DMW.GameObjects) do
+                if GameObject.ObjectID == 341342 or GameObject.ObjectID == 341362 then
+                    print("Found bad note")
+                    for _, Pot in pairs(DMW.GameObjects) do
+                        if DMW.Enums.VisionsPots[Pot.ObjectID] then
+                            local dist = GetDistanceBetweenObjects(GameObject.Pointer, Pot.Pointer)
+
+                            if dist and (not shortestRange or shortestRange > dist) then
+                                shortestRange = dist
+                                badPot = Pot.ObjectID
+                                print("badpot id = "..badPot, "dist = " .. shortestRange)
+                            end
+                        end
+
+                    end
+                end
+            end
+            self.BadPotion = badPot
+        end
+    end
 end
 
 function LocalPlayer:UpdatePower(arg, PowerType)
@@ -150,7 +172,7 @@ function LocalPlayer:UpdatePower(arg, PowerType)
         -- if PowerType == "SOUL_SHARDS" or PowerType == "MANA" then
         local typeNum = DMW.Enums.PowerTypesToCheck[PowerType][1]
         local powerName = DMW.Enums.PowerTypesToCheck[PowerType][2]
-        if not typeNum then return end
+        if not self[powerName] then return end
         if arg == "Max" then
             self[powerName .. "Max"] = UnitPowerMax(self.Pointer, typeNum)
         elseif arg == "Current" then

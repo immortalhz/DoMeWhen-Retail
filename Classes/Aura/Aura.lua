@@ -259,3 +259,19 @@ function Debuff:Lowest(Table, TTD)
     end
     return LowestUnit
 end
+
+function Debuff:Multiplier(Unit)
+    if self.SpellID == 703 then
+        return Unit.BleedMultiplierGarrote or 1
+    elseif self.SpellID == 1943 then
+        return Unit.BleedMultiplierRupture or 1
+    end
+end
+
+function Debuff:Exsanguinated(Unit)
+    if self.SpellID == 703 then
+        return Unit.ExsanguinatedGarrote or false
+    elseif self.SpellID == 1943 then
+        return Unit.ExsanguinatedRupture or false
+    end
+end

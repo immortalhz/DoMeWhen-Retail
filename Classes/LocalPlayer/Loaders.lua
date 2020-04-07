@@ -208,18 +208,18 @@ function LocalPlayer:GetItems()
     end
 end
 
-function LocalPlayer:UpdateProfessions()
-    table.wipe(self.Professions)
-    for i = 1, GetNumSkillLines() do
-        local Name, _, _, Rank = GetSkillLineInfo(i)
-        if Name == "Fishing" then
-            self.Professions.Fishing = Rank
-        elseif Name == "Mining" then
-            self.Professions.Mining = Rank
-        elseif Name == "Herbalism" then
-            self.Professions.Herbalism = Rank
-        elseif Name == "Skinning" then
-            self.Professions.Skinning = Rank
-        end
-    end
-end
+-- function LocalPlayer:UpdateProfessions()
+--     table.wipe(self.Professions)
+--     for i = 1, GetNumSkillLines() do
+--         local Name, _, _, Rank = GetSkillLineInfo(i)
+--         if Name == "Fishing" then
+--             self.Professions.Fishing = Rank
+--         elseif Name == "Mining" then
+--             self.Professions.Mining = Rank
+--         elseif Name == "Herbalism" then
+--             self.Professions.Herbalism = Rank
+--         elseif Name == "Skinning" then
+--             self.Professions.Skinning = Rank
+--         end
+--     end
+-- end

@@ -120,7 +120,8 @@ DMW.Enums.ClassPowerTypes = {
     },
     ROGUE = {
         "Energy",
-        "ComboPoints"
+        "ComboPoints",
+        -- "Alternate"
     },
     DEMONHUNTER = {
         "Fury"

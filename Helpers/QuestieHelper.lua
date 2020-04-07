@@ -3,10 +3,6 @@ local DMW = DMW
 local AlertTimer = GetTime()
 DMW.Helpers.QuestieHelper = {}
 DMW.Cache.QuestieCache = {}
-local BadPotion
-local VisionsPotionsTable = {
-
-}
 
 function DMW.Helpers.DrawLineDMWC(sx, sy, sz, ex, ey, ez)
     local function WorldToScreen(wX, wY, wZ)
@@ -198,7 +194,6 @@ function DMW.Helpers.QuestieHelper.isQuestObject(objectID, Pointer) --Ty Ssatene
         objectID == 325662 or objectID == 325659 or objectID == 325660 or objectID == 325661 or objectID == 325663 or objectID == 325664 or objectID == 325665 or objectID == 325666 or objectID == 325667 or objectID == 325668 or -- mechagon chests
 		objectID == 151166 -- algan units
 		or objectID == 335709 or objectID == 334237 or objectID == 334228 or objectID == 334229 or objectID == 334232-- Uldum chest
-		or (BadPotion ~= nil and objectID ~= BadPotion and VisionsPotionsTable[objectID])
     then return true end
     local glow = ObjectDescriptor(Pointer,GetOffset("CGObjectData__DynamicFlags"),"uint")
     if glow and (bit.band(glow,0x4)~=0 or bit.band(glow,0x20)~=0) then

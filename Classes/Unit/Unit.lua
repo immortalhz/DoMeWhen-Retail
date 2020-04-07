@@ -193,7 +193,7 @@ function Unit:IsBoss()
 end
 
 function Unit:HasThreat()
-    if DMW.Enums.Threat[self.ObjectID] then
+    if DMW.Enums.Threat[self.ObjectID] or DMW.Enums.SkipChecks[self.ObjectID] then
         return true
     elseif DMW.Enums.EnemyBlacklist[self.ObjectID] then
         return false

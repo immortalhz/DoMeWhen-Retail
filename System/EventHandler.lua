@@ -81,7 +81,7 @@ local function EventHandler(self, event, ...)
         elseif event == "UNIT_MAXPOWER" then
             local _, powerType = ...
             -- print(event, powerType)
-            if DMW.Player and DMW.Player.UpdatePower then DMW.Player:UpdatePower("Max", powerType) end
+            if DMW.Player and DMW.Player.UpdatePower and powerType ~= 10 then DMW.Player:UpdatePower("Max", powerType) end
             -- print(event,...)
             -- local a, b = ...
             -- -- print(...)
@@ -107,12 +107,16 @@ local function EventHandler(self, event, ...)
             -- end
             -- DMW.Helpers.HealComm:Update(unit)
         -- elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
-        --     if DMW.Player.Class == "SHAMAN" then
+        --     -- if DMW.Player.Class == "SHAMAN" then
+        --     --     local _, _, spellID = ...
+        --     --     -- WriteFile("checkychecky.txt", event .. " , "..spellID.. " , " .. DMW.Time .. " , " .. UnitHealth(DMW.Player.Target.Pointer).."\n", true)
+        --     --     if TotemList[spellID] ~= nil then
+        --     --         DMW.Player:NewTotem(spellID)
+        --     --     end
+        --     -- end
+        --     if DMW.Player.Class == "Rogue" and DMW.Player.SpecID == "Assassination" then
         --         local _, _, spellID = ...
-        --         -- WriteFile("checkychecky.txt", event .. " , "..spellID.. " , " .. DMW.Time .. " , " .. UnitHealth(DMW.Player.Target.Pointer).."\n", true)
-        --         if TotemList[spellID] ~= nil then
-        --             DMW.Player:NewTotem(spellID)
-        --         end
+        --         if spellID =
         --     end
             -- DMW.Helpers.Swing.ResetSpell(spellID)
         elseif event == "PLAYER_TOTEM_UPDATE" then

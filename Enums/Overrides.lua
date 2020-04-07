@@ -54,13 +54,68 @@ DMW.Enums.LoS = {
 }
 
 DMW.Enums.Threat = {
-
+	[98081] = true, --"Bellowing Idol", -- Neltharian's Lair
+    [100818] = true, --"Bellowing Idol",
+    [133492] = true, --"Corruption Corpuscle",
+    [135016] = true, --"Plague Amalgam",
+    [131009] = true, --"Spirit of Gold", --Atal
+    [125828] = true, --"Soulspawn", --Atal
+    [127315] = true, --"Reanimation Totem", -- Atal
+    [134691] = true, --"Static Charged Dervish", --Temple
+    [147218] = true, --"Spirit of Gold", --Opulence
+    [148436] = true, --"Barrier", --Jadefire Masters
+    [148415] = true, --"Barrier", --Jadefire Masters
+    [147377] = true, --"Barrier", --Jadefire Masters
+    [147376] = true, --"Barrier", --Jadefire Masters
+    [147374] = true, --"Barrier", --Jadefire Masters
+    [147375] = true, --"Barrier", --Jadefire Masters
+    [146756] = true, --"Energized Storm", --Jadefire Masters
+    [146107] = true, --"Living Bomb", -- Jadefire Masters
+    [148522] = true, --"Ice Block", --Jaina
+    [148907] = true, --"Prismatic Image", --Jaina
+    [148716] = true, --"Risen Soul", --M+ Reaping
+    [148893] = true, --"Tormented Soul", --M+ Reaping
+    [148894] = true, --"Lost Soul", --M+ Reaping
+    [120651] = true, --"Explosive", -- Explosive
+    [137051] = true, --"Ancient Mindbender", -- Shrine of Storms - Lord Stormsong
+    [136330] = true, --"Soul Thorns", -- Soul Thorns Waycrest Manor
+    [133361] = true, --"Wasting Servant", -- Waycrest Manor
+    [134388] = true, --"A Knot of Snakes", -- A Knot of Snakes ToS
+    [153064] = true, --"Overzealous Hulk", -- Overzealous Hulk
+    [154240] = true, --"Azshara's Devoted", -- Azshara's Devoted
+    [155354] = true, --"Azshara's Indomitable", -- Azshara's Indomitable
+    [153194] = true, --"Briny Bubble", -- Lady Ashvane Fight
+    [150773] = true, --"Shimmerskin Pufferfish", -- Shimmerskin Pufferfish
+    [154174] = true, --"Horrific Summoner", -- Za'qul
+    [154175] = true, --"Horrific Summoner", -- Za'qul
+    [151581] = true, --"Horrific Vision", -- Za'qul
+    [151900] = true, --"Horrific Summoner", -- Za'qul
+    [155278] = true, --"Shimmerskin Pufferfish", --EP Trash
+	[158327] = true, --"Crackling Shard", --Ny'alotha - Wrathion
+    [158781] = true, --"Shredded Psyche", -- Ny'alotha - Skitra
+    [158343] = true, --"Organ of Corruption", -- Ny'alotha - Il'gynoth
+    [157612] = true, --"Eye of Drest'agath", -- Ny'alotha - Drest'agath
+    [157613] = true, --"Maw of Drest'agath", -- Ny'alotha - Drest'agath
+    [157461] = true, --"Mycelial Cyst", -- Ny'alotha - Carapace
+    [157475] = true, --"Synthesis Growth", -- Ny'alotha - Carapace
+    [158376] = true, --"Psychus", -- Ny'alotha - N'zoth
+    [158122] = true, --"Mind's Eye", -- Ny'alotha - N'zoth
+    [159578] = true, --"Exposed Synapse", -- Ny'alotha - N'zoth
+    [162331] = true, --"Corrupted Neuron", -- Ny'alotha - N'zoth
+    [158367] = true, --"Basher Tentacle", -- Ny'alotha - N'zoth
+    [158375] = true, --"Corrupter Tentacle", -- Ny'alotha - N'zoth
+    [160249] = true, --"Spike Tentacle", -- Ny'alotha - N'zoth
+    [162933] = true, --"Thought Harvester", -- Ny'alotha - N'zoth
+    [161895] = true, --"The Thing from beyond", -- corruption thingy
 }
 
 DMW.Enums.EnemyBlacklist = {
-
+	[158315] = true -- eye in horrific visionssw
 }
 
+DMW.Enums.SkipChecks = {
+	[158478] = true, -- shits in horrific visions on the ground
+}
 DMW.Enums.DoNotTouchList = {
 
 }
