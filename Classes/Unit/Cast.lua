@@ -8,6 +8,7 @@ function Unit:GetCastingInfo()
     end
 end
 
+
 -- Get the Casting Infos from the Cache.
 function Unit:CastingInfo(Index)
     if not self.Casting then
@@ -38,12 +39,12 @@ function Unit:CastName() return self:IsCasting() and self:CastingInfo(1) or "" e
 function Unit:CastID() return self:IsCasting() and self:CastingInfo(10) or -1 end
 
 --- Get all the Channeling Infos from an unit and put it into the Cache.
-function Unit:GetChannelingInfo() self.Channeling = {UnitChannelInfo(self.Pointer)} end
+function Unit:GetChannelingInfo() self.Channeling = {UnitCastingInfo(self.Pointer)} end
 
 -- Get the Channeling Infos from the Cache.
 function Unit:ChannelingInfo(Index)
     if self.Channeling then self:GetChannelingInfo() end
-    if Index then
+    if Index and self.Channeling[Index] then
         return self.Channeling[Index]
     else
         return unpack(self.Channeling)
@@ -109,3 +110,15 @@ function Unit:ClearCastingInfo()
     self.Channelling = nil
     self.DrawCleaveInfo = nil
 end
+
+function Unit:CheckCastingInfo()
+    if self.Casting and UnitCastingInfo(self.Pointer) == nil then
+        self:ClearCastingInfo()
+        return true
+    end
+    -- if self.Casting then
+    --     -- name, nameSubtext, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID
+    --     self.Casting = {UnitCastingInfo(self.Pointer)}
+    -- end
+end
+

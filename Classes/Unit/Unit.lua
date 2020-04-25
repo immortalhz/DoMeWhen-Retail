@@ -160,7 +160,7 @@ function Unit:LineOfSight(OtherUnit)
     -- if DMW.Enums.LoS[self.ObjectID] then
     --     return true
     -- end
-    if self.NoLoS then
+    if self.NoLoS or DMW.Enums.SkipChecks[self.ObjectID] then
         return true
     end
     OtherUnit = OtherUnit or DMW.Player
@@ -249,6 +249,7 @@ function Unit:HardCC()
     local Settings = DMW.Settings.profile
     local StartTime, EndTime, SpellID, Type
     local name, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID = self:UnitCastingInfo()
+
     if name then
         StartTime = startTime / 1000
         SpellID = spellID
@@ -422,14 +423,21 @@ function Unit:IsQuest()
     return self.QuestCached
 end
 
-function Unit:CastingInfo()
-    -- print(LibCC:UnitCastingInfo(self.Pointer))
-    return UnitCastingInfo(self.Pointer)
-end
+-- function Unit:IsQuest()
+--     if self.ObjectID and [self.ObjectID]
 
-function Unit:ChannelInfo()
-    return UnitChannelInfo(self.Pointer)
-end
+--     end
+--     return self.QuestCached
+-- end
+
+-- function Unit:CastingInfo()
+--     -- print(LibCC:UnitCastingInfo(self.Pointer))
+--     return UnitCastingInfo(self.Pointer)
+-- end
+
+-- function Unit:ChannelInfo()
+--     return UnitChannelInfo(self.Pointer)
+-- end
 
 function Unit:IsTrackable()
     if DMW.Settings.profile.Tracker.TrackUnits ~= nil and DMW.Settings.profile.Tracker.TrackUnits ~= "" and not self.Player then

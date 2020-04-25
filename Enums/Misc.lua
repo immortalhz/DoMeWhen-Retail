@@ -76,7 +76,7 @@ DMW.Enums.ClassSpec = {
     [104] = { "Druid", "Guardian" },
     [105] = { "Druid", "Restoration" },
     -- Hunter
-    [253] = { "Hunter", "Beast Mastery" },
+    [253] = { "Hunter", "BeastMastery" },
     [254] = { "Hunter", "Marksmanship" },
     [255] = { "Hunter", "Survival" },
     -- Mage

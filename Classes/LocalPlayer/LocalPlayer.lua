@@ -62,7 +62,9 @@ function LocalPlayer:Update()
     self.Health = UnitHealth(self.Pointer)
     self.HealthMax = UnitHealthMax(self.Pointer)
     self.HP = self.Health / self.HealthMax * 100
-    self.Casting = UnitCastingInfo(self.Pointer) or UnitChannelInfo(self.Pointer)
+    if not self.Casting or not self.PauseTime or DMW.Time >= self.PauseTime then
+        self.Casting = UnitCastingInfo(self.Pointer) or UnitChannelInfo(self.Pointer)
+    end
     -- print(self.Casti)
 
     -- self.CastingID, _, self.CastingDestination = UnitCastID("player")

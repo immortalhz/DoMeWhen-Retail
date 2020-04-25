@@ -144,7 +144,6 @@ local function getRectUnit(length,width, Unit)
     local facing = Unit:RawFacing()
     local x,y,z = Unit.PosX, Unit.PosY, Unit.PosZ
     local halfWidth = width/2
-
     -- Near Left
     local nlX, nlY, nlZ = GetPositionFromPosition(x, y, z, halfWidth, facing + math.rad(90), 0)
     -- Near Right
@@ -158,7 +157,8 @@ local function getRectUnit(length,width, Unit)
 end
 
 function Unit:DrawCleave()
-    if self.Dead or not self:CastingInfo() then return end
+    -- local spellID =
+    if self.Dead or UnitCastingInfo(self.Pointer) == nil then return true end
     local drawType, size1, size2 = self.DrawCleaveInfo[1], self.DrawCleaveInfo[2],self.DrawCleaveInfo[3]
     local rotation = self:RawFacing()
     if drawType == "rect" then
@@ -183,14 +183,17 @@ end
 -- end
 
 
-local function CacheCasts(_, event, _, source, _, sourceFlag, _, destination, _, _, _, spell)
+local function CacheCasts(_, event, _, source, sourceName, sourceFlag, _, destination, _, _, _, spell)
     -- if source == DMW.Player.GUID then
     --     print(event, spell, sourceFlag)
     -- end
+    -- print(sourceName, event)
     if event == "SPELL_CAST_START" then
+        -- print(sourceName, event)
         local sourceobj = DMW.Tables.Misc.guid2pointer[source]
         local Unit = DMW.Units[sourceobj]
         if Unit then
+            -- print(Unit.Name)
             Unit:GetCastingInfo()
             local toDraw = DMW.Tables.Dodgie.SpellsToDraw[spell]
             if toDraw ~= nil then
@@ -201,8 +204,8 @@ local function CacheCasts(_, event, _, source, _, sourceFlag, _, destination, _,
     elseif event == "SPELL_CAST_SUCCESS" or event == "SPELL_CAST_FAILED" or event == "UNIT_DIED" or event == "SPELL_INTERRUPT" or event == "PARTY_KILL" then
         local sourceobj = DMW.Tables.Misc.guid2pointer[source]
         local Unit = DMW.Units[sourceobj]
-        if Unit then
-            Unit:ClearCastingInfo()
+        if Unit and Unit.DrawCleaveInfo then
+            Unit:CheckCastingInfo()
 
         end
     -- elseif event == "SPELL_CAST_SUCCESS" or event == "SPELL_CAST_FAILED" then
@@ -219,11 +222,10 @@ end
 
 
 function DMW.Tables.Dodgie.DrawStuff()
-    for k,v in pairs(DMW.Tables.Dodgie.DrawUnits) do
+    for k,v in ipairs(DMW.Tables.Dodgie.DrawUnits) do
         -- print(v)
         if v.DrawCleaveInfo then
-
-            v:DrawCleave()
+            if v:DrawCleave() then tremove(DMW.Tables.Dodgie.DrawUnits, k); end
         end
     end
 end
@@ -250,6 +252,7 @@ DMW.Helpers.Dodgie.Init = function()
         DodgieFrame:SetScript("OnEvent", function(_, event, ...)
             if event == "COMBAT_LOG_EVENT_UNFILTERED" then
                 CacheCasts(CombatLogGetCurrentEventInfo())
+                -- print(CombatLogGetCurrentEventInfo())
             end
         end)
         -- DodgieFrame:SetScript("OnUpdate", function(self, elapsed)

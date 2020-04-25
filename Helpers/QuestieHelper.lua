@@ -93,6 +93,18 @@ end
 local questTooltipScanQuest = CreateFrame ("GameTooltip", "QuestPlateTooltipScanQuest", nil, "GameTooltipTemplate")
 local ScannedQuestTextCache = {}
 
+local visionsNPCs = {
+		[161293] = true, -- Neglected Guild Bank
+		[157700] = true, -- Agustus Moulaine
+		[160404] = true, -- Angry Bear Rug Spirit
+        [161324] = true, -- Experimental Buff Mine
+        -- Orgrimmar
+        [158588] = true, -- Gamon (Pool ol' Gamon)
+		[158565] = true, -- Naros
+		[161140] = true, -- Bwemba
+		[161198] = true -- Warpweaver Dushar (Need ObjectID of the gate that summons him)
+}
+
 function DMW.Helpers.QuestieHelper.isQuestieUnit(Pointer, GUID)
 	-- local guid = ObjectGUID(unit)
 	--local myName = UnitName("player")
@@ -139,6 +151,8 @@ function DMW.Helpers.QuestieHelper.isQuestieUnit(Pointer, GUID)
 		end
 	end
 	if isQuestUnit and atLeastOneQuestUnfinished and (not UnitIsDeadOrGhost(Pointer) or UnitCanBeLooted(Pointer) or UnitIsFriend("player", Pointer)) then
+		return true
+	elseif DMW.Units[Pointer].ObjectID and visionsNPCs[DMW.Units[Pointer].ObjectID] then
 		return true
 	else
 		return false

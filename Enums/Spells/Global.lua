@@ -26,35 +26,35 @@ DMW.Enums.Spells = {
 
         },
         Essences = {
-               [25]={"aegisOfTheDeep"                 ,298168},
-               [7]={"animaOfDeath"                   ,294926},
-               [2]={"azerothsUndyingGift"            ,298081},
-               [23]={"bloodOfTheEnemy"                ,297108},
+               [25]={"AegisOfTheDeep"                 ,298168},
+               [7]={"AnimaOfDeath"                   ,294926},
+               [2]={"AzerothsUndyingGift"            ,298081},
+               [23]={"BloodOfTheEnemy"                ,297108},
                [12]={"ConcentratedFlame"              ,295373},
-               [14]={"condensedLifeForce"             ,299357},
-               [13]={"empoweredNullBarrier"           ,295746},
-               [5]={"focusedAzeriteBeam"             ,295258},
-               [14]={"guardianOfAzeroth"              ,299355},
+               [14]={"CondensedLifeForce"             ,299357},
+               [13]={"EmpoweredNullBarrier"           ,295746},
+               [5]={"FocusedAzeriteBeam"             ,295258},
+               [14]={"GuardianOfAzeroth"              ,299355},
             --    [1]={"guardianShell"                  ,296036},--added in 8.3
             --    [1]={"heartEssence"                   ,296208},
             --    [1]={"lifeBindersInvocation"          ,293032},
-               [27]={"memoryOfLucidDreams"            ,298357},
+               [27]={"MemoryOfLucidDreams"            ,298357},
             --    [1]={"overchargeMana"                 ,296072},
-               [6]={"purifyingBlast"                 ,299345},
+               [6]={"PurifyingBlast"                 ,299345},
             --    [1]={"reapingFlames"                  ,310690},-- Added in 8.3
             --    [1]={"refreshment"                    ,296197},
             --    [1]={"replicaOfKnowledge"             ,312725},--added in 8.3
-               [15]={"rippleInSpace"                  ,302731},
-               [24]={"spiritOfPreservation"           ,297375},-- added in 8.3
+               [15]={"RippleInSpace"                  ,302731},
+               [24]={"SpiritOfPreservation"           ,297375},-- added in 8.3
             --    [1]={"standstill"                     ,299882},
             [35] = {"BreathOfDying", 11},
             [36] = {"SparkOfInspiration", 11},
-               [3]={"suppressingPulse"               ,300009},
-               [28]={"theUnboundForce"                ,299376},
-               [22]={"visionOfPerfection"             ,299370},
-               [21]={"vitalityConduit"                ,299958},
-               [32]={"conflict"                       ,303823},
-               [4]={"worldveinResonance"             ,295186}
+               [3]={"SuppressingPulse"               ,300009},
+               [28]={"TheUnboundForce"                ,299376},
+               [22]={"VisionOfPerfection"             ,299370},
+               [21]={"VitalityConduit"                ,299958},
+               [32]={"Conflict"                       ,303823},
+               [4]={"WorldveinResonance"             ,295186}
         }
     }
 }

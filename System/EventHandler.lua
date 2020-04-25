@@ -107,16 +107,21 @@ local function EventHandler(self, event, ...)
             -- end
             -- DMW.Helpers.HealComm:Update(unit)
         -- elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
-        --     -- if DMW.Player.Class == "SHAMAN" then
-        --     --     local _, _, spellID = ...
-        --     --     -- WriteFile("checkychecky.txt", event .. " , "..spellID.. " , " .. DMW.Time .. " , " .. UnitHealth(DMW.Player.Target.Pointer).."\n", true)
-        --     --     if TotemList[spellID] ~= nil then
-        --     --         DMW.Player:NewTotem(spellID)
-        --     --     end
-        --     -- end
-        --     if DMW.Player.Class == "Rogue" and DMW.Player.SpecID == "Assassination" then
+        -- --     -- if DMW.Player.Class == "SHAMAN" then
+        -- --     --     local _, _, spellID = ...
+        -- --     --     -- WriteFile("checkychecky.txt", event .. " , "..spellID.. " , " .. DMW.Time .. " , " .. UnitHealth(DMW.Player.Target.Pointer).."\n", true)
+        -- --     --     if TotemList[spellID] ~= nil then
+        -- --     --         DMW.Player:NewTotem(spellID)
+        -- --     --     end
+        -- --     -- end
+        --     if DMW.Player.Class == "WARRIOR" and DMW.Player.SpecID == "Fury" then
         --         local _, _, spellID = ...
-        --         if spellID =
+        --         -- print(...)
+        --         if spellID == 126664 or spellID == 100 then
+        --             DMW.Player.LastCast = "Charge"
+        --         else
+        --             DMW.Player.LastCast = SpellID
+        --         end
         --     end
             -- DMW.Helpers.Swing.ResetSpell(spellID)
         elseif event == "PLAYER_TOTEM_UPDATE" then
