@@ -45,6 +45,8 @@ local defaults = {
             AutoLoot = false,
             AutoSkinning = false,
             AutoGather = false,
+            ShowVisuals = false,
+            ShowIDs = false,
         },
         Tracker = {
             Herbs = false,
@@ -113,7 +115,7 @@ local function MigrateSettings()
     end
     for k,v in pairs(DMW.Settings.profile.Helpers) do
         local moveNew = true
-        if k == "AutoGather" or k == "AutoLoot" or k == "AutoSkinning" then
+        if k == "AutoGather" or k == "AutoLoot" or k == "AutoSkinning" or k == "ShowVisuals" or k == "ShowIDs" then
             moveNew = false
         end
         if moveNew then

@@ -97,6 +97,7 @@ local function CheckPress(self, Key)
     end
 end
 
+local CursorCastFix = false
 function Queue.Run()
     if not QueueFrame then
         QueueFrame = CreateFrame("Frame")
@@ -115,11 +116,13 @@ function Queue.Run()
         Queue.Spell = false
         Queue.Target = false
         Queue.Item = false
+        CursorCastFix = false
     end
     if Queue.Spell and DMW.Player.Combat and not DMW.Player.Casting then
         if Queue.Type == 2 then
             if Queue.Target and IsSpellInRange(Queue.Spell.SpellName, Queue.Target.Pointer) ~= nil then
                 if Queue.Spell:Cast(Queue.Target) then
+                    print(Queue.Target.Name, Queue.Spell.SpellName)
                     return true
                 end
             else
@@ -136,8 +139,17 @@ function Queue.Run()
                 return true
             end
         elseif Queue.Type == 5 then
+
             if Queue.Spell:IsReady() then
+                if CursorCastFix and not IsAoEPending() then
+                    Queue.Spell = false
+                    Queue.Target = false
+                    Queue.Item = false
+                    return true
+                end
                 CastSpellByName(Queue.Spell.SpellName)
+                CursorCastFix = true
+
                 return true
             end
         end

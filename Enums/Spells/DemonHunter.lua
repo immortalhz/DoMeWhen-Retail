@@ -14,7 +14,8 @@ Spells.DEMONHUNTER = {
             Eyebeam                     = {198013},
             FelRush                     = {195072},
             FelBlade                    = {232893},
-            ImmolationAura  = {258920},
+            FelBarrage                  = {258925},
+            ImmolationAura              = {258920},
             Metamorphosis               = {191427},
             Netherwalk                  = {196555},
             Torment                     = {281854},
@@ -34,7 +35,7 @@ Spells.DEMONHUNTER = {
             FirstBlood = 21867,
             BlindFury = 21854,
             InsatiableHunger = 21857,
-            FelBarrage = 21863,
+            FelBarrage = 21862,
             SoulRending = 21863,
             DesperateInstincts = 21864,
             Netherwalk = 21865,
@@ -44,14 +45,15 @@ Spells.DEMONHUNTER = {
             MasterOfTheGlaive = 21870,
             Momentum = 21901,
             Demonic = 21900,
+            TrailOfRuin = 22909
 
         },
         Traits = {
-            ChaoticTransformation       = 288754,
-            EyesOfRage                  = 278500,
-            FuriousGaze                 = 273231,
-            RevolvingBlades             = 279581,
-            UnboundChaos                = 275144
+            ChaoticTransformation       = 220,
+            EyesOfRage                  = 353,
+            FuriousGaze                 = 159,
+            RevolvingBlades             = 126,
+            -- UnboundChaos                = 275144
 		}
     },
     Vengeance = {

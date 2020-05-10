@@ -35,6 +35,7 @@ local function AddSpell(SpellID)
             local Temp = {}
             Temp.SpellName = v.SpellName
             Temp.CastTime = DMW.Time
+            Temp.SpellID = v.SpellID
             tinsert(DMW.Player.LastCast, 1, Temp)
             if #DMW.Player.LastCast == 10 then
                 DMW.Player.LastCast[10] = nil

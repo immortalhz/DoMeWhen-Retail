@@ -1,12 +1,12 @@
 local DMW = DMW
-DMW.Enemies, DMW.Attackable, DMW.Units, DMW.Friends, DMW.GameObjects, DMW.Corpses = {}, {}, {}, {}, {}, {}
+DMW.Enemies, DMW.Attackable, DMW.Units, DMW.Friends, DMW.GameObjects, DMW.Corpses, DMW.AreaTriggers = {}, {}, {}, {}, {}, {}, {}
 DMW.Friends.Units = {}
 DMW.Friends.Tanks = {}
 DMW.Friends.Party = {}
 DMW.Friends.Corpses = {}
 -- local DurationLib = LibStub("LibClassicDurationsDMW")
-local Enemies, Attackable, Units, Friends, FriendCorpses, GameObjects, Corpses, Party = DMW.Enemies, DMW.Attackable, DMW.Units, DMW.Friends.Units, DMW.Friends.Corpses, DMW.GameObjects, DMW.Corpses, DMW.Friends.Party
-local Unit, LocalPlayer, GameObject = DMW.Classes.Unit, DMW.Classes.LocalPlayer, DMW.Classes.GameObject
+local Enemies, Attackable, Units, Friends, FriendCorpses, GameObjects, AreaTriggers, Corpses, Party = DMW.Enemies, DMW.Attackable, DMW.Units, DMW.Friends.Units, DMW.Friends.Corpses, DMW.GameObjects, DMW.AreaTriggers, DMW.Corpses, DMW.Friends.Party
+local Unit, LocalPlayer, GameObject, AreaTrigger = DMW.Classes.Unit, DMW.Classes.LocalPlayer, DMW.Classes.GameObject, DMW.Classes.AreaTrigger
 
 function DMW.Remove(Pointer)
     local GUID
@@ -28,6 +28,9 @@ function DMW.Remove(Pointer)
     end
     if Corpses[Pointer] ~= nil then
         Corpses[Pointer] = nil
+    end
+    if AreaTriggers[Pointer] ~= nil then
+        AreaTriggers[Pointer] = nil
     end
     if DMW.Tables.AuraUpdate[Pointer] then
         DMW.Tables.AuraUpdate[Pointer] = nil
@@ -146,6 +149,14 @@ local function UpdateGameObjects()
     end
 end
 
+local function UpdateAreaTriggers()
+    for _, Object in pairs(AreaTriggers) do
+        if not Object.NextUpdate or Object.NextUpdate < DMW.Time then
+            Object:Update()
+        end
+    end
+end
+
 local function UpdateCorpses()
     for _, Object in pairs(Corpses) do
         if not Object.NextUpdate or Object.NextUpdate < DMW.Time then
@@ -171,6 +182,8 @@ function DMW.UpdateOM()
             elseif ObjectRawType(v) == 10 and not Corpses[v] then
                 Corpses[v] = GameObject(v)
                 -- print(ObjectDynamicFlags(v))
+            elseif ObjectIsAreaTrigger(v) and not AreaTriggers[v] then
+                AreaTriggers[v] = AreaTrigger(v)
             else
                 if ObjectRawType(v) ~= 1 then
                     -- print(ObjectName(v).. "   "..ObjectRawType(v))
@@ -182,4 +195,5 @@ function DMW.UpdateOM()
     UpdateUnits()
     UpdateGameObjects()
     UpdateCorpses()
+    UpdateAreaTriggers()
 end

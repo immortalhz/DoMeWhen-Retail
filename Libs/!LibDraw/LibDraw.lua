@@ -212,8 +212,16 @@ function LibDraw.Arc(x, y, z, size, arc, rotation)
 	local half_arc = arc * 0.5
 	local ss = (arc/half_arc)
 	local as, ae = -half_arc, half_arc
+	local px, py = WorldToScreen(x, y, z)
 	for v = as, ae, ss do
 		nx, ny = WorldToScreen( (x+cos(rotation+rad(v))*size), (y+sin(rotation+rad(v))*size), z )
+		if (nx == nil or ny == nil) and (px and py) then
+			local i = 1
+			while (nx == nil or ny == nil) and i < 50 do
+				nx, ny = WorldToScreen(GetPositionBetweenPositions((x+cos(rotation+rad(v))*size), (y+sin(rotation+rad(v))*size), z, x, y, z, i))
+				i = i + 1
+			end
+		end
 		if lx and ly then
 			LibDraw.Draw2DLine(lx, ly, nx, ny)
 		else
@@ -221,7 +229,6 @@ function LibDraw.Arc(x, y, z, size, arc, rotation)
 		end
 		lx, ly = nx, ny
 	end
-	local px, py = WorldToScreen(x, y, z)
 	LibDraw.Draw2DLine(px, py, lx, ly)
 	LibDraw.Draw2DLine(px, py, fx, fy)
 end

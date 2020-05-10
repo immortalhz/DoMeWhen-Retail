@@ -56,15 +56,38 @@ function LocalPlayer:UpdateVariables()
     DMW.Helpers.Queue.GetBindings()
 end
 
+function LocalPlayer:PlayerCastingCheck()
+    -- local name, text, texture, startTimeMS, endTimeMS, isTradeSkill, castID, notInterruptible, spellId = UnitCastingInfo(DMW.Player.Pointer)
+    -- if spellId then
+    --     return spellId
+    -- else
+    --     local name, text, texture, startTimeMS, endTimeMS, isTradeSkill, notInterruptible, spellId = UnitChannelInfo(DMW.Player.Pointer)
+    --     if spellId then
+    --         return spellId
+    --     end
+    -- end
+    local cast, channel, castTarget, channelTarget = UnitCastID(self.Pointer)
+    -- print(UnitCastID("player"))
+    if cast ~= 0 then
+        -- if castTarget then
+        --     self.
+        return cast
+    elseif channel ~= 0 then
+        return channel
+    end
+    return nil
+end
+
 function LocalPlayer:Update()
     self.PosX, self.PosY, self.PosZ = ObjectPosition(self.Pointer)
     -- DMW.Functions.AuraCache.Refresh(self.Pointer, self.GUID)
     self.Health = UnitHealth(self.Pointer)
     self.HealthMax = UnitHealthMax(self.Pointer)
     self.HP = self.Health / self.HealthMax * 100
-    if not self.Casting or not self.PauseTime or DMW.Time >= self.PauseTime then
-        self.Casting = UnitCastingInfo(self.Pointer) or UnitChannelInfo(self.Pointer)
-    end
+    self.Casting = self:PlayerCastingCheck()
+    -- if self.Casting ~= nil then
+    --     print(self.Casting)
+    -- end
     -- print(self.Casti)
 
     -- self.CastingID, _, self.CastingDestination = UnitCastID("player")
@@ -137,11 +160,10 @@ function LocalPlayer:Update()
                     for _, Pot in pairs(DMW.GameObjects) do
                         if DMW.Enums.VisionsPots[Pot.ObjectID] then
                             local dist = GetDistanceBetweenObjects(GameObject.Pointer, Pot.Pointer)
-
                             if dist and (not shortestRange or shortestRange > dist) then
                                 shortestRange = dist
                                 badPot = Pot.ObjectID
-                                print("badpot id = "..badPot, "dist = " .. shortestRange)
+                                print("badpot = ".. Pot.Name, "dist = " .. shortestRange)
                             end
                         end
 
@@ -505,6 +527,10 @@ function LocalPlayer:EssenceMajor(Name)
         end
     end
     return false
+end
+
+function LocalPlayer:InterruptsMode()
+    return DMW.Settings.profile.HUD.Interrupts
 end
 
 

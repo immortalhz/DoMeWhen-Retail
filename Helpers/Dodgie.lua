@@ -37,30 +37,31 @@ DMW.Tables.Dodgie.SpellsToDraw = {
     [268230] = {"cone", 45, 5},-- SoB thrash cleave
     [256709] = {"cone", 45, 5},-- >.>
     [257036] = {"cone", 45, 5},-- <.<
-    [270003] = {"cone", 45, 5},-- kr robots aoe
+    [270003] = {"cone", 65, 25},-- kr robots aoe
     [268391] = {"cone", 45, 5},-- SoB cultist aoe stun
-    [264574] = {"rect", 45, 2.5},-- ToS power shot
+    [264574] = {"rect", 30, 2.5},-- ToS power shot
     [263309] = {"cone", 45, 10},-- ToS 1st boss Cyclone Strike
     [263573] = {"cone", 45, 5},--Tos 1st boss stuff
     [263912] = {"cone", 45, 5},--TOS 2nd boss green poo
     [255741] = {"cone", 45, 8},--TOS rider melee
     [273995] = {"cone", 360, 10},--TOS Pyrrhic Blast
     [272657] = {"cone", 60, 20},-- tos thrashe aoe green stuff
-    [257337] = {"cone", 45, 5},-- ML 1st boss cone
-    [268415] = {"cone", 45, 5},-- ML trash cleave
-    [268846] = {"cone", 45, 5},-- ml trash cleave
-    [275907] = {"cone", 45, 20},-- ML tectonic smash
+    [257337] = {"cone", 55, 25},-- ML 1st boss cone
+    [268415] = {"cone", 90, 5},-- ML trash cleave
+    [268846] = {"cone", 60, 5},-- ml trash cleave
+    [275907] = {"cone", 60, 20},-- ML tectonic smash
     [269313] = {"cone", 360, 8},-- ml final blast
     [268865] = {"cone", 45, 5},--
     [262804] = {"cone", 45, 5},--
     [260669] = {"rect", 20, 3},--ml rixxa pewpew ??
     [272457] = {"cone", 45, 5},-- ur 2nd boss
     [269843] = {"cone", 45, 5},-- ur last boss
-    [258864] = {"cone", 45, 5},-- td thrash  suppression fire
+    [258864] = {"cone", 10, 15},-- td thrash  suppression fire
     [256955] = {"cone", 45, 5},-- td 2nd boss
-    [265372] = {"cone", 45, 5},-- wm thrash cleave
+    [265372] = {"cone", 60, 10},-- wm thrash cleave
     [271174] = {"cone", 45, 5},--
-    [264923] = {"cone", 50, 5},-- wm pig boss cleave
+    [264923] = {"cone", 90, 10},-- wm pig boss cleave
+    [264694] = {"cone", 60, 10},-- wm pig boss cleave
     [259711] = {"cone", 360, 6},-- block warden aoe cleave td
     [288694] = {"cone", 45, 5},-- Reaping smash https://www.wowhead.com/spell=288694/shadow-smash
     ------------------------Uldir-------------------------------------------
@@ -101,15 +102,24 @@ DMW.Tables.Dodgie.SpellsToDraw = {
     [306726] = {"rect", 20, 5},-- HV Defiled Ground
     [300424] = {"rect", 30, 4},-- Junkyard Shockwave
     [300777] = {"rect", 30, 4},-- Junkyard Slimewave
-    [299475] = {"cone", 45, 10},-- Junkyard B.O.R.K
+    [299475] = {"cone", 15, 10},-- Junkyard B.O.R.K
     [293986] = {"cone", 60, 15},-- Workshop Sonic Pulse
     [314483] = {"cone", 360, 5},-- Cascading Terror M+
     [305663] = {"cone", 20, 30},-- Maut Black Wings
     [310396] = {"rect", 60, 5},-- Drest'agath Void Glare
     [310614] = {"cone", 60, 10},-- Drest'agath Crushing Slam
-    -- [308742] = {"rect", 25, 5} -- tests
+    [308742] = {"cone", 35, 50} -- tests
 }
 
+--Circle, radius
+--Rect, length, width
+--Cone, range, angle
+DMW.Tables.Dodgie.GameObjectsToDraw = {
+
+}
+DMW.Tables.Dodgie.AreaTriggersToDraw = {
+    [12929] = {"Cone", 5, 90}
+}
 local function Line(sx, sy, sz, ex, ey, ez)
     local function WorldToScreen (wX, wY, wZ)
         local sX, sY = _G.WorldToScreen(wX, wY, wZ);
@@ -138,10 +148,10 @@ local function Line(sx, sy, sz, ex, ey, ez)
     LibDraw.Draw2DLine(startx, starty, endx, endy)
 end
 
-local function getRectUnit(length,width, Unit)
+function DMW.Tables.Dodgie.getRectUnit(length,width, Unit, facing)
     width = width or 3
     length = length or 30
-    local facing = Unit:RawFacing()
+    -- local facing = select(2, ObjectFacing(Unit.Pointer))
     local x,y,z = Unit.PosX, Unit.PosY, Unit.PosZ
     local halfWidth = width/2
     -- Near Left
@@ -156,21 +166,21 @@ local function getRectUnit(length,width, Unit)
     return nlX, nlY, nrX, nrY, frX, frY, flX, flY, flZ, nlZ, nrZ, frZ
 end
 
-function Unit:DrawCleave()
+function Unit:DrawCleave(spellid)
     -- local spellID =
-    if self.Dead or UnitCastingInfo(self.Pointer) == nil then return true end
-    local drawType, size1, size2 = self.DrawCleaveInfo[1], self.DrawCleaveInfo[2],self.DrawCleaveInfo[3]
-    local rotation = self:RawFacing()
+    -- if self.Dead or UnitCastingInfo(self.Pointer) == nil then return true end
+    local drawType, size1, size2 = DMW.Tables.Dodgie.SpellsToDraw[spellid][1], DMW.Tables.Dodgie.SpellsToDraw[spellid][2], DMW.Tables.Dodgie.SpellsToDraw[spellid][3]
+    local rotation = select(2, ObjectFacing(self.Pointer))
+    LibDraw.SetColorRaw(0, 1, 0)
     if drawType == "rect" then
-        local nlX, nlY, nrX, nrY, frX, frY, flX, flY, flZ, nlZ, nrZ, frZ = getRectUnit(size1, size2, self) --self.PosX, self.PosY, self.PosZ, rotation)
-        DMW.Helpers.DrawLineDMWC(flX, flY, DMW.Player.PosZ, nlX, nlY, DMW.Player.PosZ)
-        DMW.Helpers.DrawLineDMWC(frX, frY, DMW.Player.PosZ, nrX, nrY, DMW.Player.PosZ)
-        DMW.Helpers.DrawLineDMWC(frX, frY, DMW.Player.PosZ, flX, flY, DMW.Player.PosZ)
-        DMW.Helpers.DrawLineDMWC(nlX, nlY, DMW.Player.PosZ, nrX, nrY, DMW.Player.PosZ)
+        local nlX, nlY, nrX, nrY, frX, frY, flX, flY, flZ, nlZ, nrZ, frZ = DMW.Tables.Dodgie.getRectUnit(size1, size2, self, rotation) --self.PosX, self.PosY, self.PosZ, rotation)
+        DMW.Helpers.DrawLineDMWC(flX, flY, self.PosZ, nlX, nlY, self.PosZ)
+        DMW.Helpers.DrawLineDMWC(frX, frY, self.PosZ, nrX, nrY, self.PosZ)
+        DMW.Helpers.DrawLineDMWC(frX, frY, self.PosZ, flX, flY, self.PosZ)
+        DMW.Helpers.DrawLineDMWC(nlX, nlY, self.PosZ, nrX, nrY, self.PosZ)
     elseif drawType == "cone" then
         LibDraw.Arc(self.PosX, self.PosY, self.PosZ, size1, size2, rotation)
     end
-    LibDraw.SetColorRaw(0, 1, 0)
     local castRemainReal = self:CastRemains()
     local castRemainPrint = string.format("%0.1f", castRemainReal)
     if castRemainReal <= 3 then
@@ -188,6 +198,7 @@ local function CacheCasts(_, event, _, source, sourceName, sourceFlag, _, destin
     --     print(event, spell, sourceFlag)
     -- end
     -- print(sourceName, event)
+    if not DMW.Settings.profile.Helpers.ShowVisuals then return end
     if event == "SPELL_CAST_START" then
         -- print(sourceName, event)
         local sourceobj = DMW.Tables.Misc.guid2pointer[source]
@@ -222,10 +233,18 @@ end
 
 
 function DMW.Tables.Dodgie.DrawStuff()
-    for k,v in ipairs(DMW.Tables.Dodgie.DrawUnits) do
-        -- print(v)
-        if v.DrawCleaveInfo then
-            if v:DrawCleave() then tremove(DMW.Tables.Dodgie.DrawUnits, k); end
+    -- for k,v in ipairs(DMW.Tables.Dodgie.DrawUnits) do
+    --     -- print(v)
+    --     if v.DrawCleaveInfo then
+    --         if v:DrawCleave() then tremove(DMW.Tables.Dodgie.DrawUnits, k); end
+    --     end
+    -- end
+    for _, Unit in pairs(DMW.Units) do
+        if Unit.Casting then
+            local spellid = Unit:CastIdCheck()
+            if DMW.Tables.Dodgie.SpellsToDraw[spellid] ~= nil then
+                Unit:DrawCleave(spellid)
+            end
         end
     end
 end
@@ -245,21 +264,21 @@ end
 
 
 DMW.Helpers.Dodgie.Init = function()
-    if not DodgieFrame then
-        DodgieFrame = CreateFrame("frame")
-        DodgieFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-        -- swingTimerFrame:RegisterEvent("PLAYER_ENTER_COMBAT")
-        DodgieFrame:SetScript("OnEvent", function(_, event, ...)
-            if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-                CacheCasts(CombatLogGetCurrentEventInfo())
-                -- print(CombatLogGetCurrentEventInfo())
-            end
-        end)
-        -- DodgieFrame:SetScript("OnUpdate", function(self, elapsed)
-        --     DrawStuff()
-        -- end)
-        -- selfGUID = UnitGUID("player")
-    end
+    -- if not DodgieFrame then
+    --     DodgieFrame = CreateFrame("frame")
+    --     DodgieFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    --     -- swingTimerFrame:RegisterEvent("PLAYER_ENTER_COMBAT")
+    --     DodgieFrame:SetScript("OnEvent", function(_, event, ...)
+    --         if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+    --             CacheCasts(CombatLogGetCurrentEventInfo())
+    --             -- print(CombatLogGetCurrentEventInfo())
+    --         end
+    --     end)
+    --     -- DodgieFrame:SetScript("OnUpdate", function(self, elapsed)
+    --     --     DrawStuff()
+    --     -- end)
+    --     -- selfGUID = UnitGUID("player")
+    -- end
 end
 
 

@@ -53,7 +53,9 @@ function GameObject:HasFlag(Flag)
 end
 
 function GameObject:IsTrackable() --TODO: enums
-    if DMW.Settings.profile.Tracker.Trackable and DMW.Enums.Trackable[self.ObjectID] then
+    if DMW.Settings.profile.Helpers.ShowIDs then
+        return true
+    elseif DMW.Settings.profile.Tracker.Trackable and DMW.Enums.Trackable[self.ObjectID] then
         return true
     elseif DMW.Enums.VisionsPots[self.ObjectID] and DMW.Player.BadPotion and DMW.Player.BadPotion ~= self.ObjectID then
         return true

@@ -98,7 +98,15 @@ DMW.Enums.Trackable = {
     [75293] = {Name = "Large Battered Chest", SkillReq = 0},
     [153453] = {Name = "Solid Chest", SkillReq = 0},
     [181085] = {Name = "Stratholme Supply Crate", SkillReq = 0},
-    [176224] = {Name = "Supply Crate", SkillReq = 0}
+    [176224] = {Name = "Supply Crate", SkillReq = 0},
+    [12929] = {Name = "Soul"},
+    [18385] = {Name = "Soul"}, -- SoB - Bananas
+    [18327] = {Name = "Soul"}, -- FH rat trap
+    [16682] = {Name = "Soul"},   -- TD - Sand
+    [325958] = {Name = "Soul"},   -- TD - Sand
+    [325962] = {Name = "Soul"},  -- TD - Sand
+    [325963] = {Name = "Soul"},   -- TD - Sand
+    [325959] = {Name = "Soul"}   -- TD - Sand
 }
 
 DMW.Enums.VisionsPots = {

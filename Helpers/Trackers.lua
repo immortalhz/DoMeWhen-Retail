@@ -128,7 +128,11 @@ function DMW.Helpers.Trackers.Run()
                 end
                 AlertTimer = DMW.Time
             end
-            LibDraw.Text(Object.Name .. " - " .. math.floor(Object.Distance) .. " Yards", "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
+            if DMW.Settings.profile.Helpers.ShowIDs then
+                LibDraw.Text(Object.Name .. " - " .. Object.ObjectID, "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
+            else
+                LibDraw.Text(Object.Name .. " - " .. math.floor(Object.Distance) .. " Yards", "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
+            end
             if DMW.Settings.profile.Tracker.TrackObjectsLine > 0 then
                 local w = DMW.Settings.profile.Tracker.TrackObjectsLine
                 LibDraw.SetWidth(w)
@@ -143,10 +147,24 @@ function DMW.Helpers.Trackers.Run()
             DMW.Helpers.DrawLineDMWC(Object.PosX, Object.PosY, Object.PosZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
         end
     end
+    for _, Object in pairs(DMW.AreaTriggers) do
+        if DMW.Tables.Dodgie.AreaTriggersToDraw[Object.ObjectID] ~= nil then
+            Object:Draw(DMW.Tables.Dodgie.AreaTriggersToDraw[Object.ObjectID][1], DMW.Tables.Dodgie.AreaTriggersToDraw[Object.ObjectID][2], DMW.Tables.Dodgie.AreaTriggersToDraw[Object.ObjectID][3])
+            -- print(Object.ObjectID, DMW.Tables.Dodgie.AreaTriggersToDraw[Object.ObjectID])
+        end
+        if Object.Trackable then
+            local r, b, g, a = 1, 0 , 0 ,1
+            LibDraw.SetColorRaw(r, b, g, a)
+
+
+            if DMW.Settings.profile.Helpers.ShowIDs then
+                LibDraw.Text(Object.ObjectID, "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
+            end
+        end
+    end
     if DMW.Settings.profile.Tracker.TrackPlayersNamePlates or (DMW.Settings.profile.Tracker.TrackPlayers ~= "") or DMW.Settings.profile.Tracker.TrackPlayersAny or DMW.Settings.profile.Tracker.TrackPlayersEnemy then
         local Color
         local s = 1
-
         for _, Unit in pairs(DMW.Units) do
             if ((DMW.Settings.profile.Tracker.TrackPlayers ~= nil and DMW.Settings.profile.Tracker.TrackPlayers ~= "") or DMW.Settings.profile.Tracker.TrackPlayersAny or DMW.Settings.profile.Tracker.TrackPlayersEnemy)
              and Unit.Player and not Unit.Dead and Unit.Trackable and not UnitIsUnit("target", Unit.Pointer) then

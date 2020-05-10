@@ -85,7 +85,10 @@ function Spell:CD()
     return FinalCD
 end
 
-function Spell:IsAvailableF() return self.IsAvailable end
+function Spell:IsAvailableF()
+    if self.Key == "DeathSweep" or self.Key == "Annihilation" then return true end
+    return self.IsAvailable
+end
 
 function Spell:CDUp() return self:CD() == 0 end
 

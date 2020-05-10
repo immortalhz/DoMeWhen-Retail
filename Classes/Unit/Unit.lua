@@ -64,6 +64,34 @@ function Unit:New(Pointer)
     end
 end
 
+function Unit:CastingCheck()
+
+    local cast, channel, castTarget, channelTarget = UnitCastID(self.Pointer)
+    -- print(UnitCastID("player"))
+    if cast ~= 0 then
+        -- if castTarget then
+        --     self.
+        -- print(self.Name)
+        if not self.Cast then
+            self.Cast = "Cast"
+            -- print("cast", cast)
+            self:GetProperCastingInfo()
+        end
+        return
+        -- return cast
+    elseif channel ~= 0 then
+        if not self.Cast then
+            self.Cast = "Channel"
+            -- print("cast", cast)
+            self:GetProperCastingInfo()
+        end
+        return
+    end
+    self.Cast = nil
+    self.Casting = nil
+    return nil
+end
+
 function Unit:Update()
     if DMW.Player.Resting then
         self.NextUpdate = DMW.Time + (math.random(100, 1500) / 1000)
@@ -76,7 +104,7 @@ function Unit:Update()
         DMW.Tables.AuraUpdate[self.GUID] = nil
     end
     self.Distance = self:GetDistance()
-
+    self:CastingCheck()
     -- if RealMobHealth_CreatureHealthCache and self.ObjectID > 0 and RealMobHealth_CreatureHealthCache[self.ObjectID .. "-" .. self.Level] then
     --     self.HealthMax = RealMobHealth_CreatureHealthCache[self.ObjectID .. "-" .. self.Level]
     --     self.RealHealth = true
@@ -279,9 +307,10 @@ function Unit:Interrupt()
     (InterruptTarget == 4 and (not GetRaidTargetIndex(self.Pointer) or GetRaidTargetIndex(self.Pointer) ~= DMW.Settings.profile.Enemy.InterruptMark)) then
         return false
     end
-    Unit:IsInterruptible()
+    if not self:IsInterruptible() then return false end
     local checkInterrupts = false
     if DMW.Settings.profile.HUD.Interrupts == 2 then
+        local name = self:CastName()
         for k in string.gmatch(DMW.Settings.profile.Enemy.InterruptSpellNames, "([^,]+)") do
             if strmatch(string.lower(name), string.lower(string.trim(k))) then
                 checkInterrupts = true
@@ -289,10 +318,20 @@ function Unit:Interrupt()
                 break
             end
         end
+    elseif DMW.Settings.profile.HUD.Interrupts == 3 then
+        local spellID = self:CastID()
+        if DMW.Enums.InterruptWhiteList[spellID] then
+            checkInterrupts = true
+        end
+    elseif DMW.Settings.profile.HUD.Interrupts == 1 then
+        checkInterrupts = true
     end
-    if not DMW.Enums.InterruptBlacklist[SpellID] and checkInterrupts then
-        local Delay = 0
-        if (DMW.Time - StartTime) > Delay then
+
+    if checkInterrupts then
+        -- local spellID = self:CastID()
+        -- if DMW.Enums.InterruptBlacklist[spellID] and
+        local Delay = DMW.Settings.profile.Enemy.InterruptDelay
+        if (DMW.Time - self:CastStart()) >= Delay then
             return true
         end
     end

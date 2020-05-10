@@ -819,9 +819,33 @@ local Options = {
                         DMW.Settings.profile.Helpers.AutoGather = value
                     end
                 },
+                ShowVisuals = {
+                    type = "toggle",
+                    order = 9,
+                    name = "ShowVisuals",
+                    width = "full",
+                    get = function()
+                        return DMW.Settings.profile.Helpers.ShowVisuals
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Helpers.ShowVisuals = value
+                    end
+                },
+                ShowIDs = {
+                    type = "toggle",
+                    order = 10,
+                    name = "Show GameObjects And TriggerAreasIDs",
+                    width = "full",
+                    get = function()
+                        return DMW.Settings.profile.Helpers.ShowIDs
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Helpers.ShowIDs = value
+                    end
+                },
                 Trackshit = {
                     type = "execute",
-                    order = 9,
+                    order = 11,
                     name = "Advanced Tracking",
                     desc = "Track options",
                     width = "full",
@@ -837,7 +861,7 @@ local Options = {
                     type = "execute",
                     name = "Export Settings",
                     width = 1,
-                    order = 10,
+                    order = 12,
                     func = function()
                         export("export")
                     end
@@ -846,7 +870,7 @@ local Options = {
                     type = "execute",
                     name = "Import Settings",
                     width = 1,
-                    order = 11,
+                    order = 13,
                     func = function()
                         export("import")
                     end
