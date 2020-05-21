@@ -306,6 +306,33 @@ function LocalPlayer:GetEnemiesCone(Length, Angle, TTD, AngleFacing)
     return Count
 end
 
+function LocalPlayer:GetEnemiesConeTable(Length, Angle, TTD, AngleFacing)
+    local Count = 0
+    local Table, TableCount = self:GetEnemies(Length)
+    local Table2 = {}
+    if TableCount > 0 then
+        TTD = TTD or false
+        local AngleFacing = AngleFacing or ObjectFacing("player")
+        for _, Unit in pairs(Table) do
+            if not TTD or Unit.TTD >= TTD then
+                -- if AngleFacing ~= nil then
+                    local angleToUnit = GetAnglesBetweenObjects("player", Unit.Pointer)--math.rad(math.atan2(Unit.PosY - self.PosY, Unit.PosX - self.PosX))
+                    local angle = (AngleFacing > angleToUnit and AngleFacing - angleToUnit) or angleToUnit - AngleFacing
+                    if math.deg(angle) < Angle/2 then
+                        Count = Count + 1
+                        table.insert(Table2, Unit)
+                    end
+                -- else
+                --     if UnitIsFacing(self.Pointer, Unit.Pointer, Angle / 2) then
+                --         Count = Count + 1
+                --     end
+                -- end
+            end
+        end
+    end
+    return Table2, Count
+end
+
 function LocalPlayer:GetBestEnemiesCone(Length, Angle, TTD)
     local facing, bestAngle, bestAngleUnitsHit = 0.1, 0, 0
     local currentCount = self:GetEnemiesCone(Length, Angle, TTD)

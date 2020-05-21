@@ -73,7 +73,13 @@ function Unit:IsTanking(ThreatThreshold)
 	local ThreatThreshold = ThreatThreshold or 2
 	local ThreatSituation = UnitThreatSituation(DMW.Player.Pointer, self.Pointer)
 	return ThreatSituation and ThreatSituation >= ThreatThreshold or false
-  end
+end
+
+function Unit:ThreatLevel()
+	local ThreatSituation = UnitThreatSituation(DMW.Player.Pointer, self.Pointer)
+	-- if ThreatSituation then print(ThreatSituation) end
+	return ThreatSituation and ThreatSituation or -1
+end
 
 -- function Unit:IsTanking()
 -- 	for _, Unit in pairs(DMW.Enemies) do

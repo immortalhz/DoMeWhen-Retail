@@ -51,6 +51,18 @@ function Unit:CastIdCheck()
     end
     return 0
 end
+
+function Unit:PlayerCastCheck()
+    if self:IsCasting() then
+        if self.Cast == "Cast" then
+            return select(3, UnitCastID(self.Pointer)) == DMW.Player.Pointer
+        elseif self.Cast == "Channel" then
+            return select(4, UnitCastID(self.Pointer)) == DMW.Player.Pointer
+        end
+    end
+    return false
+end
+
 -- Get the unit cast's name if there is any.
 function Unit:CastName() return self:IsCasting() and self:CastingInfo(1) or "" end
 

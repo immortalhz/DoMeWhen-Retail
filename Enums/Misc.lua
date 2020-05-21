@@ -1,4 +1,4 @@
-DMW.Enums.MeleeSpell = {WARRIOR = 23881, ROGUE = 1329, DEMONHUNTER = 162794} --193315
+DMW.Enums.MeleeSpell = {WARRIOR = 23881, ROGUE = 193315, DEMONHUNTER = 162794} --193315
 
 DMW.Enums.CreatureType = {
     [1] = "Beast",

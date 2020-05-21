@@ -289,7 +289,7 @@ function Unit:HardCC()
         end
     end
     if StartTime and SpellID and DMW.Enums.HardCCCasts[SpellID] then
-        local Delay = Settings.Enemy.InterruptDelay - 0.2 + (math.random(1, 4) / 10)
+        local Delay = Settings.Enemy.InterruptDelay
         if Delay < 0.1 then
             Delay = 0.1
         end

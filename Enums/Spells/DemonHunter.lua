@@ -11,6 +11,7 @@ Spells.DEMONHUNTER = {
             Darkness                    = {196718},
             DeathSweep                  = {210152},
             DemonsBite                  = {162243},
+            Disrupt                     = {183752},
             Eyebeam                     = {198013},
             FelRush                     = {195072},
             FelBlade                    = {232893},
@@ -21,6 +22,7 @@ Spells.DEMONHUNTER = {
             Torment                     = {281854},
             ThrowGlaive                 = {185123},
             VengefulRetreat             = {198793},
+            FocusedAzeriteBeam          = {295258},
         },
         Buffs = {
             ImmolationAura              = {258920},

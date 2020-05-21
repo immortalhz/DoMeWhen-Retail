@@ -83,6 +83,35 @@ function Spell:Cast(Unit)
     return false
 end
 
+function Spell:CastSpellGround(Unit)
+    if not Unit then
+        if self.IsHarmful and DMW.Player.Target then
+            Unit = DMW.Player.Target
+        elseif self.IsHelpful then
+            Unit = DMW.Player
+        else
+            return false
+        end
+    end
+    if self:Known() and self:IsReady() and ((Unit.Distance <= self.MaxRange and (self.MinRange == 0 or Unit.Distance >= self.MinRange)) or IsSpellInRange(self.SpellName, Unit.Pointer) == 1) then
+        -- if IsAutoRepeatSpell(DMW.Player.Spells.Shoot.SpellName) and self:CD(Rank) < 0.2 then
+        --     MoveForwardStart()
+        --     MoveForwardStop()
+        --     return true
+        -- else
+        if self:CD() == 0 and (DMW.Time - CastTimer) >= 0 then
+            CastTimer = DMW.Time
+            if self:CastGround(Unit.PosX, Unit.PosY, Unit.PosZ) then
+                self.LastBotTarget = Unit.Pointer
+            else
+                return false
+            end
+            return true
+        end
+    end
+    return false
+end
+
 function Spell:CycleCast(EnemyTable, Conditions)
     for _, Unit in ipairs(EnemyTable) do
         local ConditionalCheck = Conditions == nil and true or Unit..Conditions

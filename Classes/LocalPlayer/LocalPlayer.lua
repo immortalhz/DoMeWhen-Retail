@@ -533,4 +533,22 @@ function LocalPlayer:InterruptsMode()
     return DMW.Settings.profile.HUD.Interrupts
 end
 
+function LocalPlayer:UseTrinket(TrinketID)
+    if DMW.Player.Equipment[13] == TrinketID then
+        RunMacroText("/use 13")
+    elseif DMW.Player.Equipment[14] == TrinketID then
+        RunMacroText("/use 14")
+    end
+end
+
+function LocalPlayer:IsCCed(Effect)
+    local eventIndex = C_LossOfControl.GetNumEvents()
+    while (eventIndex > 0) do
+        local _,_,text = C_LossOfControl.GetEventInfo(eventIndex)
+        if (text == LOSS_OF_CONTROL_DISPLAY_FEAR or text == LOSS_OF_CONTROL_DISPLAY_ROOT or text == LOSS_OF_CONTROL_DISPLAY_SNARE or text == LOSS_OF_CONTROL_DISPLAY_STUN) then
+            return Effect == "Fear"
+        end
+        eventIndex = eventIndex - 1
+    end
+end
 

@@ -60,20 +60,20 @@ function Unit:CalculateHP()
     --     end
     --     self.HealthPredictedCheck = true
     -- end
-    if self.HealthPredicted and not self.HealthPredictedCheck then
-            for i = #self.HealthPredicted, 1 do
-                local table = self.HealthPredicted[i]
-                if table.Remove or DMW.Time >= table.time + 0.3 then
-                    tremove(self.HealthPredicted,i)
-                end
-            end
-            -- self.HealthDeficit = self.HealthMax - self.Health
-            if #self.HealthPredicted == 0 then self.HealthPredicted = nil;print("delete calc") end
-            -- self.HealthPredictedCheck = true
-        -- end
-    end
-    if not self.HealthDeficit then
-        self.HealthDeficit = self.HealthMax - self.Health
-        self.HP = self.Health / self.HealthMax * 100
-    end
+    -- if self.HealthPredicted and not self.HealthPredictedCheck then
+    --         for i = #self.HealthPredicted, 1 do
+    --             local table = self.HealthPredicted[i]
+    --             if table.Remove or DMW.Time >= table.time + 0.3 then
+    --                 tremove(self.HealthPredicted,i)
+    --             end
+    --         end
+    --         -- self.HealthDeficit = self.HealthMax - self.Health
+    --         if #self.HealthPredicted == 0 then self.HealthPredicted = nil;print("delete calc") end
+    --         -- self.HealthPredictedCheck = true
+    --     -- end
+    -- end
+    self.Health = UnitHealth(self.Pointer)
+    self.HealthMax = UnitHealthMax(self.Pointer)
+    self.HP = self.Health / self.HealthMax * 100
+    self.HealthDeficit = self.HealthMax - self.Health
 end

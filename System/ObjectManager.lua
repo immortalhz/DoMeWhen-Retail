@@ -50,28 +50,27 @@ local function HandleFriends()
             end
         )
     end
-    if #Friends >= 1 then
-        for k = 1, #Friends do
-            local Friend = Friends[k]
-            if Friend.HealthPredicted then
-                for i = #Friend.HealthPredicted, 1 do
-                    local table = Friend.HealthPredicted[i]
-                    if table.Remove or DMW.Time >= table.time + 0.5 then
-                        print("shit delete")
-                        tremove(Friend.HealthPredicted,i)
-                        -- table = nil
-                    elseif DMW.Time >= table.time - 0.5 then
-                        local newHealth = Friend.Health + table.amount
-                        Friend.Health = newHealth >= Friend.HealthMax and Friend.HealthMax or newHealth
-                        print(Friend.Name, "health updated")
-                    end
-                end
-                Friend.HealthDeficit = Friend.HealthMax - Friend.Health
-                if #Friend.HealthPredicted == 0 then Friend.HealthPredicted = nil;print("delete calc") end
-                -- Friend.HealthPredictedCheck = true
-            end
-        end
-    end
+    -- if #Friends >= 1 then
+    --     for k = 1, #Friends do
+    --         local Friend = Friends[k]
+    --         if Friend.HealthPredicted then
+    --             for i = #Friend.HealthPredicted, 1 do
+    --                 local table = Friend.HealthPredicted[i]
+    --                 if table.Remove or DMW.Time >= table.time + 0.5 then
+    --                     tremove(Friend.HealthPredicted,i)
+    --                     -- table = nil
+    --                 elseif DMW.Time >= table.time - 0.5 then
+    --                     local newHealth = Friend.Health + table.amount
+    --                     Friend.Health = newHealth >= Friend.HealthMax and Friend.HealthMax or newHealth
+    --                     print(Friend.Name, "health updated")
+    --                 end
+    --             end
+    --             Friend.HealthDeficit = Friend.HealthMax - Friend.Health
+    --             if #Friend.HealthPredicted == 0 then Friend.HealthPredicted = nil;print("delete calc") end
+    --             -- Friend.HealthPredictedCheck = true
+    --         end
+    --     end
+    -- end
     -- for _, Unit in pairs(Friends) do
     --     Unit.Role = UnitGroupRolesAssigned(Unit.Pointer)
     --     if Unit.Role == "TANK" then

@@ -26,6 +26,17 @@ function Spell:IsLearned()
     return self.Available or false
 end
 
+function Spell:TargetRangeCheck()
+    if DMW.Player.Target then
+        if self.MinRange ~= 0 and DMW.Player.Target.Distance <= self.MinRange then
+            return false
+        elseif self.MaxRange ~= 0 and DMW.Player.Target.Distance >= self.MaxRange then
+            return false
+        end
+        return true
+    end
+    return false
+end
 function Spell:Count() return GetSpellCount(self.SpellID) end
 
 

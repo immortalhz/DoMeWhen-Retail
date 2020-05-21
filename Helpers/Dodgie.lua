@@ -118,7 +118,11 @@ DMW.Tables.Dodgie.GameObjectsToDraw = {
 
 }
 DMW.Tables.Dodgie.AreaTriggersToDraw = {
-    [12929] = {"Cone", 5, 90}
+    -- [12929] = {"Cone", 5, 90}
+    [17760] = {"Cone", 2.5, 360}, -- sots tornado council boss
+    [18334] = {"Cone", 2.5, 360}, -- sots thrash tornado
+    [19019] = {"Cone", 5, 360}, -- sots
+
 }
 local function Line(sx, sy, sz, ex, ey, ez)
     local function WorldToScreen (wX, wY, wZ)
