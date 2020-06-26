@@ -275,3 +275,9 @@ function Debuff:Exsanguinated(Unit)
         return Unit.ExsanguinatedRupture or false
     end
 end
+
+function Debuff:SSBuffed(Unit)
+    if self.SpellID == 703 then
+        return Unit.GarroteSSBuffed or false
+    end
+end

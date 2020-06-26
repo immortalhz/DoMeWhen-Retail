@@ -6,7 +6,13 @@ function Unit:GetTTD(targetPercentage)
     if targetPercentage == nil then targetPercentage = 0 end
     local value
     if self.HP == 0 then return -1 end
-    if self.HP == 100 or self.Dummy then return 999 end
+    -- if self.HP == 100 or self.Dummy then return 999 end
+    if DMW.Settings.profile.Enemy.CustomTTDEnabled and DMW.Settings.profile.Enemy.TTDDPS ~= 0 then
+        if self.HealthMax <= (DMW.Settings.profile.Enemy.CustomTTDHealthValue * 100000) then
+            -- print("123")
+            return self.Health / (DMW.Settings.profile.Enemy.TTDDPS * 1000)
+        end
+    end
     -- if self.Player then return 999 end
     local timeNow = DMW.Time
     -- Reset unit if HP is higher

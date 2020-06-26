@@ -26,6 +26,12 @@ Spells.ROGUE = {
             Vanish = {1856},
             Shroud = {114018},
             Kick = {1766},
+            Tricks = {57934},
+            Blind = {2094},
+            CrimsonVial = {185311},
+            CloakOfShadows = {31224},
+            Feint = {1966},
+
         },
         Buffs = {
             Blindside = {111240},
@@ -74,7 +80,7 @@ Spells.ROGUE = {
             IronWire = 23037,
             PreyOnTheWeak = 22115,
             VenomRush = 22343,
-            PoisonBlade = 23015,
+            ToxicBlade = 23015,
             Exsanguinate = 22344,
             PoisonBomb = 21186,
             HiddenBlades = 22133,
@@ -113,6 +119,8 @@ Spells.ROGUE = {
             Shroud = {114018},
             Kick = {1766},
             CrimsonVial = {185311},
+            CloakOfShadows = {31224},
+            Tricks = {57934},
         },
         Buffs = {
             Opportunity = {195627},
@@ -151,7 +159,9 @@ Spells.ROGUE = {
             -- VictoryRush = {34428},
 
         },
-        Buffs = {},
+        Buffs = {
+
+        },
         Debuffs = {}
     }
 }

@@ -9,7 +9,7 @@ local friends = {
 
 function DMW.Helpers.Trackers.Run()
     local tX, tY, tZ
-    if (DMW.Settings.profile.Tracker.TrackUnits and DMW.Settings.profile.Tracker.TrackUnits ~= "") or DMW.Settings.profile.Tracker.TrackNPC or DMW.Settings.profile.Tracker.TrackRare then
+    if (DMW.Settings.profile.Tracker.TrackUnits and DMW.Settings.profile.Tracker.TrackUnits ~= "") or DMW.Settings.profile.Tracker.TrackNPC or DMW.Settings.profile.Tracker.TrackRare or DMW.Settings.profile.Tracker.DrawTTD then
         local s = 1
         for _, Unit in pairs(DMW.Units) do
             -- if friends[Unit.Name] then return end
@@ -22,6 +22,9 @@ function DMW.Helpers.Trackers.Run()
                         break
                     end
                 end
+            end
+            if DMW.Settings.profile.Tracker.DrawTTD and Unit.Attackable and Unit.CreatureType ~= "Critter" and Unit.TTD then
+                LibDraw.Text(math.floor(Unit.TTD), "GameFontNormalSmall", Unit.PosX, Unit.PosY, Unit.PosZ)
             end
             if (DMW.Settings.profile.Tracker.TrackUnits ~= nil and DMW.Settings.profile.Tracker.TrackUnits ~= "") and not Unit.Player and Unit.Trackable and not Unit.Dead and not Unit.Target then
                 local r, b, g, a = DMW.Settings.profile.Tracker.TrackUnitsColor[1], DMW.Settings.profile.Tracker.TrackUnitsColor[2], DMW.Settings.profile.Tracker.TrackUnitsColor[3], DMW.Settings.profile.Tracker.TrackUnitsColor[4]
@@ -77,7 +80,7 @@ function DMW.Helpers.Trackers.Run()
         end
     end
     for _, Object in pairs(DMW.GameObjects) do
-        if Object.Herb then
+        if Object.Herb and not Object.HerbTaken then
             local r, b, g, a = DMW.Settings.profile.Tracker.HerbsColor[1], DMW.Settings.profile.Tracker.HerbsColor[2], DMW.Settings.profile.Tracker.HerbsColor[3], DMW.Settings.profile.Tracker.HerbsColor[4]
             LibDraw.SetColorRaw(r, b, g, a)
             if DMW.Settings.profile.Tracker.HerbsAlert > 0 and (AlertTimer + 5) < DMW.Time and not IsForeground() then
@@ -89,6 +92,13 @@ function DMW.Helpers.Trackers.Run()
                 end
                 AlertTimer = DMW.Time
             end
+            -- for k, v in pairs(DMW.Enums.GameObjectFlags) do
+            --     if Object:HasDynFlag(v) then
+            --         print(k)
+            --         LibDraw.Text(k, "GameFontNormalSmall", Object.PosX, Object.PosY, Object.PosZ + 5)
+            --         break
+            --     end
+            -- end
             LibDraw.Text(Object.Name .. " - " .. math.floor(Object.Distance) .. " Yards", "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
             if DMW.Settings.profile.Tracker.HerbsLine > 0 then
                 local w = DMW.Settings.profile.Tracker.HerbsLine
@@ -129,7 +139,7 @@ function DMW.Helpers.Trackers.Run()
                 AlertTimer = DMW.Time
             end
             if DMW.Settings.profile.Helpers.ShowIDs then
-                LibDraw.Text(Object.Name .. " - " .. Object.ObjectID, "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
+                LibDraw.Text(Object.Name .. " - " .. ObjectDescriptor(Object.Pointer, GetOffset("CGGameObjectData__Flags"), "uint") .. " - " .. ObjectDescriptor(Object.Pointer, GetOffset("CGObjectData__DynamicFlags"), "uint") , "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
             else
                 LibDraw.Text(Object.Name .. " - " .. math.floor(Object.Distance) .. " Yards", "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
             end

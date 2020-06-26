@@ -13,11 +13,12 @@ DMW.Enums.Spells = {
             WarStomp = {20549},
 
             --Professions, multiple ID's shouldn't matter, just for tracking casts
-            -- Mining = {Ranks = {2575}, CastType = "Profession"},
-            -- HerbGathering = {Ranks = {2366}, CastType = "Profession"},
-            -- Skinning = {Ranks = {8613}, CastType = "Profession"}
+            Mining = {2575},
+            HerbGathering = {2366},
+            Skinning = {8613},
         },
         Buffs = {
+            SeethingRage = {297126}
         },
         Debuffs = {
             ConcentratedFlameBurn = {295368}

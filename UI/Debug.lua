@@ -108,10 +108,16 @@ Label.Update = function(self)
 end
 Frame:AddChild(Label)
 --Position stuff
+-- Label = AceGUI:Create("Label")
+-- Label:SetFullWidth(true)
+-- Label.Update = function(self)
+--     self:SetText("CombatReach: " .. DMW.Player.CombatReach .. " - BoundingRadius " .. DMW.Player.BoundingRadius.. " - Scale " .. DMW.Player.Scale)
+-- end
+-- Frame:AddChild(Label)
 Label = AceGUI:Create("Label")
 Label:SetFullWidth(true)
 Label.Update = function(self)
-    self:SetText("CombatReach: " .. DMW.Player.CombatReach .. " - BoundingRadius " .. DMW.Player.BoundingRadius.. " - Scale " .. DMW.Player.Scale)
+    self:SetText("Pitch: " .. UnitPitch("player"))
 end
 Frame:AddChild(Label)
 --Facing

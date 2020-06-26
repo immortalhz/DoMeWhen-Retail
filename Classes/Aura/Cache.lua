@@ -13,12 +13,8 @@ f:RegisterUnitEvent("UNIT_AURA", "player")
 
 
 function AuraCache.Player_AURA(...)
-    -- print(...)
-    -- local guid = DMW.Tables.Misc.pointer2guidF(Pointer)
-    -- print(guid)
-    -- local Pointer = DMW.Tables.Misc.guid2pointerF(GUID)
     if not DMW.Player.GUID then return end
-        AuraCache.Refresh(DMW.Player.Pointer, DMW.Player.GUID)
+    AuraCache.Refresh(DMW.Player.Pointer, DMW.Player.GUID)
     -- for i=1,100 do
     --     local name, _, _, _, duration, expirationTime, _, _, _, spellId = UnitAura(Pointer, i, "HELPFUL")
     --     if not name then break end
@@ -43,11 +39,13 @@ function AuraCache.Refresh(Pointer, GUID)
     for i = 1, 40 do
         AuraReturn = {UnitAura(Pointer, i, "HELPFUL")}
         if AuraReturn[1] == nil then break end
-
         -- if DMW.Tables.AuraCache[GUID][AuraReturn[1]] == nil then
             DMW.Tables.AuraCache[GUID][AuraReturn[1]] = {["AuraReturn"] = AuraReturn, Type = "HELPFUL"}
         -- end
         if AuraReturn[7] ~= nil and AuraReturn[7] == "player" then
+            -- if not DMW.Tables.AuraCache[GUID]["player"] then
+            --     DMW.Tables.AuraCache[GUID]["player"] = {}
+            -- end
             DMW.Tables.AuraCache[GUID][AuraReturn[1]]["player"] = {["AuraReturn"] = AuraReturn, Type = "HELPFUL"}
         end
     end
@@ -56,10 +54,14 @@ function AuraCache.Refresh(Pointer, GUID)
         AuraReturn = {UnitAura(Pointer, i, "HARMFUL")}
         if AuraReturn[1] == nil then break end
         -- if DMW.Tables.AuraCache[GUID][AuraReturn[1]] == nil then
-        DMW.Tables.AuraCache[GUID][AuraReturn[1]] = {["AuraReturn"] = AuraReturn, Type = "HARMFUL"}
+        DMW.Tables.AuraCache[GUID][AuraReturn[1]] = {["AuraReturn"] = AuraReturn, Type = "HARMFUL|PLAYER"}
         -- print(AuraReturn)
         -- end
         if AuraReturn[7] ~= nil and AuraReturn[7] == "player" then
+            -- if not DMW.Tables.AuraCache[GUID]["player"] then
+            --     DMW.Tables.AuraCache[GUID]["player"] = {}
+            -- end
+            -- print("player")
             DMW.Tables.AuraCache[GUID][AuraReturn[1]]["player"] = {["AuraReturn"] = AuraReturn, Type = "HARMFUL"}
         end
     end
@@ -74,14 +76,14 @@ function AuraCache.Event(...)
             --or (DurationLib.indirectRefreshSpells[spellName] and DurationLib.indirectRefreshSpells[spellName].events[event]))
             then
                 if DMW.Enums.Spells and DMW.Enums.Spells[DMW.Player.Class] and DMW.Enums.Spells[DMW.Player.Class][DMW.Player.SpecID] then
-                    for k,v in pairs(DMW.Enums.Spells[DMW.Player.Class][DMW.Player.SpecID].Debuffs) do
-                        if sourceGUID == DMW.Player.GUID and destGUID ~= DMW.Player.GUID and v == spellID then
+                    for _,v in pairs(DMW.Enums.Spells[DMW.Player.Class][DMW.Player.SpecID].Debuffs) do
+                        if v == spellID and sourceGUID == DMW.Player.GUID and destGUID ~= DMW.Player.GUID then
                             -- print(spellID)
                             local destobj = DMW.Tables.Misc.guid2pointer[destGUID]
                             -- print(spellName)
+                            -- print(spellID)
                             AuraCache.Refresh(destobj, destGUID)
                         end
-
                     end
                 end
                 if DMW.Player.SpecID == "Assassination" then
@@ -105,10 +107,19 @@ function AuraCache.Event(...)
                             end
                             if spellID == 703 then
                                 DMW.Units[destobj].BleedMultiplierGarrote = multiplier
+                                if DMW.Player:TraitActive("ShroudedSuffocation") and (DMW.Player.Buffs.Subterfuge:Exist() or DMW.Player.Buffs.Stealth:Exist() or DMW.Player.Buffs.Vanish:Exist()) then DMW.Units[destobj].GarroteSSBuffed = true end
                             else
                                 DMW.Units[destobj].BleedMultiplierRupture = multiplier
                             end
+                        elseif event == "SPELL_AURA_REMOVED" then
+                            if spellID == 703 then
+                                DMW.Units[destobj].BleedMultiplierGarrote = 0
+                                DMW.Units[destobj].GarroteSSBuffed = nil
+                            else
+                                DMW.Units[destobj].BleedMultiplierRupture = 0
+                            end
                         end
+                        -- print(event)
                     end
                 end
         -- DMW.Tables.AuraUpdate[destGUID] = true

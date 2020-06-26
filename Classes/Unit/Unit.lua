@@ -56,7 +56,7 @@ function Unit:New(Pointer)
     DMW.Tables.Misc.guid2pointer[self.GUID] = Pointer
     DMW.Tables.Misc.pointer2guid[Pointer] = self.GUID
     self.Cache = {}
-    DMW.Helpers.Swing.AddUnit(Pointer)
+    -- DMW.Helpers.Swing.AddUnit(Pointer)
     -- self.UnitName = GetUnitName(Pointer)
     --NoTouchChecks
     if DMW.Player.Instance then
@@ -621,13 +621,14 @@ function Unit:MarkCheck()
 end
 
 function Unit:Facing()
+    -- if IsHackEnabled("alwaysfacing") then return true end
     if self.FacingCheck == nil or (self.CacheFacingPulse and self.CacheFacingPulse < DMW.Pulses) then
         self.FacingCheck = UnitIsFacing("player", self.Pointer)--, 75)
         self.CacheFacingPulse = DMW.Pulses
     end
     return self.FacingCheck
-
 end
+
 function Unit:NoTouchDungeons()
     if DMW.Player.Instance == "party" then
         if DMW.Enums.DoNotTouchListDungeons[DMW.Player.InstanceID] ~= nil then

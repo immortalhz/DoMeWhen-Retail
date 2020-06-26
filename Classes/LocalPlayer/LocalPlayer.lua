@@ -21,8 +21,7 @@ function LocalPlayer:New(Pointer)
     self.Items = {}
     self.Looting = false
     self.Instance = select(2, IsInInstance())
-
-
+    DMW.Functions.AuraCache.Refresh(self.Pointer, self.GUID)
     self:UpdateVariables()
     -- self:UpdateProfessions()
 
@@ -57,15 +56,7 @@ function LocalPlayer:UpdateVariables()
 end
 
 function LocalPlayer:PlayerCastingCheck()
-    -- local name, text, texture, startTimeMS, endTimeMS, isTradeSkill, castID, notInterruptible, spellId = UnitCastingInfo(DMW.Player.Pointer)
-    -- if spellId then
-    --     return spellId
-    -- else
-    --     local name, text, texture, startTimeMS, endTimeMS, isTradeSkill, notInterruptible, spellId = UnitChannelInfo(DMW.Player.Pointer)
-    --     if spellId then
-    --         return spellId
-    --     end
-    -- end
+    if not UnitIsVisible("player") then return nil end
     local cast, channel, castTarget, channelTarget = UnitCastID(self.Pointer)
     -- print(UnitCastID("player"))
     if cast ~= 0 then
@@ -80,6 +71,9 @@ end
 
 function LocalPlayer:Update()
     self.PosX, self.PosY, self.PosZ = ObjectPosition(self.Pointer)
+    --[[
+        TODO: Time Check refresh
+    ]]
     -- DMW.Functions.AuraCache.Refresh(self.Pointer, self.GUID)
     self.Health = UnitHealth(self.Pointer)
     self.HealthMax = UnitHealthMax(self.Pointer)
@@ -173,6 +167,7 @@ function LocalPlayer:Update()
             self.BadPotion = badPot
         end
     end
+    if IsFlying() then self.Flying = true end
 end
 
 function LocalPlayer:UpdatePower(arg, PowerType)

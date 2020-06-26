@@ -100,13 +100,13 @@ local function UpdateUnits()
         if not DMW.Player.Target and UnitIsUnit(Pointer, "target") then
             DMW.Player.Target = Unit
             -- DMW.Tables.Misc.unit2pointer["target"] = Pointer
-
         end
         if not DMW.Player.Mouseover and UnitIsUnit(Pointer, "mouseover") then
             DMW.Player.Mouseover = Unit
         end
-        -- elseif not DMW.Player.Focus and UnitIsUnit(Pointer, "focus") then
-        --     DMW.Player.Focus = Unit
+        if not DMW.Player.Focus and UnitIsUnit(Pointer, "focus") then
+            DMW.Player.Focus = Unit
+        end
         if DMW.Player.PetActive and not DMW.Player.Pet and UnitIsUnit(Pointer, "pet") then
             DMW.Player.Pet = Unit
         end

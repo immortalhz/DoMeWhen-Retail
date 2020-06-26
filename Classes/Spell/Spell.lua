@@ -197,6 +197,14 @@ function Spell:Usable()
     return IsUsableSpell(self.SpellID)
 end
 
+function Spell:Pool(Time)
+    local _, noMana = IsUsableSpell(self.SpellID)
+    -- if Time then
+    --power/regen < time
+    -- end
+    return noMana
+end
+
 -- function Spell:HighestRank()
 --     for i = #self.Ranks, 1, -1 do
 --         if IsSpellKnown(self.Ranks[i]) then

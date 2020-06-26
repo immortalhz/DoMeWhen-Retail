@@ -45,7 +45,19 @@ DMW.Enums.Herbs = {
     [176587] = {Name = "Plaguebloom", SkillReq = 285},
     [176641] = {Name = "Plaguebloom", SkillReq = 285},
     [176588] = {Name = "Icecap", SkillReq = 290},
-    [176589] = {Name = "Black Lotus", SkillReq = 300}
+    [176589] = {Name = "Black Lotus", SkillReq = 300},
+        --BFA --BFA --BFA --BFA --BFA --BFA --BFA --BFA --BFA --BFA --BFA --BFA --BFA --BFA --BFA --BFA --BFA --BFA
+    [281867] = {Name = "StarMoss", SkillReq = 285},
+    [281868] = {Name = "StarMoss", SkillReq = 285},
+    [281869] = {Name = "SirensSting", SkillReq = 280},
+    [281870] = {Name = "Riverbud", SkillReq = 285},
+    [276242] = {Name = "Riverbud", SkillReq = 285},
+    [281872] = {Name = "Sea Stalk", SkillReq = 285},
+    [326598] = {Name = "Zinhuin", SkillReq = 285},
+    -- 326598
+    -- [176641] = {Name = "Moh", SkillReq = 285},
+    -- [176588] = {Name = "Icecap", SkillReq = 290},
+    -- [176589] = {Name = "Black Lotus", SkillReq = 300}
 }
 
 DMW.Enums.Ore = {

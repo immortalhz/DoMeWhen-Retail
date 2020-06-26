@@ -302,6 +302,19 @@ local TrackingOptionsTable = {
                         DMW.Settings.profile.Tracker.CheckRank = value
                     end
                 },
+                DrawTTD = {
+                    type = "toggle",
+                    order = 13,
+                    name = "DrawTTD",
+                    desc = "DrawTTD",
+                    width = 0.9,
+                    get = function()
+                        return DMW.Settings.profile.Tracker.DrawTTD
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Tracker.DrawTTD = value
+                    end
+                },
                 HideGrey = {
                     type = "toggle",
                     order = 14,
@@ -892,7 +905,7 @@ local Options = {
                     order = 2,
                     name = "Auto Facing",
                     desc = "Will auto face instant cast spells on target",
-                    width = "full",
+                    width = 1,
                     get = function()
                         return DMW.Settings.profile.Enemy.AutoFace
                     end,
@@ -900,14 +913,77 @@ local Options = {
                         DMW.Settings.profile.Enemy.AutoFace = value
                     end
                 },
-                InterruptHeader = {
+                CustomTTDEnabled = {
+                    type = "toggle",
+                    order = 2,
+                    name = "Custom TTD function",
+                    -- desc = "Will auto face instant cast spells on target",
+                    width = 1,
+                    get = function()
+                        return DMW.Settings.profile.Enemy.CustomTTDEnabled
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Enemy.CustomTTDEnabled = value
+                    end
+                },
+                -- AutoFacingEWT = {
+                --     type = "toggle",
+                --     order = 2,
+                --     name = "Auto Facing EWT",
+                --     desc = "Will auto face instant cast spells on target",
+                --     width = "full",
+                --     get = function()
+                --         return IsHackEnabled("alwaysfacing")
+                --     end,
+                --     set = function(info, value)
+                --         SetHackEnabled("alwaysfacing", value)
+                --     end
+                -- },
+                TTDHeader = {
                     type = "header",
                     order = 3,
+                    name = "Custom TTD"
+                },
+                TTDDPS = {
+                    type = "range",
+                    order = 4,
+                    name = "Approx DPS of party guys x1k",
+                    -- desc = "Set desired delay in sec for interrupting enemy casts, will randomize around value",
+                    width = "full",
+                    min = 0,
+                    max = 100,
+                    step = 1,
+                    get = function()
+                        return DMW.Settings.profile.Enemy.TTDDPS
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Enemy.TTDDPS = value
+                    end
+                },
+                CustomTTDHealthValue = {
+                    type = "range",
+                    order = 5,
+                    name = "Min value of MaxHP to use Custom TTD function x100k",
+                    -- desc = "Set desired delay in sec for interrupting enemy casts, will randomize around value",
+                    width = "full",
+                    min = 0,
+                    max = 50,
+                    step = 1,
+                    get = function()
+                        return DMW.Settings.profile.Enemy.CustomTTDHealthValue
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Enemy.CustomTTDHealthValue = value
+                    end
+                },
+                InterruptHeader = {
+                    type = "header",
+                    order = 6,
                     name = "Interrupts"
                 },
                 InterruptPct = {
                     type = "range",
-                    order = 4,
+                    order = 7,
                     name = "Interrupt Delay",
                     -- desc = "Set desired delay in sec for interrupting enemy casts, will randomize around value",
                     width = "full",
@@ -923,7 +999,7 @@ local Options = {
                 },
                 InterruptTarget = {
                     type = "select",
-                    order = 6,
+                    order = 8,
                     name = "Interrupt Target",
                     -- desc = "Select desired target setting for interrupts",
                     width = "0,6",
@@ -938,7 +1014,7 @@ local Options = {
                 },
                 InterruptMark = {
                     type = "select",
-                    order = 7,
+                    order = 9,
                     name = "Interrupt Mark",
                     -- desc = "Select desired Mark for interrupts",
                     width = "0,6",
@@ -956,7 +1032,7 @@ local Options = {
                 },
                 InterruptSpellNames = {
                     type = "input",
-                    order = 8,
+                    order = 10,
                     name = "Spell name to Interrupt using White List",
                     -- desc = "Only Interrupt Those Spells if Toggled",
                     width = "full",
@@ -970,12 +1046,12 @@ local Options = {
                 },
                 SortingHeader = {
                     type = "header",
-                    order = 9,
+                    order = 11,
                     name = "Sorting Options"
                 },
                 SortingEnemyScore = {
                     type = "toggle",
-                    order = 10,
+                    order = 12,
                     name = "Enemy Score",
                     -- desc = "Will auto face instant cast spells on target",
                     width = "full",
@@ -988,7 +1064,7 @@ local Options = {
                 },
                 SortingTarget = {
                     type = "toggle",
-                    order = 11,
+                    order = 13,
                     name = "Target",
                     -- desc = "Will auto face instant cast spells on target",
                     width = "full",
@@ -1001,7 +1077,7 @@ local Options = {
                 },
                 SortingLowestHealth = {
                     type = "toggle",
-                    order = 12,
+                    order = 14,
                     name = "Lowest Health",
                     -- desc = "Will auto face instant cast spells on target",
                     width = "full",
@@ -1015,7 +1091,7 @@ local Options = {
                 },
                 SortingHighestHealth = {
                     type = "toggle",
-                    order = 13,
+                    order = 15,
                     name = "Highest Health",
                     -- desc = "Will auto face instant cast spells on target",
                     width = "full",
@@ -1029,7 +1105,7 @@ local Options = {
                 },
                 SortingAuraID = {
                     type = "toggle",
-                    order = 14,
+                    order = 16,
                     name = "Debuffs",
                     -- desc = "Will auto face instant cast spells on target",
                     width = "full",
@@ -1042,7 +1118,7 @@ local Options = {
                 },
                 SortingAuraIDString = {
                     type = "input",
-                    order = 15,
+                    order = 17,
                     name = "Has those Debuffs ID to Sort",
                     -- desc = "Only Interrupt Those Spells if Toggled",
                     hidden  = function()
@@ -1059,7 +1135,7 @@ local Options = {
                 },
                 SortingAuraName = {
                     type = "toggle",
-                    order = 16,
+                    order = 18,
                     name = "Has Buffs",
                     -- desc = "Will auto face instant cast spells on target",
                     width = "full",
@@ -1072,7 +1148,7 @@ local Options = {
                 },
                 SortingAuraNameString = {
                     type = "input",
-                    order = 17,
+                    order = 19,
                     name = "Has those Buffs ID to Sort",
                     -- desc = "Only Interrupt Those Spells if Toggled",
                     hidden  = function()
@@ -1089,7 +1165,7 @@ local Options = {
                 },
                 SortingObjectIDs = {
                     type = "toggle",
-                    order = 18,
+                    order = 20,
                     name = "Object IDs",
                     -- desc = "Will auto face instant cast spells on target",
                     width = "full",
@@ -1102,7 +1178,7 @@ local Options = {
                 },
                 SortingObjectIDsString = {
                     type = "input",
-                    order = 19,
+                    order = 21,
                     name = "",
                     -- desc = "Only Interrupt Those Spells if Toggled",
                     hidden  = function()
@@ -1437,7 +1513,6 @@ function UI.AddTextBox(Name, Multiline, FullWidth, Desc, Default)
         set = function(info, value)
             DMW.Settings.profile.Rotation[Name] = value
         end
-
     }
     if Default and DMW.Settings.profile.Rotation[Name] == nil then
         DMW.Settings.profile.Rotation[Name] = Default

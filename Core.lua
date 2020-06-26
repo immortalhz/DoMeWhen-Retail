@@ -78,6 +78,7 @@ f:SetScript(
             DMW.Tables.Dodgie.DrawStuff()
             DMW.Timers.OM.Last = debugprofilestop() - DebugStart
             DMW.UI.Debug.Run()
+            DMW.BossMods.Check()
             DebugStart = debugprofilestop()
             DMW.Helpers.QuestieHelper.Run()
             DMW.Timers.QuestieHelper.Last = debugprofilestop() - DebugStart

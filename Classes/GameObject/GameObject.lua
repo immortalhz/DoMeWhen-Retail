@@ -7,6 +7,7 @@ function GameObject:New(Pointer)
     self.Name = ObjectName(Pointer)
     self.ObjectID = ObjectID(Pointer)
     self.GUID = UnitGUID(Pointer)
+
 end
 
 function GameObject:Update()
@@ -35,7 +36,7 @@ function GameObject:IsQuest()
 end
 
 function GameObject:IsHerb()
-    if DMW.Settings.profile.Tracker.Herbs and DMW.Enums.Herbs[self.ObjectID] and (not DMW.Settings.profile.Tracker.CheckRank or (DMW.Player.Professions.Herbalism and DMW.Enums.Herbs[self.ObjectID].SkillReq <= DMW.Player.Professions.Herbalism)) and (not DMW.Settings.profile.Tracker.HideGrey or (DMW.Player.Professions.Herbalism and DMW.Enums.Herbs[self.ObjectID].SkillReq > (DMW.Player.Professions.Herbalism - 100))) then
+    if DMW.Settings.profile.Tracker.Herbs and DMW.Enums.Herbs[self.ObjectID] and (not DMW.Settings.profile.Tracker.CheckRank or (DMW.Player.Professions.Herbalism and DMW.Enums.Herbs[self.ObjectID].SkillReq <= DMW.Player.Professions.Herbalism)) and (not DMW.Settings.profile.Tracker.HideGrey or (DMW.Player.Professions.Herbalism and DMW.Enums.Herbs[self.ObjectID].SkillReq > (DMW.Player.Professions.Herbalism - 100))) and bit.band(ObjectDescriptor(self.Pointer, GetOffset("CGObjectData__DynamicFlags"), "int"), 0x0000000016) == 0 then--ObjectDescriptor(self.Pointer, GetOffset("CGGameObjectData__Flags"), "int") == 278528 then
         return true
     end
     return false
@@ -49,7 +50,13 @@ function GameObject:IsOre()
 end
 
 function GameObject:HasFlag(Flag)
-    return bit.band(ObjectDescriptor(self.Pointer, GetOffset("CGGameObjectData__Flags"), "int"), Flag) > 0
+    local Flags = ObjectDescriptor(self.Pointer, GetOffset("CGGameObjectData__Flags"), "int")
+    return bit.band(Flags, Flag) > 0
+end
+
+function GameObject:HasDynFlag(Flag)
+    local dynFlags = ObjectDescriptor(self.Pointer, GetOffset("CGObjectData__DynamicFlags"), "int")
+    return bit.band(dynFlags, Flag) > 0
 end
 
 function GameObject:IsTrackable() --TODO: enums

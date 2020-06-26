@@ -76,6 +76,7 @@ Helpers\Swing.lua
 Helpers\Navigation.lua
 Helpers\HealComm.lua
 Helpers\Dodgie.lua
+Helpers\BossMods.lua
 # Tables
 Helpers\Healers.lua
 Helpers\Misc.lua

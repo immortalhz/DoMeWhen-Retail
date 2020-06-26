@@ -32,10 +32,10 @@ function DMW.Helpers.Gatherers.Run()
             end
         end
         if DMW.Settings.profile.Helpers.AutoGather then
-            if not Looting and not DMW.Player.Moving and (not DMW.Player.Combat or DMW.Player.Instance == "pvp") then
+            if not Looting and not DMW.Player.Casting and not DMW.Player.Moving and (not DMW.Player.Combat or DMW.Player.Instance == "pvp") then
                 for _, Object in pairs(DMW.GameObjects) do
                     if Object.Distance < 5 then
-                        if Object.Herb and (not DMW.Player.Spells.HerbGathering:LastCast() or (DMW.Player.LastCast[1].SuccessTime and (DMW.Time - DMW.Player.LastCast[1].SuccessTime) > 2)) then
+                        if Object.Herb and (not DMW.Player.Spells.HerbGathering:LastCast() or (DMW.Player.LastCast[1].SuccessTime and (DMW.Time - DMW.Player.LastCast[1].SuccessTime) > 2.5)) then
                             ObjectInteract(Object.Pointer)
                             Looting = DMW.Time + 0.3
                         elseif Object.Ore and (not DMW.Player.Spells.Mining:LastCast() or (DMW.Player.LastCast[1].SuccessTime and (DMW.Time - DMW.Player.LastCast[1].SuccessTime) > 2)) then
