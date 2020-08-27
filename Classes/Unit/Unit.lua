@@ -65,7 +65,6 @@ function Unit:New(Pointer)
 end
 
 function Unit:CastingCheck()
-
     local cast, channel, castTarget, channelTarget = UnitCastID(self.Pointer)
     -- print(UnitCastID("player"))
     if cast ~= 0 then

@@ -171,7 +171,6 @@ function LocalPlayer:Update()
 end
 
 function LocalPlayer:UpdatePower(arg, PowerType)
-
     if arg == "Fill" then
         for _, powerName in ipairs(DMW.Enums.ClassPowerTypes[self.Class]) do
             local typeNum = DMW.Enums.PowerTypes[powerName][2]
@@ -179,7 +178,6 @@ function LocalPlayer:UpdatePower(arg, PowerType)
             self[powerName .. "Max"] = UnitPowerMax(self.Pointer, typeNum)
             self[powerName .. "Deficit"] = self[powerName .. "Max"] - self[powerName]
             self[powerName .. "Pct"] = self[powerName] / self[powerName .. "Max"] * 100
-
         end
         -- self.Power = UnitPower(self.Pointer, 0)
         -- self.PowerMax = UnitPowerMax(self.Pointer, 0)
@@ -201,7 +199,6 @@ function LocalPlayer:UpdatePower(arg, PowerType)
         self[powerName .. "Pct"] = self[powerName] / self[powerName .. "Max"] * 100
         -- end
     end
-
     -- self.Power = UnitPower(self.Pointer)
     -- self.Power = self:PredictedPower()
     -- self.PowerMax = UnitPowerMax(self.Pointer)

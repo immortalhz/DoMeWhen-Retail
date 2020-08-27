@@ -185,34 +185,6 @@ function Debuff:Stacks(Unit, OnlyPlayer)
     return 0
 end
 
--- function Buff:Rank(Unit, OnlyPlayer)
---     if OnlyPlayer == nil then
---         OnlyPlayer = false
---     end
---     Unit = Unit or DMW.Player
---     local SpellID = select(10, self:Query(Unit, OnlyPlayer))
---     for i,v in ipairs(self.Ranks) do
---         if SpellID == v then
---             return i
---         end
---     end
---     return 0
--- end
-
--- function Debuff:Rank(Unit, OnlyPlayer)
---     if OnlyPlayer == nil then
---         OnlyPlayer = true
---     end
---     Unit = Unit or DMW.Player.Target
---     local SpellID = select(10, self:Query(Unit, OnlyPlayer))
---     for i,v in ipairs(self.Ranks) do
---         if SpellID == v then
---             return i
---         end
---     end
---     return 0
--- end
-
 function Buff:Count(Table)
     local Count = 0
     Table = Table or DMW.Player:GetFriends(40)

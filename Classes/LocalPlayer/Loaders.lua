@@ -34,9 +34,100 @@ function LocalPlayer:GetSpells()
     -- self.Debuffs = {}
     local CastType, Duration
     for k, v in pairs(DMW.Enums.Spells) do
-        local table = (k == "GLOBAL" and v) or (k == self.Class and (v[self.SpecID]) or v["Shared"])
-        if table then
-            for SpellType, SpellTable in pairs(table) do
+        if k == self.Class then
+        -- local table = v["Shared"]) v[self.SpecID]
+            if v[self.SpecID] then
+                for SpellType, SpellTable in pairs(v[self.SpecID]) do
+                    if SpellType == "Abilities" then
+                        for SpellName, SpellInfo in pairs(SpellTable) do
+                            -- print(SpellName)
+                            CastType = type(SpellInfo[#SpellInfo]) ~= "number" and SpellInfo[#SpellInfo] or "Normal"
+                            if #SpellInfo >= 2 then
+                                for _, spellID in pairs(SpellInfo) do
+                                    if type(spellID) == "number" and HasSpell(spellID) then
+                                        self.Spells[SpellName] = Spell(spellID, CastType)
+                                        self.Spells[SpellName].Key = SpellName
+                                        break
+                                    end
+                                end
+                            else
+                                self.Spells[SpellName] = Spell(SpellInfo[1], CastType)
+                                self.Spells[SpellName].Key = SpellName
+                            end
+                            -- if SpellInfo.Totem ~= nil then
+                            --     for i = 1, #SpellInfo.Ranks do
+                            --         DMW.Tables.Totems[SpellInfo.Ranks[i]] = {}
+                            --         local totem = DMW.Tables.Totems[SpellInfo.Ranks[i]]
+                            --         totem["SpellName"] = self.Spells[SpellName]["SpellName"]
+                            --         totem["TotemSlot"] = SpellInfo.Totem[1]
+                            --         totem["Element"] = DMW.Tables.Totems.Elements[totem["TotemSlot"]]
+                            --         totem["Duration"] = SpellInfo.Totem[2]
+                            --         totem["Key"] = SpellName
+                            --     end
+                            --     self.Spells[SpellName].TotemElement = DMW.Tables.Totems[SpellInfo.Ranks[1]]["Element"]
+                            -- end
+                        end
+                    elseif SpellType == "Buffs" then
+                        for SpellName, SpellInfo in pairs(SpellTable) do
+                            if #SpellInfo >= 2 then
+                                for _, spellID in pairs(SpellInfo) do
+                                    if type(spellID) == "number" and HasSpell(spellID) then
+                                        self.Buffs[SpellName] = Buff(spellID)
+                                        break
+                                    end
+                                end
+                            else
+                                self.Buffs[SpellName] = Buff(SpellInfo[1])
+                            end
+                        end
+                    elseif SpellType == "Debuffs" then
+                        for SpellName, SpellInfo in pairs(SpellTable) do
+                            self.Debuffs[SpellName] = Debuff(SpellInfo)
+                        end
+                    end
+                end
+            end
+            if v["Shared"] then
+                for SpellType, SpellTable in pairs(v["Shared"]) do
+                    if SpellType == "Abilities" then
+                        for SpellName, SpellInfo in pairs(SpellTable) do
+                            -- print(SpellName)
+                            CastType = type(SpellInfo[#SpellInfo]) ~= "number" and SpellInfo[#SpellInfo] or "Normal"
+                            if #SpellInfo >= 2 then
+                                for _, spellID in pairs(SpellInfo) do
+                                    if type(spellID) == "number" and HasSpell(spellID) then
+                                        self.Spells[SpellName] = Spell(spellID, CastType)
+                                        self.Spells[SpellName].Key = SpellName
+                                        break
+                                    end
+                                end
+                            else
+                                self.Spells[SpellName] = Spell(SpellInfo[1], CastType)
+                                self.Spells[SpellName].Key = SpellName
+                            end
+                        end
+                    elseif SpellType == "Buffs" then
+                        for SpellName, SpellInfo in pairs(SpellTable) do
+                            if #SpellInfo >= 2 then
+                                for _, spellID in pairs(SpellInfo) do
+                                    if type(spellID) == "number" and HasSpell(spellID) then
+                                        self.Buffs[SpellName] = Buff(spellID)
+                                        break
+                                    end
+                                end
+                            else
+                                self.Buffs[SpellName] = Buff(SpellInfo[1])
+                            end
+                        end
+                    elseif SpellType == "Debuffs" then
+                        for SpellName, SpellInfo in pairs(SpellTable) do
+                            self.Debuffs[SpellName] = Debuff(SpellInfo)
+                        end
+                    end
+                end
+            end
+        elseif k == "GLOBAL" then
+            for SpellType, SpellTable in pairs(v) do
                 if SpellType == "Abilities" then
                     for SpellName, SpellInfo in pairs(SpellTable) do
                         -- print(SpellName)
@@ -53,18 +144,6 @@ function LocalPlayer:GetSpells()
                             self.Spells[SpellName] = Spell(SpellInfo[1], CastType)
                             self.Spells[SpellName].Key = SpellName
                         end
-                        -- if SpellInfo.Totem ~= nil then
-                        --     for i = 1, #SpellInfo.Ranks do
-                        --         DMW.Tables.Totems[SpellInfo.Ranks[i]] = {}
-                        --         local totem = DMW.Tables.Totems[SpellInfo.Ranks[i]]
-                        --         totem["SpellName"] = self.Spells[SpellName]["SpellName"]
-                        --         totem["TotemSlot"] = SpellInfo.Totem[1]
-                        --         totem["Element"] = DMW.Tables.Totems.Elements[totem["TotemSlot"]]
-                        --         totem["Duration"] = SpellInfo.Totem[2]
-                        --         totem["Key"] = SpellName
-                        --     end
-                        --     self.Spells[SpellName].TotemElement = DMW.Tables.Totems[SpellInfo.Ranks[1]]["Element"]
-                        -- end
                     end
                 elseif SpellType == "Buffs" then
                     for SpellName, SpellInfo in pairs(SpellTable) do

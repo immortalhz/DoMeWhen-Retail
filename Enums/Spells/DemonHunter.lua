@@ -11,7 +11,6 @@ Spells.DEMONHUNTER = {
             Darkness                    = {196718},
             DeathSweep                  = {210152},
             DemonsBite                  = {162243},
-            Disrupt                     = {183752},
             Eyebeam                     = {198013},
             FelRush                     = {195072},
             FelBlade                    = {232893},
@@ -29,6 +28,7 @@ Spells.DEMONHUNTER = {
             Metamorphosis               = {162264},
             Momentum                    = {208628},
             Prepared                    = {203650},
+            SoulFragments               = {203981}
         },
         Debuffs = {
 
@@ -60,87 +60,55 @@ Spells.DEMONHUNTER = {
     },
     Vengeance = {
         Abilities = {
-            SinisterStrike = {193315},
-            Dispatch = {2098},
-            BetweenTheEyes = {199804},
-            PistolShot = {185763},
-            MarkOfDeath = {137619},
-            AdrenalineRush              = {13750},
-            Ambush                      = {8676},
-            BladeFlurry                 = {13877},
-            BladeRush                   = {271877},
-            Blind                       = {2094},
-            GhostlyStrike               = {196937},
-            Gouge                       = {1776},
-            GrapplingHook               = {195457},
-            KillingSpree                = {51690},
-            Riposte                     = {199754},
-            RollTheBones                = {193316},
-            Stealth                     = {1784},
+            DemonSpikes                 = {203720},
+            FieryBrand                  = {204021},
+            ImmolationAura              = {178740},
+            InfernalStrike              = {189110},
+            Metamorphosis               = {187827},
+            Shear                       = {203782},
+            Fracture                    = {203782},
+            SigilOfFlame                = {204596},
+            SigilOfMisery               = {207684},
+            SigilOfSilence              = {202137},
+            SoulCleave                  = {228477},
+            SpiritBomb                  = {247454},
+            ThrowGlaive                 = {204157},
+            Torment                     = {185245},
         },
         Buffs = {
-            Opportunity = {195627},
-            AdrenalineRush              = {13750},
-                Alacrity                    = {193538},
-                BladeFlurry                 = {13877},
-                Blunderbuss                 = {202895},
-                Deadshot                    = {272940},
-                HiddenBlade                 = {202754},
-                LoadedDice                  = {256171},
-                SliceAndDice                = {5171},
-                Snakeeeyes                  = {275863},
-                Stealth                     = {1784},
-
-                Broadside                   = {193356},
-                BuriedTreasure              = {199600},
-                GrandMelee                  = {193358},
-                RuthlessPrecision           = {193357},
-                SkullAndCrossbones          = {199603},
-                TrueBearing                 = {193359},
-                Wits = {288988},
-
-
+            BladeTurning                = {247254},
+            DemonSpikes                 = {203819},
+            EmpowerWards                = {218256},
+            FeastofSouls                = {207693},
+            ImmolationAura              = {178740},
+            Metamorphosis               = {187827},
+            SoulFragments               = {203981},
+            SiphonedPower               = {218561},
         },
         Debuffs = {
-
+            FieryBrand                  = 207744,
+            Frailty                     = 247456,
+            SigilOfFlame                = 204598,
         },
         Talents = {
-            SliceAndDice = 19250,
-            DeeperStratagem = 19240,
-            MarkedForDeath = 19241,
-            QuickDraw = 22119,
-
+            FeedTheDemon = 22509,
+            Fracture = 22770,
+            SpiritBomb = 22513,
+            Gluttony = 22512
 		},
 		Traits = {
-            Deadshot = 272935,
-            AceUpYourSleeve = 278676,
+            -- Deadshot = 272935,
+            -- AceUpYourSleeve = 278676,
 		}
     },
-    --Arms
-    Subtlety = {
-        Abilities = {
-
-        },
-        Buffs = {
-
-        },
-        Debuffs = {
-
-        },
-        Talents = {
-
-        }
-    },
-
 	Shared = {
         Abilities = {
-
 			-- VictoryRush = {34428},
-			-- VictoryRush = {34428},
-
+            -- VictoryRush = {34428},
+            Disrupt                     = {183752},
         },
         Buffs = {
-
+            Prepared                    = {203650},
         },
         Debuffs = {
 

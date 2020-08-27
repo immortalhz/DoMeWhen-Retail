@@ -357,3 +357,14 @@ function LocalPlayer:IsTankingAoE(Radius, ThreatSituation)
 	end
 	return false
 end
+
+function LocalPlayer:notTankingAoE(Radius, ThreatSituation)
+    local Radius = Radius or 8
+    local EnemyList = self:GetEnemies(Radius)
+	for _, Unit in ipairs(EnemyList) do
+		if not Unit:IsTanking(ThreatSituation) then
+			return true
+		end
+	end
+	return false
+end

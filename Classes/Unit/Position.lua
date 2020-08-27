@@ -3,7 +3,7 @@ local Unit = DMW.Classes.Unit
 
 function Unit:GetDistance(OtherUnit)
     OtherUnit = OtherUnit or DMW.Player
-    if OtherUnit == DMW.Player and DMW.Enums.MeleeSpell[DMW.Player.Class] and IsSpellInRange(GetSpellInfo(DMW.Enums.MeleeSpell[DMW.Player.Class]), self.Pointer) == 1 then
+    if OtherUnit == DMW.Player and DMW.Enums.MeleeSpell[DMW.Player.SpecID] and IsSpellInRange(GetSpellInfo(DMW.Enums.MeleeSpell[DMW.Player.Class]), self.Pointer) == 1 then
         return 0
     end
     if self.PosX == nil then return 0 end

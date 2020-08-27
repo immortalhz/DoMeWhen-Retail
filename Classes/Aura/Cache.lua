@@ -54,7 +54,7 @@ function AuraCache.Refresh(Pointer, GUID)
         AuraReturn = {UnitAura(Pointer, i, "HARMFUL")}
         if AuraReturn[1] == nil then break end
         -- if DMW.Tables.AuraCache[GUID][AuraReturn[1]] == nil then
-        DMW.Tables.AuraCache[GUID][AuraReturn[1]] = {["AuraReturn"] = AuraReturn, Type = "HARMFUL|PLAYER"}
+        DMW.Tables.AuraCache[GUID][AuraReturn[1]] = {["AuraReturn"] = AuraReturn, Type = "HARMFUL"}
         -- print(AuraReturn)
         -- end
         if AuraReturn[7] ~= nil and AuraReturn[7] == "player" then

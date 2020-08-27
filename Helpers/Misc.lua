@@ -124,7 +124,8 @@ DMW.Enums.ClassPowerTypes = {
         -- "Alternate"
     },
     DEMONHUNTER = {
-        "Fury"
+        "Fury",
+        "Pain"
     }
 }
 
