@@ -18,7 +18,7 @@ function LocalPlayer:GetFriendsCone(Length, Angle, HP)
     local Table, TableCount = self:GetFriends(Length)
     if TableCount > 0 then
         HP = HP or 100
-        local Facing = ObjectFacing(self.Pointer)
+        -- local Facing = ObjectFacing(self.Pointer)
         for _, Unit in pairs(Table) do
             if Unit.HP <= HP and UnitIsFacing(self.Pointer, Unit.Pointer, Angle/2) then
                 Count = Count + 1

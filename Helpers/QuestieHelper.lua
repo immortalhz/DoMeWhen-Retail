@@ -170,11 +170,19 @@ local QuestieCacheUpdate = function()
 	-- end
 
 	--update the quest cache
-	local numEntries, numQuests = GetNumQuestLogEntries()
+	local numEntries, numQuests =  C_QuestLog.GetNumQuestLogEntries()
 	for questId = 1, numEntries do
-		local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questId, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle (questId)
-		if (type (questId) == "number" and questId > 0) then -- and not isComplete
-			DMW.Cache.QuestieCache[title] = true
+		local tempTable = C_QuestLog.GetInfo(questId)
+		-- local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questId, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = C_QuestLog.GetTitleForLogIndex(questId)
+		local questIdLog = tempTable["questID"]
+		if type (questIdLog) == "number" and questIdLog > 0  then
+			local titleLog = tempTable["title"]
+			-- print(titleLog)
+			-- if not titleLog == "Quest" then
+				-- print(questId, questIdLog)
+				DMW.Cache.QuestieCache[titleLog] = true
+			-- end
+		-- if (type (questId) == "number" and questId > 0) then -- and not isComplete
 		end
 	end
 
@@ -258,7 +266,7 @@ local function QuestieEventHandler(_, event, ...)
         if (func) then
             func (event, ...)
         else
-            Print("no registered function for event " .. (event or "unknown event"))
+            print("no registered function for event " .. (event or "unknown event"))
         end
     end
 end

@@ -1,14 +1,17 @@
 -- DMW.Enums.MeleeSpell = {WARRIOR = 23881, ROGUE = 193315, DEMONHUNTER = 162794} --193315
 
 DMW.Enums.MeleeSpell = {
-    "Vengeance" == 228477,
-    "Havoc" == 162794,
-    "Outlaw" == 193315,
-    "Assassination" == 1,
-    "Blood" == 1,
-    "Fury" == 23881,
-    "Protection" == 1,
-    "Arms" == 1,
+    ["Vengeance"] = 228477,
+    ["Havoc"] = 162794,
+    ["Outlaw"] = 193315,
+    ["Assassination"] = 1,
+    ["Blood"] = 1,
+    ["Fury"] = 23881,
+    ["Protection"] = 1,
+    ["Arms"] = 1,
+    ["Holy"] = 35395,
+    ["Retribution"] = 35395,
+    ["Balance"] = 33917
 }
 
 DMW.Enums.CreatureType = {

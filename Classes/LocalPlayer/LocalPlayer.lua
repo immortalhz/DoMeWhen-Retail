@@ -117,7 +117,7 @@ function LocalPlayer:Update()
     --     end
     -- end
     self.Instance = select(2, IsInInstance())
-    if self.Instance ~= "none" then self.InstanceID = select(8, GetInstanceInfo()) end
+    if self.Instance ~= "none" then self.InstanceID = select(8, GetInstanceInfo()) else self.InstanceID = nil end
     -- if self.Instance == "party" or self.Instance == "pvp" then self.InstanceMap = GetInstanceInfo() end
     self.Moving = self:HasMovementFlag(DMW.Enums.MovementFlags.Moving)
     self.PetActive = UnitIsVisible("pet")
@@ -172,12 +172,16 @@ end
 
 function LocalPlayer:UpdatePower(arg, PowerType)
     if arg == "Fill" then
-        for _, powerName in ipairs(DMW.Enums.ClassPowerTypes[self.Class]) do
-            local typeNum = DMW.Enums.PowerTypes[powerName][2]
-            self[powerName] = UnitPower(self.Pointer, typeNum)
-            self[powerName .. "Max"] = UnitPowerMax(self.Pointer, typeNum)
-            self[powerName .. "Deficit"] = self[powerName .. "Max"] - self[powerName]
-            self[powerName .. "Pct"] = self[powerName] / self[powerName .. "Max"] * 100
+        if DMW.Enums.ClassPowerTypes[self.Class] then
+            for _, powerName in ipairs(DMW.Enums.ClassPowerTypes[self.Class]) do
+                -- print(powerName)
+                local typeNum = DMW.Enums.PowerTypes[powerName][2]
+                -- print(typeNum)
+                self[powerName] = UnitPower(self.Pointer, typeNum)
+                self[powerName .. "Max"] = UnitPowerMax(self.Pointer, typeNum)
+                self[powerName .. "Deficit"] = self[powerName .. "Max"] - self[powerName]
+                self[powerName .. "Pct"] = self[powerName] / self[powerName .. "Max"] * 100
+            end
         end
         -- self.Power = UnitPower(self.Pointer, 0)
         -- self.PowerMax = UnitPowerMax(self.Pointer, 0)
@@ -497,7 +501,7 @@ function LocalPlayer:GCD()
 end
 
 function LocalPlayer:TraitActive(TraitName)
-    if self.Traits and self.Traits[TraitName] > 0 then
+    if self.Traits and self.Traits[TraitName] and self.Traits[TraitName] > 0 then
         return true
     else
         return false

@@ -98,10 +98,10 @@ function Unit:Update()
         self.NextUpdate = DMW.Time + (math.random(300, 1500) / 10000)
     end
     self:UpdatePosition()
-    if DMW.Tables.AuraUpdate[self.GUID] and self.Pointer ~= DMW.Player.Pointer then
-        DMW.Functions.AuraCache.Refresh(self.Pointer, self.GUID)
-        DMW.Tables.AuraUpdate[self.GUID] = nil
-    end
+    -- if DMW.Tables.AuraUpdate[self.GUID] and self.Pointer ~= DMW.Player.Pointer then
+    --     DMW.Functions.AuraCache.Refresh(self.Pointer, self.GUID)
+    --     DMW.Tables.AuraUpdate[self.GUID] = nil
+    -- end
     self.Distance = self:GetDistance()
     self:CastingCheck()
     -- if RealMobHealth_CreatureHealthCache and self.ObjectID > 0 and RealMobHealth_CreatureHealthCache[self.ObjectID .. "-" .. self.Level] then
@@ -119,13 +119,15 @@ function Unit:Update()
 
         -- local unit = DMW.Tables.Misc.pointer2unitFunc(self.Pointer)
         -- if self.UnitID == nil then
-            self.Health = UnitHealth(self.Pointer)
         -- end
 
         -- end
     -- end
+    self.Health = UnitHealth(self.Pointer)
+    self.HealthMax = UnitHealthMax(self.Pointer)
     self.HP = self.Health / self.HealthMax * 100
-    self.Dead = self.Health == 0 or UnitIsDeadOrGhost(self.Pointer)
+    self.HealthDeficit = self.HealthMax - self.Health
+    self.Dead = UnitIsDeadOrGhost(self.Pointer) -- CalculateHP
     self.TTD = self:GetTTD()
     self.LoS = false
     if self.Distance < 50 and not self.Dead then
@@ -201,7 +203,7 @@ function Unit:LineOfSight(OtherUnit)
 end
 
 function Unit:IsEnemy()
-    return self:HasThreat() and ((not self.Friend and not self:CCed()) or UnitIsUnit(self.Pointer, "target"))
+    return self:HasThreat() and not self.Dead and ((not self.Friend and not self:CCed()) or UnitIsUnit(self.Pointer, "target"))
 end
 
 function Unit:IsBoss()
@@ -338,12 +340,12 @@ function Unit:Interrupt()
 end
 
 function Unit:Dispel(Spell)
-    local AuraCache = DMW.Tables.AuraCache[self.GUID]
+    local AuraCache = DMW.Tables.AuraCache[self.Pointer]
     if not AuraCache or not Spell then
         return false
     end
     local DispelTypes = {}
-    for k, v in pairs(DMW.Enums.DispelSpells[Spell.SpellID]) do
+    for _, v in pairs(DMW.Enums.DispelSpells[Spell.SpellID]) do
         DispelTypes[v] = true
     end
     local Elapsed
@@ -416,16 +418,31 @@ end
 function Unit:AuraByID(SpellID, OnlyPlayer)
     OnlyPlayer = OnlyPlayer or false
     local SpellName = GetSpellInfo(SpellID)
-    if DMW.Tables.AuraCache[self.GUID] ~= nil and DMW.Tables.AuraCache[self.GUID][SpellName] ~= nil and (not OnlyPlayer or DMW.Tables.AuraCache[self.GUID][SpellName]["player"] ~= nil) then
+    if DMW.Tables.AuraCache[self.Pointer] ~= nil and DMW.Tables.AuraCache[self.Pointer][SpellName] ~= nil and (not OnlyPlayer or DMW.Tables.AuraCache[self.Pointer][SpellName]["player"] ~= nil) then
         local AuraReturn
         if OnlyPlayer then
-            AuraReturn = DMW.Tables.AuraCache[self.GUID][SpellName]["player"].AuraReturn
+            AuraReturn = DMW.Tables.AuraCache[self.Pointer][SpellName]["player"].AuraReturn
         else
-            AuraReturn = DMW.Tables.AuraCache[self.GUID][SpellName].AuraReturn
+            AuraReturn = DMW.Tables.AuraCache[self.Pointer][SpellName].AuraReturn
         end
         return unpack(AuraReturn)
     end
     return false
+end
+
+function Unit:AuraByIDStacks(SpellID, OnlyPlayer)
+    OnlyPlayer = OnlyPlayer or false
+    local SpellName = GetSpellInfo(SpellID)
+    if DMW.Tables.AuraCache[self.Pointer] ~= nil and DMW.Tables.AuraCache[self.Pointer][SpellName] ~= nil and (not OnlyPlayer or DMW.Tables.AuraCache[self.Pointer][SpellName]["player"] ~= nil) then
+        local AuraReturn
+        if OnlyPlayer then
+            AuraReturn = DMW.Tables.AuraCache[self.Pointer][SpellName]["player"].AuraReturn
+        else
+            AuraReturn = DMW.Tables.AuraCache[self.Pointer][SpellName].AuraReturn
+        end
+        return AuraReturn[3]
+    end
+    return 0
 end
 
 function Unit:AuraByName(SpellName, OnlyPlayer)
@@ -443,6 +460,21 @@ function Unit:AuraByName(SpellName, OnlyPlayer)
     return nil
 end
 
+function Unit:AuraByNameStacks(SpellName, OnlyPlayer)
+    OnlyPlayer = OnlyPlayer or false
+    local SpellName = SpellName
+    if DMW.Tables.AuraCache[self.GUID] ~= nil and DMW.Tables.AuraCache[self.GUID][SpellName] ~= nil and (not OnlyPlayer or DMW.Tables.AuraCache[self.GUID][SpellName]["player"] ~= nil) then
+        local AuraReturn
+        if OnlyPlayer then
+            AuraReturn = DMW.Tables.AuraCache[self.GUID][SpellName]["player"].AuraReturn
+        else
+            AuraReturn = DMW.Tables.AuraCache[self.GUID][SpellName].AuraReturn
+        end
+        return AuraReturn[3]
+    end
+    return nil
+end
+
 function Unit:CCed()
     for SpellID, _ in pairs(DMW.Enums.CCBuffs) do
         if self:AuraByID(SpellID) then
@@ -453,8 +485,9 @@ function Unit:CCed()
 end
 
 function Unit:IsQuest()
+    -- if IsQuestObject(self.Pointer) then print(self.Name) end
     if not self.QuestCached or (DMW.Cache.QuestieCache.CacheTimer and self.Cache.QuestTime < DMW.Cache.QuestieCache.CacheTimer) then
-        self.QuestCached = DMW.Helpers.QuestieHelper.isQuestieUnit(self.Pointer, self.GUID)
+        self.QuestCached = IsQuestObject(self.Pointer) or DMW.Helpers.QuestieHelper.isQuestieUnit(self.Pointer, self.GUID)
         self.Cache.QuestTime = DMW.Time
 
     end
@@ -627,6 +660,12 @@ function Unit:Facing()
     end
     return self.FacingCheck
 end
+
+function Unit:Reachable(Distance)
+    local distanceMax = Distance or 40
+    return self.Distance <= distanceMax and self.LoS
+end
+
 
 function Unit:NoTouchDungeons()
     if DMW.Player.Instance == "party" then

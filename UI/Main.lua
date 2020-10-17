@@ -856,9 +856,21 @@ local Options = {
                         DMW.Settings.profile.Helpers.ShowIDs = value
                     end
                 },
+                AcceptQueues = {
+                    type = "toggle",
+                    order = 11,
+                    name = "Auto Accept Queues",
+                    width = "full",
+                    get = function()
+                        return DMW.Settings.profile.Helpers.AcceptQueues
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Helpers.AcceptQueues = value
+                    end
+                },
                 Trackshit = {
                     type = "execute",
-                    order = 11,
+                    order = 12,
                     name = "Advanced Tracking",
                     desc = "Track options",
                     width = "full",
@@ -874,7 +886,7 @@ local Options = {
                     type = "execute",
                     name = "Export Settings",
                     width = 1,
-                    order = 12,
+                    order = 13,
                     func = function()
                         export("export")
                     end
@@ -883,7 +895,7 @@ local Options = {
                     type = "execute",
                     name = "Import Settings",
                     width = 1,
-                    order = 13,
+                    order = 14,
                     func = function()
                         export("import")
                     end
@@ -1215,22 +1227,22 @@ local Options = {
                     set = function(info, value)
                         DMW.Settings.profile.Friend.DispelDelay = value
                     end
-                },
-                PartyRoles = {
-                    type = "execute",
-                    order = 2,
-                    name = "Open Party Roles Frame",
-                    desc = "Choose roles for your party/raid",
-                    width = "full",
-                    func = function()
-                        if not UI.PartyRolesFrame:IsShown() then
-                            -- UI.Show()
-                            UI.PartyRolesFrame:Show()
-                        else
-                            UI.PartyRolesFrame:Hide()
-                        end
-                    end
-                }
+                }--,
+                -- PartyRoles = {
+                --     type = "execute",
+                --     order = 2,
+                --     name = "Open Party Roles Frame",
+                --     desc = "Choose roles for your party/raid",
+                --     width = "full",
+                --     func = function()
+                --         if not UI.PartyRolesFrame:IsShown() then
+                --             -- UI.Show()
+                --             UI.PartyRolesFrame:Show()
+                --         else
+                --             UI.PartyRolesFrame:Hide()
+                --         end
+                --     end
+                -- }
             }
         },
         QueueTab = {
@@ -1358,39 +1370,39 @@ local function CreateIconMenu()
 end
 
 local function CreateButton(unit,i, groupType)
-    if not UI.RoleGroup[unit] then
-        UI.RoleGroup[unit] = AceGUI:Create('Button', nil, UIParent)
-        UI.RoleGroup[unit].index = i
-        UI.RoleGroup[unit]:SetRelativeWidth(1)
-        UI.RoleGroup[unit]:SetHeight(45)
-        UI.PartyRolesFrame:AddChild(UI.RoleGroup[unit], button)
-        UI.RoleGroup[unit]:SetCallback("OnClick", function() CreateIconMenu() end)
-    end
+    -- if not UI.RoleGroup[unit] then
+    --     UI.RoleGroup[unit] = AceGUI:Create('Button', nil, UIParent)
+    --     UI.RoleGroup[unit].index = i
+    --     UI.RoleGroup[unit]:SetRelativeWidth(1)
+    --     UI.RoleGroup[unit]:SetHeight(45)
+    --     UI.PartyRolesFrame:AddChild(UI.RoleGroup[unit], button)
+    --     UI.RoleGroup[unit]:SetCallback("OnClick", function() CreateIconMenu() end)
+    -- end
     UpdateButton(unit)
 end
 
 function UI.InitRoles()
-    local groupType, groupSize
-    -- for k,v in pairs(UI.RoleGroup) do
-    --     v:Release()
+    -- local groupType, groupSize
+    -- -- for k,v in pairs(UI.RoleGroup) do
+    -- --     v:Release()
+    -- -- end
+    -- UI.PartyRolesFrame:SetStatusText("Raid max: Empty - Raid current: - Empty");
+	-- if IsInRaid() then
+	-- 	groupType = "raid"
+	-- 	groupSize = GetNumGroupMembers()
+	-- elseif IsInGroup() then
+	-- 	groupType = "party"
+	-- 	groupSize = GetNumGroupMembers() - 1
     -- end
-    UI.PartyRolesFrame:SetStatusText("Raid max: Empty - Raid current: - Empty");
-	if IsInRaid() then
-		groupType = "raid"
-		groupSize = GetNumGroupMembers()
-	elseif IsInGroup() then
-		groupType = "party"
-		groupSize = GetNumGroupMembers() - 1
-    end
 
-    if groupType == "party" then
-        for i=1, groupSize do
-            local unit = groupType..i
-            CreateButton(unit, i)
-        end
-        CreateButton("player", 5)
-    elseif groupType == "raid" then
-    end
+    -- if groupType == "party" then
+    --     for i=1, groupSize do
+    --         local unit = groupType..i
+    --         CreateButton(unit, i)
+    --     end
+    --     CreateButton("player", 5)
+    -- elseif groupType == "raid" then
+    -- end
 
 end
 
@@ -1405,29 +1417,29 @@ function UI.Init()
         _G["TrackingFrameConfig"] = TrackingFrame.frame
         table.insert(UISpecialFrames, "TrackingFrameConfig")
     end
-    if not UI.PartyRolesFrame then
-        UI.RoleGroup = {}
-        UI.PartyRolesFrame = AceGUI:Create("Frame")
-        -- UI.PartyRolesFrame:SetCallback("OnClose", UI.PartyRolesFrame:Hide);
-        UI.PartyRolesFrame:SetTitle("Party/Raid Roles")
-        UI.PartyRolesFrame:SetStatusText("Choose the Roles of your friends")
-        UI.PartyRolesFrame:Hide()
-        UI.PartyRolesFrame:SetLayout("Flow")
-        -- UI.PartyRolesFrame:SetAutoAdjustHeight(false)
-        local button = AceGUI:Create("Button", button123, UIParent);
-        button:SetWidth(200)
-        -- button123:SetFullHeight(false)
-        button:SetHeight(25)
-        button:SetText("Click Me! To Init or Reset")
-        -- button:SetPoint("BOTTOM", UI.PartyRolesFrame, "BOTTOM", 0, 0)
-	-- button:SetWidth(200)
-	-- button:SetHeight(50)
-        -- button:SetPoint(UI.PartyRolesFrame.statustext)
-        -- button123:SetPoint("BOTTOM")
-        button:SetCallback("OnClick", function() UI.InitRoles() end)
-        UI.PartyRolesFrame:AddChild(button)
+    -- if not UI.PartyRolesFrame then
+    --     UI.RoleGroup = {}
+    --     UI.PartyRolesFrame = AceGUI:Create("Frame")
+    --     -- UI.PartyRolesFrame:SetCallback("OnClose", UI.PartyRolesFrame:Hide);
+    --     UI.PartyRolesFrame:SetTitle("Party/Raid Roles")
+    --     UI.PartyRolesFrame:SetStatusText("Choose the Roles of your friends")
+    --     UI.PartyRolesFrame:Hide()
+    --     UI.PartyRolesFrame:SetLayout("Flow")
+    --     -- UI.PartyRolesFrame:SetAutoAdjustHeight(false)
+    --     local button = AceGUI:Create("Button", button123, UIParent);
+    --     button:SetWidth(200)
+    --     -- button123:SetFullHeight(false)
+    --     button:SetHeight(25)
+    --     button:SetText("Click Me! To Init or Reset")
+    --     -- button:SetPoint("BOTTOM", UI.PartyRolesFrame, "BOTTOM", 0, 0)
+	-- -- button:SetWidth(200)
+	-- -- button:SetHeight(50)
+    --     -- button:SetPoint(UI.PartyRolesFrame.statustext)
+    --     -- button123:SetPoint("BOTTOM")
+    --     button:SetCallback("OnClick", function() UI.InitRoles() end)
+    --     UI.PartyRolesFrame:AddChild(button)
 
-    end
+    -- end
     UI.MinimapIcon = LibStub("LibDBIcon-1.0")
     UI.MinimapIcon:Register("DMWMinimapIcon", MinimapIcon, DMW.Settings.profile.MinimapIcon)
 end

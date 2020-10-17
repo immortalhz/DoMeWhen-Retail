@@ -15,4 +15,5 @@ DMW.Enums.Items = {
     superiorBattlePotionOfIntellect = 168498,
     -- superiorBattlePotionOfStrength  = 168500,
     superiorBattlePotionOfStamina   = 168499,
+    EngineerBattleRes = 158379
 }

@@ -1,7 +1,6 @@
 local DMW = DMW
-local EHFrame = CreateFrame("Frame")
--- local class = select(2, UnitClass("player"))
--- local PlayerIsHealer = (class == "SHAMAN" or class == "PRIEST" or class == "DRUID" or class == "PALADIN") and true or false
+DMW.Frames.EH = CreateFrame("Frame")
+local EHFrame = DMW.Frames.EH
 EHFrame:RegisterEvent("ENCOUNTER_START")
 EHFrame:RegisterEvent("ENCOUNTER_END")
 EHFrame:RegisterEvent("PLAYER_TOTEM_UPDATE")
@@ -11,11 +10,12 @@ EHFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 EHFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 EHFrame:RegisterEvent("LOOT_OPENED")
 EHFrame:RegisterEvent("LOOT_CLOSED")
-EHFrame:RegisterEvent("GET_ITEM_INFO_RECEIVED")
+-- EHFrame:RegisterEvent("GET_ITEM_INFO_RECEIVED")
 EHFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
-EHFrame:RegisterEvent("SKILL_LINES_CHANGED")
+-- EHFrame:RegisterEvent("SKILL_LINES_CHANGED")
 EHFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
 EHFrame:RegisterEvent("UNIT_ATTACK_SPEED")
+-- EHFrame:RegisterEvent("UNIT_SPELLCAST_FAILED")
 -- EHFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 -- if PlayerIsHealer then
@@ -27,13 +27,19 @@ EHFrame:RegisterEvent("UNIT_ATTACK_SPEED")
 EHFrame:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player")
 -- EHFrame:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
 EHFrame:RegisterUnitEvent("UNIT_MAXPOWER", "player")
-
 EHFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
 EHFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 EHFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
-
+EHFrame:RegisterEvent("AZERITE_ESSENCE_ACTIVATED")
+EHFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+EHFrame:RegisterEvent("RAID_TARGET_UPDATE")
 EHFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
-local function EventHandler(self, event, ...)
+EHFrame:RegisterEvent("UNIT_ENTERING_VEHICLE")
+EHFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
+EHFrame:RegisterEvent("PLAYER_LEVEL_UP")
+EHFrame:RegisterEvent("LFG_PROPOSAL_SHOW")
+
+function EHFrame.EventHandler(self, event, ...)
     if GetObjectWithGUID then
         if event == "ENCOUNTER_START" then
             DMW.Player.EID = select(1, ...)
@@ -48,23 +54,30 @@ local function EventHandler(self, event, ...)
             DMW.Player.Combat = DMW.Time
             DMW.Player.CombatLeft = false
         elseif event == "PLAYER_EQUIPMENT_CHANGED" then
-            --DMW.Player:UpdateEquipment()
-        elseif event == "CHARACTER_POINTS_CHANGED" or event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "PLAYER_TALENT_UPDATE" then
+            if DMW.Player.UpdateEquipment then
+                local slot = ...
+                DMW.Player:UpdateEquipment()
+                if slot == 1 or slot == 3 or slot == 5 then
+                    DMW.Player:GetTraits()
+                end
+            end
+        elseif event == "PLAYER_TALENT_UPDATE" then -- event == "CHARACTER_POINTS_CHANGED" or event == "ACTIVE_TALENT_GROUP_CHANGED" or
             if DMW.Player then
                 C_Timer.After(0.3, function() DMW.Player:UpdateVariables() end)
             end
-            if DMW.Player.GetTalents  then DMW.Player:GetTalents() end
+            if DMW.Player.GetTalents then DMW.Player:GetTalents() end
+        elseif event == "AZERITE_ESSENCE_ACTIVATED" then
+            DMW.Player:GetAzerite()
         elseif event == "RAID_TARGET_UPDATE" then
             DMW.Player.UpdateMarkCache()
         elseif event == "LOOT_OPENED" then
             DMW.Player.Looting = true
         elseif event == "LOOT_CLOSED" then
             DMW.Player.Looting = false
-        elseif event == "GET_ITEM_INFO_RECEIVED" then
-            local ItemID = select(1, ...)
-            if DMW.Tables.ItemInfo[ItemID] then
-                DMW.Tables.ItemInfo[ItemID]:Refresh()
-                DMW.Tables.ItemInfo[ItemID] = nil
+        elseif event == "UNIT_SPELLCAST_FAILED" then
+            local unit,_,id = ...
+            if unit == "player" then
+                print(GetSpellInfo(id))
             end
         -- elseif event == "UNIT_INVENTORY_CHANGED" then
         --     local unit = select(1, ...)
@@ -144,12 +157,31 @@ local function EventHandler(self, event, ...)
         elseif event == "GROUP_ROSTER_UPDATE" then
             -- print("12312")
             DMW.Tables.Misc.GROUP_ROSTER_UPDATE()
-        elseif event == "PLAYER_ENTERING_WORLD" then
-            print("123")
+        -- elseif event == "PLAYER_ENTERING_WORLD" then
+        --     print("123")
+        elseif event == "UNIT_ENTERING_VEHICLE" then
+            DMW.Player.NoControl = true
+        elseif event == "UNIT_EXITED_VEHICLE" then
+            DMW.Player.NoControl = false
+        elseif event == "PLAYER_LEVEL_UP" then
+            DMW.Player.Level = UnitLevel("player")
+        elseif event == "LFG_PROPOSAL_SHOW" and DMW.Settings.profile.Helpers.AcceptQueues then
+
+            C_Timer.After(1, AcceptProposal)
         end
     end
 end
-EHFrame:SetScript("OnEvent", EventHandler)
+
+local function KeyPress(self, Key)
+    if (Key == "W" or Key == "A" or Key == "S" or Key == "D") and DMW.Helpers.Navigation ~= 0 then
+        DMW.Helpers.Navigation:ClearPath()
+    end
+end
+
+EHFrame:SetScript("OnEvent", EHFrame.EventHandler)
+EHFrame:SetScript("OnKeyDown", KeyPress)
+EHFrame:SetPropagateKeyboardInput(true)
+
 
 -- if class == "SHAMAN" then
 --     hooksecurefunc(DMW, "Remove", function(pointer)

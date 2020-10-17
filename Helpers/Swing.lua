@@ -80,7 +80,7 @@ DMW.Helpers.Swing.GetSwing = function(unitPointer, hand)
                 if timeLeft < 0 then timeLeft = 0 end
                 return timeLeft, Unit.swingDurationOff
             else
-                return math.huge, swingDurationOff
+                return math.huge, Unit.swingDurationOff
             end
         elseif hand == "ranged" then
             if Unit.lastSwingRange then

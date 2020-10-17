@@ -3,6 +3,8 @@ DMW.Enums.DispelSpells = {
     [2893] = {"Poison"}, -- Abolish Poison
     [8946] = {"Poison"}, -- Cure Poison
     [2782] = {"Curse"}, -- Remove Curse
+    [88423] = {"Curse", "Magic", "Poison"}, -- NatureCure
+    [2782] = {"Curse", "Poison"},
     --Priest
     [527] = {"Magic"},
     [988] = {"Magic"},
@@ -15,7 +17,7 @@ DMW.Enums.DispelSpells = {
     [526] = {"Poison"}, -- Cure Poison
 	[2870] = {"Disease"}, -- Cure Disease
     --Paladin
-    [1152] = {"Poison", "Disease"},
+    [213644] = {"Poison", "Disease"},
     [4987] = {"Poison", "Magic", "Disease"},
     --
     [23595] = {"Physical"} -- Luffa

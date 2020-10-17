@@ -18,6 +18,7 @@ DMW.Timers = {
     Gatherers = {},
     Rotation = {}
 }
+DMW.Frames = {}
 DMW.Pulses = 0
 local Initialized = false
 local DebugStart
@@ -97,18 +98,15 @@ f:SetScript(
                 FindRotation()
                 return
             else
-                -- print("asd")
                 if DMW.Helpers.Queue.Run() then
                     return
                 end
-                -- print("asfte")
                 if DMW.Helpers.Rotation.Active() then
                     if DMW.Player.Combat then
                         RotationCount = RotationCount + 1
                         DebugStart = debugprofilestop()
                     end
                     DMW.Player.Rotation()
-                    -- print("rota")
                     if DMW.Player.Combat then
                         DMW.Timers.Rotation.Last = debugprofilestop() - DebugStart
                         DMW.Timers.Rotation.Total = DMW.Timers.Rotation.Total and (DMW.Timers.Rotation.Total + DMW.Timers.Rotation.Last) or DMW.Timers.Rotation.Last

@@ -39,6 +39,14 @@ function Misc.pointer2unitFunc(Pointer)
     return Misc.pointer2unit[Pointer]
 end
 
+function Misc.guid2friendlyUnit(guid)
+    for _, Unit in ipairs(DMW.Friends.Units) do
+        if Unit.GUID == guid then
+            return Unit
+        end
+    end
+end
+
 local function updateUnit(unit)
     local guid = UnitGUID(unit)
     if guid then
@@ -61,6 +69,10 @@ local function updateUnit(unit)
             if GetPartyAssignment("MAINTANK", unit) then
                 -- print("tank")
                 DMW.Units[pointer].MainTank = true
+            elseif UnitGroupRolesAssigned(pointer) == "TANK" then
+                DMW.Units[pointer].MainTank = true
+            elseif UnitGroupRolesAssigned(pointer) == "HEALER" then
+                DMW.Units[pointer].Healer = true
             end
         end
 
@@ -100,9 +112,9 @@ end
 --     return Misc.guid2group[GUID] == Misc.PlayerGroup
 -- end
 
-function Misc.MainTank(Pointer)
-    return Misc.guid2group[GUID] == Misc.PlayerGroup
-end
+-- function Misc.MainTank(Pointer)
+--     return Misc.guid2group[GUID] == Misc.PlayerGroup
+-- end
 
 -- C_Timer.After(10, function() Misc.GROUP_ROSTER_UPDATE() end)
 DMW.Enums.ClassPowerTypes = {
@@ -123,9 +135,20 @@ DMW.Enums.ClassPowerTypes = {
         "ComboPoints",
         -- "Alternate"
     },
+    PALADIN = {
+        "Power",
+        "HolyPower"
+    },
     DEMONHUNTER = {
         "Fury",
         "Pain"
+    },
+    DRUID ={
+        "Power",
+        "ComboPoints",
+        "Rage",
+        "Energy",
+        "LunarPower"
     }
 }
 

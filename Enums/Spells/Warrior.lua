@@ -30,12 +30,10 @@ Spells.WARRIOR = {
 			LastStand                             = {12975},
 			ShieldWall                            = {871},
 			ShockWave                             = {46968},
-			VictoryRush                           = {34428},
 			ImpendingVictory                      = {202168},
 			Pummel                                = {6552},
 			SpellReflect 						  = {23920},
 			RallyingCry 						  = {97462},
-			IntimidatingShout                     = {5246},
 			HeroicThrow 						  = {57755},
 			RazorCoralDebuff                      = {303568},
 			BloodoftheEnemy                       = {297108},
@@ -98,27 +96,28 @@ Spells.WARRIOR = {
     Fury = {
         Abilities = {
 			Recklessness                          = {1719},
-			FuriousSlash                          = {100130},
+			-- FuriousSlash                          = {100130},
 			-- RecklessAbandon                       = {202751},
-			HeroicLeap                            = {6544},
+			-- HeroicLeap                            = {6544},
 			Siegebreaker                          = {280772},
 			Rampage                               = {184367},
-			Execute                               = {5308, 280735},
+			-- Execute                               = {5308, 280735},
 			Bloodthirst                           = {23881},
 			RagingBlow                            = {85288},
 			Bladestorm                            = {46924},
 			DragonRoar                            = {118000},
-			Whirlwind                             = {190411},
-			Charge                                = {100},
-			BloodFury                             = {20572},
-			Berserking                            = {26297},
-			LightsJudgment                        = {255647},
-			Fireblood                             = {265221},
-			AncestralCall                         = {274738},
-			BagofTricks                           = {312411},
-			Pummel                                = {6552},
-			RallyingCry 						  = {97462},
-			IntimidatingShout                     = {5246},
+			-- Whirlwind                             = {190411},
+			-- Charge                                = {100},
+			-- BloodFury                             = {20572},
+			-- Berserking                            = {26297},
+			-- LightsJudgment                        = {255647},
+			-- Fireblood                             = {265221},
+			-- AncestralCall                         = {274738},
+			-- BagofTricks                           = {312411},
+			-- Pummel                                = {6552},
+			-- RallyingCry 						  = {97462},
+			-- IntimidatingShout                     = {5246},
+			Onslaught = {315720},
 			ColdSteelHotBlood                     = {288080},
 			BloodOfTheEnemy                       = {297108},
 			PurifyingBlast                        = {295337},
@@ -136,17 +135,11 @@ Spells.WARRIOR = {
 			FuriousSlashBuff                     = {202539},
 			MemoryofLucidDreams                   = {298357},
 			Enrage                           = {184362},
-
 			SiegebreakerDebuff                    = {280773},
-
 			FujiedasFuryBuff                      = {207775},
-
 			MeatCleaverBuff                     = {85739},
-
 			GuardianofAzerothBuff                 = {295855},
-
 			RecklessForceBuff                     = {302932},
-
         },
         Debuffs = {
 			ConcentratedFlameBurn                 = 295368,
@@ -159,31 +152,34 @@ Spells.WARRIOR = {
         Talents = {
 
 			WarMachine = 22632, -- 262231
-			EndlessRage = 22633, -- 202296
+			SuddenDeath = 22381, -- 280721
+			-- EndlessRage = 22633, -- 202296
 			FreshMeat = 22491, -- 215568
 
 			DoubleTime = 19676, -- 103827
 			ImpendingVictory = 22625, -- 202168
 			StormBolt = 23093, -- 107570
 
-			InnerRage = 22379, -- 215573
-			SuddenDeath = 22381, -- 280721
-			FuriousSlash = 23372, -- 100130
+			Massacre = 22393, -- 206315
+			Frenzy = 22381,
+			Onslaught = 23372,
+			-- InnerRage = 22379, -- 215573
+			-- FuriousSlash = 23372, -- 100130
 
 			FuriousCharge = 23097, -- 202224
 			BoundingStride = 22627, -- 202163
 			Warpaint = 22382, -- 208154
 
-			Carnage = 22383, -- 202922
-			Massacre = 22393, -- 206315
-			FrothingBerserker = 19140, -- 215571
+			Seethe = 22383,
+			FrothingBerserker = 22393, -- 215571
+			Cruelty = 19140,
 
 			MeatCleaver = 22396, -- 280392
 			DragonRoar = 22398, -- 118000
 			Bladestorm = 22400, -- 46924
 
-			RecklessAbandon = 22405, -- 202751
 			AngerManagement = 22402, -- 152278
+			RecklessAbandon = 22405, -- 202751
 			Siegebreaker = 16037, -- 280772
 		},
 		Traits = {
@@ -236,11 +232,9 @@ Spells.WARRIOR = {
 			ConcentratedFlameBurn                 = {295368},
 			-- VictoryRush = {34428},
 			-- VictoryRush = {34428},
-			VictoryRush = {34428},
         },
         Buffs = {
 			MemoryofLucidDreams                   = {298357},
-			VictoryRush = {32216},
 			DeadlyCalmBuff                        = {262228},
 			CrushingAssaultBuff                   = {278826},
 			ExecutionersPrecisionBuff             = {242188},
@@ -290,8 +284,25 @@ Spells.WARRIOR = {
         Abilities = {
 			BattleShout = {6673},
 			VictoryRush = {34428},
-			-- VictoryRush = {34428},
-
+			ShieldBlock = {2565},
+			Whirlwind = {1680},
+			Intervene = {3411},
+			HeroicThrow = {57755},
+			HeroicLeap = {6544},
+			Pummel = {6552},
+			Execute = {163201},
+			Slam = {1464},
+			ShieldSlam = {23922},
+			RallyingCry = {97462},
+			SpellReflect = {23920},
+			Hamstring = {1715},
+			Taunt = {355},
+			ShatteringThrow = {64382},
+			Charge = {100},
+			IgnorePain = {355},
+			IntimidatingShout = {5246},
+			BerserkerRage = {18499},
+			ChallengingShout = {1161}
         },
         Buffs = {
 			BattleShout = {6673},

@@ -109,3 +109,4 @@ Enums\BuffLevels.lua
 UI\Main.lua
 UI\HUD.lua
 UI\Debug.lua
+UI\Log.lua

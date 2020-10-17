@@ -1,155 +1,122 @@
 local Spells = DMW.Enums.Spells
 
 Spells.DRUID = {
-    Abilities = {
-        AbolishPoison = {Ranks = {2893}},
-        AquaticForm = {Ranks = {1066}},
-        Barkskin = {Ranks = {22812}},
-        Bash = {Ranks = {5211, 6798, 8983}},
-        BearForm = {Ranks = {5487}},
-        CatForm = {Ranks = {768}},
-        ChallengingRoar = {Ranks = {5209}},
-        Claw = {Ranks = {1082, 3029, 5201, 9849, 9850}},
-        Cower = {Ranks = {8998, 9000, 9892}},
-        CurePoison = {Ranks = {8946}},
-        Dash = {Ranks = {1850, 9821}},
-        DemoralizingRoar = {Ranks = {99, 1735, 9490, 9747, 9898}},
-        DireBearForm = {Ranks = {9634}},
-        Enrage = {Ranks = {5229}},
-        EntanglingRoots = {Ranks = {339, 1062, 5195, 5196, 9852, 9853}},
-        FaerieFire = {Ranks = {770, 778, 9749, 9907}},
-        FaerieFireFeral = {Ranks = {16857, 17390, 17391, 17392}},
-        FeralCharge = {Ranks = {16979}},
-        FerociousBite = {Ranks = {22568, 22827, 22828, 22829, 31018}},
-        FrenziedRegeneration = {Ranks = {22842, 22895, 22896}},
-        GiftOfTheWild = {Ranks = {21849, 21850}},
-        Growl = {Ranks = {6795}},
-        HealingTouch = {Ranks = {5185, 5186, 5187, 5188, 5189, 6778, 8903, 9758, 9888, 9889, 25297}},
-        Hibernate = {Ranks = {2637, 18657, 18658}},
-        Hurricane = {Ranks = {17401, 17402}},
-        Innervate = {Ranks = {29166}},
-        InsectSwarm = {Ranks = {5570, 24974, 24975, 24976, 24977}},
-        MarkOfTheWild = {Ranks = {1126, 5232, 6756, 5234, 8907, 9884, 9885}},
-        Maul = {Ranks = {6807, 6808, 6809, 8972, 9745, 9880, 9881}},
-        Moonfire = {Ranks = {8921, 8924, 8925, 8926, 8927, 8928, 8929, 9833, 9834, 9835}},
-        MoonkinForm = {Ranks = {24858}},
-        NaturesGrasp = {Ranks = {16689, 16810, 16811, 16812, 16813, 17329}},
-        NaturesSwiftness = {Ranks = {17116}},
-        OmenOfClarity = {Ranks = {16864}},
-        Pounce = {Ranks = {9005, 9823, 9827}},
-        Prowl = {Ranks = {5215, 6783, 9913}},
-        Rake = {Ranks = {1822, 1823, 1824, 9904}},
-        Ravage = {Ranks = {6785, 6787, 9866, 9867}},
-        Rebirth = {Ranks = {20484, 20739, 20742, 20747, 20748}},
-        Regrowth = {Ranks = {8936, 8938, 8939, 8940, 8941, 9750, 9856, 9857, 9858}},
-        Rejuvenation = {Ranks = {774, 1058, 1430, 2090, 2091, 3627, 8910, 9839, 9840, 9841, 25299}},
-        RemoveCurse = {Ranks = {2782}},
-        Rip = {Ranks = {1079, 9492, 9493, 9752, 9894, 9896}},
-        Shred = {Ranks = {5221, 6800, 8992, 9829, 9830}},
-        SootheAnimal = {Ranks = {2908, 8955, 9901}},
-        Starfire = {Ranks = {2912, 8949, 8950, 8951, 9875, 9876, 25298}},
-        Swiftmend = {Ranks = {18562}},
-        Swipe = {Ranks = {779, 780, 769, 9754, 9908}},
-        TeleportMoonglade = {Ranks = {18960}},
-        Thorns = {Ranks = {467, 782, 1075, 8914, 9756, 9910}},
-        TigersFury = {Ranks = {5217, 6793, 9845, 9846}},
-        TrackHumanoids = {Ranks = {5225}},
-        Tranquility = {Ranks = {740, 8918, 9862, 9863}},
-        TravelForm = {Ranks = {783}},
-        Wrath = {Ranks = {5176, 5177, 5178, 5179, 5180, 6780, 8905, 9912}}
+
+    Balance = {
+        Abilities = {
+           Wrath = {190984},
+           Starfire = {194153},
+           Starsurge = {78674},
+        },
+        Buffs = {
+            EclipseLunar = {48518},
+            EclipseSonar = {48517}
+        },
+        Debuffs = {
+            -- ConcentratedFlameBurn                 = 295368,
+        },
+        Talents = {
+			-- WarMachine = 22632, -- 262231
+			--
+		},
+		Traits = {
+			-- ColdSteel = 176
+		}
     },
-    Buffs = {
-        AbolishPoison = {Ranks = {2893}},
-        AquaticForm = {Ranks = {1066}},
-        Barkskin = {Ranks = {22812}},
-        BearForm = {Ranks = {5487}},
-        CatForm = {Ranks = {768}},
-        Clearcasting = {Ranks = {16870}},
-        Dash = {Ranks = {1850, 9821}},
-        DireBearForm = {Ranks = {9634}},
-        Enrage = {Ranks = {5229}},
-        FrenziedRegeneration = {Ranks = {22842, 22895, 22896}},
-        GiftOfTheWild = {Ranks = {21849, 21850}},
-        MarkOfTheWild = {Ranks = {1126, 5232, 6756, 5234, 8907, 9884, 9885}},
-        MoonkinForm = {Ranks = {24858}},
-        NaturesGrace = {Ranks = {16886}},
-        NaturesGrasp = {Ranks = {16689, 16810, 16811, 16812, 16813, 17329}},
-        NaturesSwiftness = {Ranks = {17116}},
-        Innevate = {Ranks = {29166}},
-        OmenOfClarity = {Ranks = {16864}},
-        Prowl = {Ranks = {5215, 6783, 9913}},
-        Regrowth = {Ranks = {8936, 8938, 8939, 8940, 8941, 9750, 9856, 9857, 9858}},
-        Rejuvenation = {Ranks = {774, 1058, 1430, 2090, 2091, 3627, 8910, 9839, 9840, 9841, 25299}},
-        SootheAnimal = {Ranks = {2908, 8955, 9901}},
-        Thorns = {Ranks = {467, 782, 1075, 8914, 9756, 9910}},
-        TigersFury = {Ranks = {5217, 6793, 9845, 9846}},
-        TrackHumanoids = {Ranks = {5225}},
-        TravelForm = {Ranks = {783}}
+    Restoration = {
+        Abilities = {
+            Swiftmend            = {18562},
+            NaturesCure            = {88423},
+            Ironbark            = {102342},
+            Lifebloom            = {33763},
+            Rejuvenation            = {774},
+            WildGrowth = {48438},
+            Wrath = {5176},
+            UrsolVortex = {102793},
+            Tranquility = {740},
+            Efflorence = {145205}
+
+        },
+        Buffs = {
+            WildGrowth                 = {183415},
+            Ironbark            = {102342},
+            Lifebloom            = {33763},
+            Rejuvenation            = {774},
+            Clearcasting = {16870}
+        },
+        Debuffs = {
+            -- GlimmerOfLight              = 287280
+        },
+        Talents = {
+            CrusadersMight = 17565,
+            BestowFaith = 17567,
+            LightsHammer = 17569,
+
+            SavedByTheLight = 22176,
+            JudgmentOfLight = 17575,
+            HolyPrism = 17577,
+
+            FistOfJustice = 22179,
+            Repentance = 22180,
+            BlindingLight = 21811,
+
+            UnbreakableSpirit = 22433,
+            Cavalier = 22434,
+            RuleOfLaw = 17593,
+
+            DivinePurpose = 17597,
+            HolyAvenger = 17599,
+            Seraphim = 17601,
+
+            -- SanctifiedWrath = , -- 23191, 23456, 23457
+            AvengingCrusader = 22190,
+            Awakening = 22484,
+
+            GlimmerOfLight = 21201,
+            BeaconOfFaith = 21671,
+            BeaconOfVirtue = 21203,
+		},
+		Traits = {
+			BreakingDawn                = 394,
+            GraceoftheJusticar          = 393,
+            IndomitableJustice          = 235,
+            GlimmerOfLight              = 139
+		}
     },
-    Debuffs = {
-        ChallengingRoar = {Ranks = {5209}},
-        DemoralizingRoar = {Ranks = {99, 1735, 9490, 9747, 9898}},
-        EntanglingRoots = {Ranks = {339, 1062, 5195, 5196, 9852, 9853}},
-        FaerieFire = {Ranks = {770, 778, 9749, 9907}},
-        FaerieFireFeral = {Ranks = {16857, 17390, 17391, 17392}},
-        FeralCharge = {Ranks = {16979}},
-        Hibernate = {Ranks = {2637, 18657, 18658}},
-        Hurricane = {Ranks = {17401, 17402}},
-        InsectSwarm = {Ranks = {5570, 24974, 24975, 24976, 24977}},
-        Moonfire = {Ranks = {8921, 8924, 8925, 8926, 8927, 8928, 8929, 9833, 9834, 9835}},
-        Rake = {Ranks = {1822, 1823, 1824, 9904}},
-        Rip = {Ranks = {1079, 9492, 9493, 9752, 9894, 9896}}
-    },
-    Talents = {
-        -- Balance
-        ImprovedWrath = {1, 1},
-        NaturesGrasp = {1, 2},
-        ImprovedNaturesGrasp = {1, 3},
-        ImprovedEntanglingRoots = {1, 4},
-        ImprovedMoonfire = {1, 5},
-        NaturalWeapons = {1, 6},
-        NaturalShapeshifter = {1, 7},
-        ImprovedThorns = {1, 8},
-        OmenOfClarity = {1, 9},
-        NaturesReach = {1, 10},
-        Vengeance = {1, 11},
-        ImprovedStarfire = {1, 12},
-        NaturesGrace = {1, 13},
-        Moonglow = {1, 14},
-        Moonfury = {1, 15},
-        MoonkinForm = {1, 16},
-        -- Feral
-        Ferocity = {2, 1},
-        FeralAggression = {2, 2},
-        FeralInstinct = {2, 3},
-        BrutalImpact = {2, 4},
-        ThickHide = {2, 5},
-        FelineSwiftness = {2, 6},
-        FeralCharge = {2, 7},
-        SharpenedClaws = {2, 8},
-        ImprovedShred = {2, 9},
-        PredatoryStrikes = {2, 10},
-        BloodFrenzy = {2, 11},
-        PrimalFury = {2, 12},
-        SavageFury = {2, 13},
-        FaerieFireFeral = {2, 14},
-        HeartOfTheWild = {2, 15},
-        LeaderOfThePack = {2, 16},
-        -- Restoration
-        ImprovedMarkOfTheWild = {3, 1},
-        Furor = {3, 2},
-        ImprovedHealingTouch = {3, 3},
-        NaturesFocus = {3, 4},
-        ImprovedEnrage = {3, 5},
-        Reflection = {3, 6},
-        InsectSwarm = {3, 7},
-        Subtlety = {3, 8},
-        TranquilSpirit = {3, 9},
-        ImprovedRejuvenation = {3, 10},
-        NaturesSwiftness = {3, 11},
-        GiftOfNature = {3, 12},
-        ImprovedTranquility = {3, 13},
-        ImprovedRegrowth = {3, 14},
-        Swiftmend = {3, 15}
+	Shared = {
+        Abilities = {
+            Moonfire = {8921},
+            Regrowth = {8936},
+            FormCat = {768},
+            FormBear = {5487},
+            FormTravel = {783},
+            FormMoonkin = {24858},
+            FormFly = {276029},
+            Shred = {5221},
+            FerociousBite = {22568},
+            Mangle = {33917},
+            Ressurection = {50769},
+            Growl = {6795},
+            Stealth = {5215},
+            IronFur = {192081},
+            Barkskin = {22812},
+            RemoveCorruption = {2782},
+            Sunfire = {93402},
+            Typhoon = {132469},
+            WildCharge = {102401},
+        },
+        Buffs = {
+            FormCat = {768},
+            FormBear = {5487},
+            FormTravel = {783},
+            FormMoonkin = {24858},
+            FormFly = {276029},
+            Regrowth = {8936}
+        },
+        Debuffs = {
+            Moonfire                = 164812,
+            Sunfire = 164815
+
+        }
     }
 }

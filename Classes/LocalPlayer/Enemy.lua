@@ -201,6 +201,9 @@ end
 
 function LocalPlayer:GetEnemies(Yards)
     local Yards = Yards or 5
+    -- if type(Yards) ~= "number" then
+    --     print(Yards[1])
+    -- end
     if not DMW.Cache["EnemyCache"..Yards] or DMW.Cache["EnemyCache"..Yards].Update < DMW.Pulses then
         if DMW.Cache["EnemyCache"..Yards] then
             table.wipe(DMW.Cache["EnemyCache"..Yards])

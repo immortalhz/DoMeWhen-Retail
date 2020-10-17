@@ -31,7 +31,8 @@ function GameObject:GetDistance(OtherUnit)
 end
 
 function GameObject:IsQuest()
-    if DMW.Helpers.QuestieHelper.isQuestObject(self.ObjectID, self.Pointer) then return true end
+    -- if IsQuestObject(self.Pointer) then print(self.Name) end
+    if IsQuestObject(self.Pointer) or DMW.Helpers.QuestieHelper.isQuestObject(self.ObjectID, self.Pointer) then return true end
     return false
 end
 

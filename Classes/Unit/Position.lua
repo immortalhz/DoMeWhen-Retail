@@ -3,7 +3,7 @@ local Unit = DMW.Classes.Unit
 
 function Unit:GetDistance(OtherUnit)
     OtherUnit = OtherUnit or DMW.Player
-    if OtherUnit == DMW.Player and DMW.Enums.MeleeSpell[DMW.Player.SpecID] and IsSpellInRange(GetSpellInfo(DMW.Enums.MeleeSpell[DMW.Player.Class]), self.Pointer) == 1 then
+    if OtherUnit == DMW.Player and DMW.Enums.MeleeSpell[DMW.Player.SpecID] and IsSpellInRange(GetSpellInfo(DMW.Enums.MeleeSpell[DMW.Player.SpecID]), self.Pointer) == 1 then
         return 0
     end
     if self.PosX == nil then return 0 end
@@ -16,56 +16,56 @@ function Unit:GetDistance(OtherUnit)
     end
     return Dist
 end
-function Unit:BRDistance(OtherUnit)
-    OtherUnit = OtherUnit or DMW.Player
-    local currentDist = 100
-    -- Get the distance
-    local TargetCombatReach = self.CombatReach
-    local PlayerCombatReach = DMW.Player.CombatReach
-    local MeleeCombatReachConstant = 4/3
-    local IfSourceAndTargetAreRunning = 0
-    -- if DMW.Player:HasMovementFlag(DMW.Enums.MovementFlags.Moving) and self:HasMovementFlag(DMW.Enums.MovementFlags.Moving) then IfSourceAndTargetAreRunning = 8/3 end
+-- function Unit:BRDistance(OtherUnit)
+--     OtherUnit = OtherUnit or DMW.Player
+--     local currentDist = 100
+--     -- Get the distance
+--     local TargetCombatReach = self.CombatReach
+--     local PlayerCombatReach = DMW.Player.CombatReach
+--     local MeleeCombatReachConstant = 4/3
+--     local IfSourceAndTargetAreRunning = 0
+--     -- if DMW.Player:HasMovementFlag(DMW.Enums.MovementFlags.Moving) and self:HasMovementFlag(DMW.Enums.MovementFlags.Moving) then IfSourceAndTargetAreRunning = 8/3 end
 
-    -- local dist = sqrt(((self.PosX - OtherUnit.PosX) ^ 2) + ((self.PosY - OtherUnit.PosY) ^ 2) + ((self.PosZ - OtherUnit.PosZ) ^ 2)) - (PlayerCombatReach + TargetCombatReach) -- rangeMod
-    -- local dist2 = dist + 0.03 * ((13 - dist) / 0.13)
-    -- local dist3 = dist + 0.05 * ((8 - dist) / 0.15) + 1
-    -- local dist4 = dist + (PlayerCombatReach + TargetCombatReach)
-    -- local meleeRange = math.max(5, PlayerCombatReach + TargetCombatReach + MeleeCombatReachConstant + IfSourceAndTargetAreRunning)
-    -- if option == "dist" then return dist end
-    -- if option == "dist2" then return dist2 end
-    -- if option == "dist3" then return dist3 end
-    -- if option == "dist4" then return dist4 end
-    -- if option == "meleeRange" then return meleeRange end
-    if GetSpecializationInfo(GetSpecialization()) == 255 then
-        if dist > meleeRange then
-            currentDist = dist
-        else
-            currentDist = 0
-        end
-    elseif dist > 13 then
-        currentDist = dist
-    elseif dist2 > 8 and dist3 > 8 then
-        currentDist = dist2
-    elseif dist3 > 5 and dist4 > 5 then
-        currentDist = dist3
-    elseif dist4 > meleeRange then -- Thanks Ssateneth
-        currentDist = dist4
-    else
-        currentDist = 0
-    end
--- Modifier for Mastery: Sniper Training (Hunter - Marksmanship)
---     if currentDist < 100 and isKnown(193468) and option ~= "noMod" then
---         currentDist = currentDist - (currentDist * 0.12)
---     end
---     if meleeSpell ~= nil then
---         if IsSpellInRange(select(1,GetSpellInfo(meleeSpell)),Unit2) == 1 then
+--     -- local dist = sqrt(((self.PosX - OtherUnit.PosX) ^ 2) + ((self.PosY - OtherUnit.PosY) ^ 2) + ((self.PosZ - OtherUnit.PosZ) ^ 2)) - (PlayerCombatReach + TargetCombatReach) -- rangeMod
+--     -- local dist2 = dist + 0.03 * ((13 - dist) / 0.13)
+--     -- local dist3 = dist + 0.05 * ((8 - dist) / 0.15) + 1
+--     -- local dist4 = dist + (PlayerCombatReach + TargetCombatReach)
+--     -- local meleeRange = math.max(5, PlayerCombatReach + TargetCombatReach + MeleeCombatReachConstant + IfSourceAndTargetAreRunning)
+--     -- if option == "dist" then return dist end
+--     -- if option == "dist2" then return dist2 end
+--     -- if option == "dist3" then return dist3 end
+--     -- if option == "dist4" then return dist4 end
+--     -- if option == "meleeRange" then return meleeRange end
+--     if GetSpecializationInfo(GetSpecialization()) == 255 then
+--         if dist > meleeRange then
+--             currentDist = dist
+--         else
 --             currentDist = 0
 --         end
+--     elseif dist > 13 then
+--         currentDist = dist
+--     elseif dist2 > 8 and dist3 > 8 then
+--         currentDist = dist2
+--     elseif dist3 > 5 and dist4 > 5 then
+--         currentDist = dist3
+--     elseif dist4 > meleeRange then -- Thanks Ssateneth
+--         currentDist = dist4
+--     else
+--         currentDist = 0
 --     end
+-- -- Modifier for Mastery: Sniper Training (Hunter - Marksmanship)
+-- --     if currentDist < 100 and isKnown(193468) and option ~= "noMod" then
+-- --         currentDist = currentDist - (currentDist * 0.12)
+-- --     end
+-- --     if meleeSpell ~= nil then
+-- --         if IsSpellInRange(select(1,GetSpellInfo(meleeSpell)),Unit2) == 1 then
+-- --             currentDist = 0
+-- --         end
+-- --     end
+-- -- end
+-- print(meleeRange)
+--     return currentDist
 -- end
-print(meleeRange)
-    return currentDist
-end
 
 function Unit:AggroDistance()
     local maxRadius = 45 --.0 * sWorld->getRate(RATE_CREATURE_AGGRO));

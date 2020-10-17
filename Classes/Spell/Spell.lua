@@ -5,7 +5,6 @@ function Spell:New(SpellID, CastType)
     self.SpellID = SpellID
     self.SpellCache = {GetSpellInfo(self.SpellID)}
     self.SpellName = self.SpellCache[1]
-    -- print(self.SpellName)
     self.BaseCD = GetSpellBaseCooldown(self.SpellID) / 1000
     self.BaseGCD = select(2, GetSpellBaseCooldown(self.SpellID)) / 1000
     self.MinRange = self.SpellCache[5] or 0
@@ -37,28 +36,8 @@ function Spell:TargetRangeCheck()
     end
     return false
 end
+
 function Spell:Count() return GetSpellCount(self.SpellID) end
-
-
--- function Spell:IsCastableP(Range, AoESpell, ThisUnit, BypassRecovery, Offset)
---     if Range then
---         local RangeUnit = ThisUnit or Target
---         return self:IsLearned() and self:CooldownRemainsP(BypassRecovery or true, Offset or "Auto") == 0 and
---                    RangeUnit:IsInRange(Range, AoESpell)
---     else
---         return self:IsLearned() and self:CooldownRemainsP(BypassRecovery or true, Offset or "Auto") == 0
---     end
--- end
-
--- Check if the spell Is Castable and Usable or not.
--- function Spell:IsReady(Range, AoESpell, ThisUnit)
---     return self:IsCastable(Range, AoESpell, ThisUnit) and self:IsUsable()
--- end
-
--- -- Check if the spell Is CastableP and UsableP or not.
--- function Spell:IsReadyP(Range, AoESpell, ThisUnit)
---     return self:IsCastableP(Range, AoESpell, ThisUnit) and self:IsUsableP()
--- end
 
 function Spell:Cost(PowerType)
     local CostTable
@@ -86,11 +65,12 @@ function Spell:CD()
         self.CDCache = 0
         return 0
     end
-    if DMW.Player:GCDRemain() > 0 then
-        FinalCD = FinalCD
-    else
-        FinalCD = FinalCD - 0.1
-    end
+    -- if DMW.Player:GCDRemain() > 0 then
+    --     FinalCD = FinalCD
+    -- else
+    --     FinalCD = FinalCD - 0.1
+    -- end
+    -- FinalCD = FinalCD - 0.1
     if FinalCD < 0 then FinalCD = 0 end
     self.CDCache = FinalCD
     return FinalCD
@@ -124,30 +104,8 @@ function Spell:IsCastable(Range, AoESpell, Unit)
 end
 
 function Spell:IsReady(Range)
-    -- if self:IsCastable() and self:Usable() then return true end
     return self:IsCastable(Range) and self:Usable()
 end
--- function Spell:IsUsableP(Offset)
---     local CostTable = self:CostTable()
---     local Usable = true
---     if #CostTable > 0 then
---       local i = 1
---       while ( Usable == true ) and ( i <= #CostTable ) do
---           local CostInfo = CostTable[i]
---           local Type = CostInfo.type
---           if ( Player.PredictedResourceMap[Type]() < ( ( (self.CustomCost and self.CustomCost[Type]) and self.CustomCost[Type]() or CostInfo.minCost ) + ( Offset and Offset or 0 ) ) ) then Usable = false end
---           i = i + 1
---       end
---     end
---     return Usable
---   end
--- function Spell:IsCastableP(Range, AoESpell, ThisUnit, BypassRecovery, Offset)
---       return self:IsLearned() and self:CooldownRemainsP(BypassRecovery or true, Offset or "Auto") == 0
---   end
-
--- function Spell:IsReadyP(Range, AoESpell, ThisUnit)
---     return self:IsCastableP(Range, AoESpell, ThisUnit) and self:IsUsable()
--- end
 
 function Spell:Charges() return GetSpellCharges(self.SpellID) end
 
@@ -191,9 +149,13 @@ function Spell:Known()
     return GetSpellInfo(self.SpellName)
 end
 
+local UsableSpells = {
+    ["Swiftmend"] = true,
+    ["Execute"] = true
+}
 function Spell:Usable()
     -- print(self?)
-    if self.Key == "Execute" then return true end
+    if UsableSpells[self.Key] then return true end
     return IsUsableSpell(self.SpellID)
 end
 
@@ -273,4 +235,69 @@ function Spell:Delay(Unit)
     -- print(self:TimeSinceLastCast(), Unit.Pointer, self.LastBotTarget)
     -- if self.LastBotTarget ~= Unit.Pointer then print("false") end
     if self:LastTimeCastEnd() >= 0.4 or self.LastBotTarget ~= Unit.Pointer then return true end
+end
+
+function Spell:CastBestConeFriend(Length, Angle, MinHit, HP)
+	if not self:IsReady() then
+		return false
+    end
+    MinHit = MinHit or 1
+    HP = HP or 100
+    local Table, TableCount = DMW.Player:GetFriends(Length, HP)
+    if TableCount < MinHit then
+        return false
+    end
+	local PX, PY, PZ = DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ
+    local ConeTable = {}
+    local X, Y, Z, AngleToUnit
+    for _, Unit in pairs(Table) do
+        if Unit.HP <= HP then
+            X, Y, Z = Unit.PosX, Unit.PosY, Unit.PosZ
+            AngleToUnit = rad(atan2(Y - PY, X - PX))
+            if AngleToUnit < 0 then
+                AngleToUnit = rad(360 + atan2(Y - PY, X - PX))
+            end
+            tinsert(ConeTable, AngleToUnit)
+        end
+	end
+    local Facing, BestAngle, MostHit, Units = 0, 0, 0, 0
+    local AngleToUnit, AngleDifference, ShortestAngle, FinalAngle
+	while Facing <= 6.2 do
+		Units = 0
+		for i = 1, #ConeTable do
+			AngleToUnit = ConeTable[i]
+			AngleDifference = Facing > AngleToUnit and Facing - AngleToUnit or AngleToUnit - Facing
+			ShortestAngle = AngleDifference < math.pi and AngleDifference or math.pi * 2 - AngleDifference
+			FinalAngle = ShortestAngle * 180 / math.pi
+			if FinalAngle < Angle / 2 then
+				Units = Units + 1
+			end
+		end
+		if Units > MostHit then
+			MostHit = Units
+			BestAngle = Facing
+		end
+		Facing = Facing + 0.05
+	end
+    if MostHit >= MinHit then
+        local CurrentFacing = ObjectFacing("player")
+		local mouselookActive = false
+		if IsMouselooking() then
+			mouselookActive = true
+			MouselookStop()
+			TurnOrActionStop()
+			MoveAndSteerStop()
+		end
+		FaceDirection(BestAngle, true)
+		CastSpellByName(self.SpellName)
+		FaceDirection(CurrentFacing)
+		if mouselookActive then
+			MouselookStart()
+		end
+		C_Timer.After(0.1, function()
+			FaceDirection(ObjectFacing("player"), true)
+        end)
+		return true
+	end
+	return false
 end

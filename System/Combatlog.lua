@@ -10,7 +10,8 @@ local function Locals()
     Spell = Player.Spells
 end
 
-local frame = CreateFrame("Frame")
+DMW.Frames.CombatLog = CreateFrame("Frame")
+local frame = DMW.Frames.CombatLog
 frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 frame:SetScript("OnEvent", function(self, event) self:Reader(event, CombatLogGetCurrentEventInfo()) end)
 

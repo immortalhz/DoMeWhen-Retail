@@ -4,6 +4,7 @@ DMW.Friends.Units = {}
 DMW.Friends.Tanks = {}
 DMW.Friends.Party = {}
 DMW.Friends.Corpses = {}
+DMW.Friends.Healers = {}
 -- local DurationLib = LibStub("LibClassicDurationsDMW")
 local Enemies, Attackable, Units, Friends, FriendCorpses, GameObjects, AreaTriggers, Corpses, Party = DMW.Enemies, DMW.Attackable, DMW.Units, DMW.Friends.Units, DMW.Friends.Corpses, DMW.GameObjects, DMW.AreaTriggers, DMW.Corpses, DMW.Friends.Party
 local Unit, LocalPlayer, GameObject, AreaTrigger = DMW.Classes.Unit, DMW.Classes.LocalPlayer, DMW.Classes.GameObject, DMW.Classes.AreaTrigger
@@ -32,9 +33,9 @@ function DMW.Remove(Pointer)
     if AreaTriggers[Pointer] ~= nil then
         AreaTriggers[Pointer] = nil
     end
-    if DMW.Tables.AuraUpdate[Pointer] then
-        DMW.Tables.AuraUpdate[Pointer] = nil
-    end
+    -- if DMW.Tables.AuraUpdate[Pointer] then
+    --     DMW.Tables.AuraUpdate[Pointer] = nil
+    -- end
 
     -- if DurationLib.nameplateUnitMap[GUID] then
     --     DurationLib.nameplateUnitMap[GUID] = nil
@@ -49,6 +50,14 @@ local function HandleFriends()
                 return x.HP < y.HP
             end
         )
+    end
+    DMW.Friends.LowestHP = 101
+    DMW.Friends.LowestUnit = nil
+    for _, l in ipairs(Friends) do
+        if l.HP < DMW.Friends.LowestHP then
+            DMW.Friends.LowestHP = l.HP
+            DMW.Friends.LowestUnit = l
+        end
     end
     -- if #Friends >= 1 then
     --     for k = 1, #Friends do
@@ -79,6 +88,9 @@ local function HandleFriends()
     -- end
 end
 
+FriendsNPCs = {
+    [144075] = true
+}
 local function UpdateUnits()
     table.wipe(Attackable)
     table.wipe(Enemies)
@@ -86,12 +98,15 @@ local function UpdateUnits()
     table.wipe(FriendCorpses)
     table.wipe(Party)
     table.wipe(DMW.Friends.Tanks)
+    table.wipe(DMW.Friends.Healers)
 
     DMW.Player.Target = nil
     -- DMW.Tables.Misc.unit2pointer["target"] = nil
-    -- DMW.Player.Focus = nil
+    DMW.Player.Focus = nil
     DMW.Player.Mouseover = nil
     DMW.Player.Pet = nil
+
+
 
     for Pointer, Unit in pairs(Units) do
         if not Unit.NextUpdate or Unit.NextUpdate < DMW.Time then
@@ -117,25 +132,35 @@ local function UpdateUnits()
             table.insert(Enemies, Unit)
         end
         if Unit.Player and UnitIsUnit(Pointer, "player") then
-            Unit:CalculateHP()
+            -- Unit:CalculateHP()
             table.insert(Friends, Unit)
-        elseif DMW.Player.InGroup and Unit.Player and not Unit.Attackable and (UnitInRaid(Pointer) or UnitInParty(Pointer)) then
-            Unit:CalculateHP()
+        elseif (DMW.Player.InGroup and Unit.Player and not Unit.Attackable and (UnitInRaid(Pointer) or UnitInParty(Pointer))) then
+            -- Unit:CalculateHP()
             if DMW.Tables.Misc.PlayerGroup ~= nil then
                 if DMW.Tables.Misc.PlayerGroupFunc(Unit.GUID) then
                     table.insert(Party, Unit)
                 end
             end
-            if Unit.MainTank then
-                table.insert(DMW.Friends.Tanks, Unit)
-            end
             if Unit.Dead then
                 table.insert(FriendCorpses, Unit)
-            end
-            if Unit.LoS then
-                table.insert(Friends, Unit)
+            else
+                if Unit.LoS then
+                    if Unit.MainTank then
+                        table.insert(DMW.Friends.Tanks, Unit)
+                    end
+                    if Unit.Healer then
+                        table.insert(DMW.Friends.Healers, Unit)
+                    end
+                    table.insert(Friends, Unit)
+                end
             end
         end
+        if (Unit.ObjectID and FriendsNPCs[Unit.ObjectID]) then
+        -- if Unit.ObjectID == 144075 then
+            -- print("added")
+            table.insert(Friends, Unit)
+        end
+
     end
     HandleFriends()
 end
@@ -173,7 +198,7 @@ function DMW.UpdateOM()
     end
     if updated and #added > 0 then
         for _, v in pairs(added) do
-            if ObjectIsUnit(v) and  not Units[v] then
+            if ObjectIsUnit(v) and not Units[v] then
                 --and (UnitCreatureTypeID(v) ~= 8 or UnitAffectingCombat(v)) then --and (UnitCreatureTypeID(v) ~= 8
                 Units[v] = Unit(v)
             elseif ObjectIsGameObject(v) and not GameObjects[v] then

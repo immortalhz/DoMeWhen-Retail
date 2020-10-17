@@ -8,11 +8,11 @@ function Queue.GetBindings()
     table.wipe(DMW.Tables.Bindings)
     local Type, ID, Key1, Key2, BindingID
     for k, frame in pairs(ActionBarButtonEventsFrame.frames) do
-        local BindingID = frame:GetAttribute('bindingid') or frame:GetID()
+        -- local BindingID = frame:GetAttribute('bindingid') or frame:GetID()
         if frame.buttonType then
-            Key1, Key2 = GetBindingKey(frame.buttonType .. BindingID)
+            Key1, Key2 = GetBindingKey(frame.buttonType .. frame:GetID())
         else
-            Key1, Key2 = GetBindingKey("ACTIONBUTTON" .. BindingID)
+            Key1, Key2 = GetBindingKey("ACTIONBUTTON" .. frame:GetID())
         end
         Type, ID = GetActionInfo(frame.action)
         if Key1 then
@@ -30,7 +30,7 @@ local function SpellSuccess(self, event, ...)
         local SpellID = select(3, ...)
         if SourceUnit == "player" then
             if Queue.Spell and Queue.Spell.SpellName == GetSpellInfo(SpellID) then
-                --print("Queue Casted: " .. Queue.Spell.SpellName)
+                -- print("Queue Casted: " .. Queue.Spell.SpellName)
                 Queue.Spell = false
                 Queue.Target = false
             elseif Queue.Item and Queue.Item.SpellID == SpellID then
@@ -97,7 +97,7 @@ local function CheckPress(self, Key)
     end
 end
 
-local CursorCastFix = false
+-- local CursorCastFix = false
 function Queue.Run()
     if not QueueFrame then
         QueueFrame = CreateFrame("Frame")
@@ -112,17 +112,18 @@ function Queue.Run()
     elseif GetKeyState(0x06) then
         CheckPress(nil, "BUTTON5")
     end
-    if (Queue.Spell or Queue.Item) and (DMW.Time - Queue.Time) > 2 then
+    if (Queue.Spell or Queue.Item) and (DMW.Time - Queue.Time) > DMW.Settings.profile.Queue.Wait then
         Queue.Spell = false
         Queue.Target = false
         Queue.Item = false
-        CursorCastFix = false
+        -- CursorCastFix = false
+        -- print("Clear")
     end
-    if Queue.Spell and DMW.Player.Combat and not DMW.Player.Casting then
+    if Queue.Spell and DMW.Player.Combat then
         if Queue.Type == 2 then
             if Queue.Target and IsSpellInRange(Queue.Spell.SpellName, Queue.Target.Pointer) ~= nil then
                 if Queue.Spell:Cast(Queue.Target) then
-                    print(Queue.Target.Name, Queue.Spell.SpellName)
+                    -- print(Queue.Target.Name, Queue.Spell.SpellName)
                     return true
                 end
             else
@@ -139,17 +140,17 @@ function Queue.Run()
                 return true
             end
         elseif Queue.Type == 5 then
-
-            if Queue.Spell:IsReady() then
-                if CursorCastFix and not IsAoEPending() then
+            -- print(Queue.Spell.Key)
+            if IsAoEPending() then
+                if GetKeyState(0x02) then
                     Queue.Spell = false
                     Queue.Target = false
                     Queue.Item = false
-                    return true
                 end
+                return true
+            end
+            if Queue.Spell:IsReady() and not IsAoEPending() then
                 CastSpellByName(Queue.Spell.SpellName)
-                CursorCastFix = true
-
                 return true
             end
         end

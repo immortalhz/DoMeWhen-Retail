@@ -168,14 +168,14 @@ function LocalPlayer:GetSpells()
     end
 end
 
---https://github.com/simulationcraft/simc/blob/bfa-dev/engine/dbc/generated/sc_talent_data.inc
+-- https://github.com/simulationcraft/simc/blob/shadowlands/engine/dbc/generated/sc_talent_data.inc
 function LocalPlayer:GetTalents()
     if self.Talents then
         table.wipe(self.Talents)
     else
         self.Talents = {}
     end
-    if DMW.Enums.Spells[self.Class][self.SpecID].Talents then
+    if  DMW.Enums.Spells[self.Class] and DMW.Enums.Spells[self.Class][self.SpecID] and DMW.Enums.Spells[self.Class][self.SpecID].Talents then
         for k, v in pairs(DMW.Enums.Spells[self.Class][self.SpecID].Talents) do
             local learned = select(10, GetTalentInfoByID(v))
             if learned then
@@ -187,6 +187,9 @@ function LocalPlayer:GetTalents()
     end
 end
 
+--https://github.com/simulationcraft/simc/blob/shadowlands/engine/dbc/generated/covenant_data.inc
+function LocalPlayer:GetCovenant()
+end
 
 --https://github.com/simulationcraft/simc/blob/bfa-dev/engine/dbc/generated/azerite.inc
 function LocalPlayer:GetTraits()
