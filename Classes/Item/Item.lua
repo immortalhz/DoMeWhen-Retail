@@ -41,7 +41,8 @@ function Item:CD()
 end
 
 function Item:IsReady()
-    return self:Useable() and self:CD() == 0
+    return --self:Useable() and
+    self:CD() == 0
 end
 
 function Item:Useable()

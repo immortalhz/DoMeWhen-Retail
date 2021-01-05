@@ -23,6 +23,12 @@ function Buff:Exist(Unit, OnlyPlayer)
     return self:Query(Unit, OnlyPlayer) ~= nil
 end
 
+-- function Buff:ExistID(Unit, OnlyPlayer)
+--     OnlyPlayer = OnlyPlayer or false
+--     Unit = Unit or DMW.Player
+--     return self:Query(Unit, OnlyPlayer) and self:Query(Unit, OnlyPlayer)
+-- end
+
 function Debuff:Exist(Unit, OnlyPlayer)
     OnlyPlayer = OnlyPlayer or true
     Unit = Unit or DMW.Player.Target
@@ -189,6 +195,43 @@ function Debuff:Lowest(Table)
         end
     end
     return LowestUnit, LowestSec
+end
+
+function Debuff:Highest(Table)
+    Table = Table or DMW.Player:GetEnemies(40)
+    local HighestSec, HighestUnit
+    for _, Unit in ipairs(Table) do
+        if self:Exist(Unit) and (not HighestSec or self:Remain(Unit) > HighestSec) then
+            HighestSec = self:Remain(Unit)
+            HighestUnit = Unit
+        end
+    end
+    return HighestUnit, HighestSec
+end
+
+function Debuff:LowestStack(Table)
+    Table = Table or DMW.Player:GetEnemies(40)
+    local LowestStack, LowestUnit, LowestRemains
+    for _, Unit in ipairs(Table) do
+        if (not LowestStack or self:Stacks(Unit) < LowestStack or (LowestRemains and self:Stacks(Unit) == LowestStack and self:Remain(Unit) < LowestRemains)) then
+            LowestStack = self:Stacks(Unit)
+			LowestUnit = Unit
+			LowestRemains = self:Remain(Unit)
+        end
+    end
+    return LowestUnit, LowestStack
+end
+
+function Debuff:HighestStack(Table)
+    Table = Table or DMW.Player:GetEnemies(40)
+    local HighestStack, HighestUnit
+    for _, Unit in ipairs(Table) do
+        if self:Stacks(Unit) > 0 and (not HighestStack or self:Stacks(Unit) > HighestStack) then
+            HighestStack = self:Stacks(Unit)
+            HighestUnit = Unit
+        end
+    end
+    return HighestUnit, HighestStack
 end
 
 function Debuff:Multiplier(Unit)

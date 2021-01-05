@@ -30,14 +30,14 @@ function BossMods.BWInit()
             for i = 1, #BossMods.Timer do
                 if BossMods.Timer[i] ~= nil and BossMods.Timer[i].id == spellId then
                     clone = true
-                    BossMods.Timer[i].exptime = GetTime() + duration
+                    BossMods.Timer[i].exptime = DMW.Time + duration
                     break
                 end
             end
             if not clone then
                 local timer = {}
                 timer.id = spellId
-                timer.exptime = GetTime() + duration
+                timer.exptime = DMW.Time + duration
                 tinsert(BossMods.Timer, timer)
                 clone = false
             end
@@ -69,7 +69,7 @@ function BossMods.BWCheck()
     if #BossMods.Timer > 0 then
         for i = 1, #BossMods.Timer do
             if BossMods.Timer[i] ~= nil then
-                if BossMods.Timer[i].exptime < GetTime() then
+                if BossMods.Timer[i].exptime < DMW.Time then
                     BossMods.Timer[i] = nil
                 end
             else
@@ -86,7 +86,7 @@ function BossMods.getTimerBW(spellID, time)
         -- Check if timer with spell id is present
         if BossMods.Timer[i] ~= nil and BossMods.Timer[i].id == spellID then
             hasTimer = true
-            currentTimer = BossMods.Timer[i].exptime - GetTime()
+            currentTimer = BossMods.Timer[i].exptime - DMW.Time
             -- if a time is given set var to true
             if time then
                 if currentTimer <= time then

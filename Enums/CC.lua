@@ -20,3 +20,4 @@ DMW.Enums.CCBuffs = {
     [710] = true, -- Banish
     [9485] = true -- Shackle Undead
 }
+

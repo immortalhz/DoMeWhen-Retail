@@ -1,36 +1,23 @@
 local DMW = DMW
 local Unit = DMW.Classes.Unit
--- local LibCC = LibStub("LibClassicCasterinoDMW", true)
--- local DurationLib = LibStub("LibClassicDurationsDMW")
--- local HealComm = LibStub("DMWLibHealComm-4.0")
--- CLH = LibStub("LibCombatLogHealth-2.0")
--- CLH.RegisterCallback("DMW", "COMBAT_LOG_HEALTH", function(event, unit, eventType)
---     -- local health = CLH.UnitHealth(unit)
---     local health = CLH.UnitHealth(unit)
---     local Pointer = DMW.Tables.Misc.unit2pointerF(unit)
---     if Pointer then
---         if DMW.Units[Pointer] then
---             DMW.Units[Pointer]:UpdateHealth(true, health)
---         end
---     end
---     -- if DMWUnit then
---     --     DMWUnit.Health = CLH.UnitHealth(unit)
---     --     -- print(unit)
---     -- end
---     -- print(event, unit, health)
--- end)
-
+local DRList = LibStub("DRList-1.0")
 
 function Unit:New(Pointer)
     self.Pointer = Pointer
-    self.Name = not UnitIsUnit(Pointer, "player") and UnitName(Pointer) or "LocalPlayer"
+    self.Name = self.Pointer ~= DMW.Player.Pointer and UnitName(Pointer) or "LocalPlayer"
     self.GUID = UnitGUID(Pointer)
     self.Player = UnitIsPlayer(Pointer)
     self.LoSCache = {}
     self.Friend = UnitIsFriend("player", self.Pointer)
-    if self.Player then
-        self.Class = select(2, UnitClass(Pointer)):gsub("%s+", "")
-    end
+    -- if self.Player then
+    --     self.Class = select(2, UnitClass(Pointer)):gsub("%s+", "")
+    -- end
+    self.TTD = 999
+    self.Health = UnitHealth(self.Pointer)
+        self.HealthMax = UnitHealthMax(self.Pointer)
+        self.HP = self.Health / self.HealthMax * 100
+        self.HealthDeficit = self.HealthMax - self.Health
+    self.Distance = self:GetDistance()
     self.HealthMax = UnitHealthMax(self.Pointer)
     -- self.CombatReach = UnitCombatReach(Pointer)
     -- self.BoundingRadius = UnitBoundingRadius(Pointer)
@@ -52,15 +39,29 @@ function Unit:New(Pointer)
     --DurationLib
     -- DurationLib.nameplateUnitMap[self.GUID] = Pointer
     -- DurationLib.nameplateUnitMapBackwards[Pointer] = self.GUID
-
     DMW.Tables.Misc.guid2pointer[self.GUID] = Pointer
     DMW.Tables.Misc.pointer2guid[Pointer] = self.GUID
     self.Cache = {}
     -- DMW.Helpers.Swing.AddUnit(Pointer)
     -- self.UnitName = GetUnitName(Pointer)
-    --NoTouchChecks
-    if DMW.Player.Instance then
-        self:NoTouchDungeons()
+	--NoTouchChecks
+	if self.Player then
+        self.Height = 2
+    else
+        self.Height = select(2,UnitCollisionBox(self.Pointer))
+    end
+    if DMW.Player.Instance == "party" or DMW.Player.Instance == "raid" or DMW.Player.Instance == "scenario" then
+        if not self.CCable then
+            self.CCable = {}
+        end
+        -- self:NoTouchDungeons()
+        if DMW.Enums.DungeonStuff.Stun[self.ObjectID] then
+            self.CCable["stun"] = true
+		end
+		if DMW.Enums.DungeonStuff.Incapacitate[self.ObjectID] then
+            self.CCable["incapacitate"] = true
+        end
+        self.Boss = self:isInstanceBoss()
     end
 end
 
@@ -94,60 +95,54 @@ end
 function Unit:Update()
     if DMW.Player.Resting then
         self.NextUpdate = DMW.Time + (math.random(100, 1500) / 1000)
+    -- elseif not self.ValidEnemy then
+    --     self.NextUpdate = DMW.Time + (math.random(100, 1500) / 500)
     else
         self.NextUpdate = DMW.Time + (math.random(300, 1500) / 10000)
     end
+
+    -- if DMW.Player.Target and UnitIsUnit(self.Pointer,"target") then
+    --     print("Update")
+    -- end
     self:UpdatePosition()
-    -- if DMW.Tables.AuraUpdate[self.GUID] and self.Pointer ~= DMW.Player.Pointer then
-    --     DMW.Functions.AuraCache.Refresh(self.Pointer, self.GUID)
-    --     DMW.Tables.AuraUpdate[self.GUID] = nil
-    -- end
     self.Distance = self:GetDistance()
-    self:CastingCheck()
-    -- if RealMobHealth_CreatureHealthCache and self.ObjectID > 0 and RealMobHealth_CreatureHealthCache[self.ObjectID .. "-" .. self.Level] then
-    --     self.HealthMax = RealMobHealth_CreatureHealthCache[self.ObjectID .. "-" .. self.Level]
-    --     self.RealHealth = true
-    --     self.Health = self.HealthMax * (UnitHealth(self.Pointer) / 100)
-    -- else
-
-    --     if self.HealthMax ~= 100 then
-    --         self.RealHealth = true
-    --     else
-    --         self.RealHealth = false
-    --     end
-        -- if not self.Health or not self.Predicted then
-
-        -- local unit = DMW.Tables.Misc.pointer2unitFunc(self.Pointer)
-        -- if self.UnitID == nil then
-        -- end
-
-        -- end
-    -- end
-    self.Health = UnitHealth(self.Pointer)
-    self.HealthMax = UnitHealthMax(self.Pointer)
-    self.HP = self.Health / self.HealthMax * 100
-    self.HealthDeficit = self.HealthMax - self.Health
+    -- self:CastingCheck()
     self.Dead = UnitIsDeadOrGhost(self.Pointer) -- CalculateHP
-    self.TTD = self:GetTTD()
     self.LoS = false
     if self.Distance < 50 and not self.Dead then
         self.LoS = self:LineOfSight()
     end
-    -- if self.PredictHeal then self.PredictHeal = nil end
-    -- if self.PredictTime then self.PredictTime = nil end
     self.CanAttack = UnitCanAttack("player", self.Pointer)
     self.Attackable = self.LoS and self.CanAttack or false
     self.ValidEnemy = self.Attackable and self.CreatureType ~= "Critter" and self:IsEnemy() or false
+    if self.ValidEnemy or self.Friend then
+        self.Health = UnitHealth(self.Pointer)
+        self.HealthMax = UnitHealthMax(self.Pointer)
+        self.HP = self.Health / self.HealthMax * 100
+        self.HealthDeficit = self.HealthMax - self.Health
+        self.TTD = self:GetTTD()
+        self.Moving = self:HasMovementFlag(DMW.Enums.MovementFlags.Moving)
+    end
     self.Target = UnitTarget(self.Pointer)
-    self.Moving = self:HasMovementFlag(DMW.Enums.MovementFlags.Moving)
+
     -- self.Facing = UnitIsFacing("Player", self.Pointer, 75)
     -- if not self.Quest or (DMW.Cache.QuestieCache.CacheTimer and DMW.Time > DMW.Cache.QuestieCache.CacheTimer) then
-        self.Quest = self:IsQuest()
+    self.Quest = self:IsQuest()
     -- end
     self.Trackable = self:IsTrackable()
     if self.Name == "Unknown" then
         self.Name = UnitName(self.Pointer)
     end
+    -- if self.Casting then
+    --     self:PopulateCasting()
+    -- end
+	local CastID, ChannelID = UnitCastID(self.Pointer)
+	if CastID ~= 0 or ChannelID ~= 0 then
+		self:PopulateCasting()
+	else
+		self.Casting = nil
+		self.DrawDodgie = nil
+	end
 
     -- if self.ValidEnemy and self:AuraByID(1020) then
     --     self.ValidEnemy = false
@@ -163,6 +158,13 @@ function Unit:Update()
     --     self:DrawCleave()
     -- end
     self.Mark = self:MarkCheck()
+    if self.CC then
+        for k,v in pairs(self.CC) do
+            if DMW.Time > v["reset_time"] then
+                self.CC[k] = nil
+            end
+        end
+    end
 end
 
 function Unit:UpdateHealth(predict, amount)
@@ -196,18 +198,20 @@ function Unit:LineOfSight(OtherUnit)
     if self.LoSCache.Result ~= nil and self.PosX == self.LoSCache.PosX and self.PosY == self.LoSCache.PosY and self.PosZ == self.LoSCache.PosZ and OtherUnit.PosX == self.LoSCache.OPosX and OtherUnit.PosY == self.LoSCache.OPosY and OtherUnit.PosZ == self.LoSCache.OPosZ then
         return self.LoSCache.Result
     end
-    self.LoSCache.Result = TraceLine(self.PosX, self.PosY, self.PosZ + 2, OtherUnit.PosX, OtherUnit.PosY, OtherUnit.PosZ + 2, 0x100010) == nil
+    -- self.LoSCache.Result = TraceLine(self.PosX, self.PosY, self.PosZ + 2, OtherUnit.PosX, OtherUnit.PosY, OtherUnit.PosZ + 2, 0x100010) == nil
+
+    self.LoSCache.Result = TraceLine(self.PosX, self.PosY, self.PosZ + self.Height, OtherUnit.PosX, OtherUnit.PosY, OtherUnit.PosZ + 2, 0x100111) == nil
     self.LoSCache.PosX, self.LoSCache.PosY, self.LoSCache.PosZ = self.PosX, self.PosY, self.PosZ
     self.LoSCache.OPosX, self.LoSCache.OPosY, self.LoSCache.OPosZ = OtherUnit.PosX, OtherUnit.PosY, OtherUnit.PosZ
     return self.LoSCache.Result
 end
 
 function Unit:IsEnemy()
-    return self:HasThreat() and not self.Dead and ((not self.Friend and not self:CCed()) or UnitIsUnit(self.Pointer, "target"))
+    return self:HasThreat() and not self.Dead and (not self.Friend or UnitIsUnit(self.Pointer, "target")) --and not self:CCed()
 end
 
 function Unit:IsBoss()
-    if self.Classification == "worldboss" or self.Classification == "rareelite" then
+    if self.Boss or self.Classification == "worldboss" or self.Classification == "rareelite" then
         return true
     elseif LibStub("LibBossIDs-1.0").BossIDs[self.ObjectID] then
         return true
@@ -228,14 +232,22 @@ function Unit:HasThreat()
         return false
     elseif DMW.Player.Instance == "pvp" and (self.Player or UnitAffectingCombat(self.Pointer)) then
         return true
+    elseif DMW.Player.Instance == "party" then
+        if #DMW.Friends.Tanks > 0 and UnitThreatSituation(DMW.Friends.Tanks[1].Pointer, self.Pointer) then
+            return true
+        end
+        if UnitThreatSituation(DMW.Player.Pointer, self.Pointer) then return true end
     elseif DMW.Player.Instance ~= "none" and UnitAffectingCombat(self.Pointer) then
         return true
     elseif DMW.Player.Instance == "none" and (self.Dummy or (UnitIsVisible("target") and UnitIsUnit(self.Pointer, "target"))) then
         return true
     end
-    if not self.Player and self.Target and (UnitIsUnit(self.Target, "player") or UnitIsUnit(self.Target, "pet") or UnitInParty(self.Target) or UnitInRaid(self.Target) ~= nil) then
+    if self.Target and (UnitIsUnit(self.Target, "player") or UnitIsUnit(self.Target, "pet") or UnitInParty(self.Target)) then
         return true
-    end
+	end
+	if GrindBot and GrindBot.Core and GrindBot.Core.Enabled and UnitThreatSituation(DMW.Player.Pointer, self.Pointer) then
+		return true
+	end
     return false
 end
 
@@ -320,7 +332,7 @@ function Unit:Interrupt()
             end
         end
     elseif DMW.Settings.profile.HUD.Interrupts == 3 then
-        local spellID = self:CastID()
+        local spellID = self:CastIdCheck()
         if DMW.Enums.InterruptWhiteList[spellID] then
             checkInterrupts = true
         end
@@ -477,19 +489,28 @@ end
 
 function Unit:CCed()
     for SpellID, _ in pairs(DMW.Enums.CCBuffs) do
-        if self:AuraByID(SpellID) then
+		if self:AuraByID(SpellID) then
             return true
         end
     end
     return false
 end
 
-function Unit:IsQuest()
-    -- if IsQuestObject(self.Pointer) then print(self.Name) end
-    if not self.QuestCached or (DMW.Cache.QuestieCache.CacheTimer and self.Cache.QuestTime < DMW.Cache.QuestieCache.CacheTimer) then
-        self.QuestCached = IsQuestObject(self.Pointer) or DMW.Helpers.QuestieHelper.isQuestieUnit(self.Pointer, self.GUID)
-        self.Cache.QuestTime = DMW.Time
+-- function Unit:CCable(type)
+-- 	if DMW.Player.Instance == "party" and self.CCable[type] then
+-- 		return true
+-- 	elseif not self.Boss then
+-- 		return true
+-- 	end
+-- end
 
+function Unit:IsQuest()
+	-- if IsQuestObject(self.Pointer) then print(self.Name) end
+
+	if not self.QuestCached or (DMW.Cache.QuestieCache.CacheTimer and self.Cache.QuestTime < DMW.Cache.QuestieCache.CacheTimer) then
+		local boolQuest, statusQuest = IsQuestObject(self.Pointer)
+        self.QuestCached = (boolQuest and (statusQuest == 5 or statusQuest == 9)) or DMW.Helpers.QuestieHelper.isQuestieUnit(self.Pointer, self.GUID)
+        self.Cache.QuestTime = DMW.Time
     end
     return self.QuestCached
 end
@@ -525,6 +546,9 @@ function Unit:IsTrackable()
                 return true
             end
         end
+    end
+    if DMW.Settings.profile.Tracker.Trackable and DMW.Enums.Trackable[self.ObjectID] ~= nil then
+        return true
     end
     return false
 end
@@ -622,6 +646,12 @@ function Unit:NoLoS()
     end
 end
 
+function Unit:OverrideChecks()
+    print("ID = "..self.ObjectID..", Name = "..self.Name)
+    DMW.Enums.LoS[self.ObjectID] = true
+    DMW.Enums.Threat[self.ObjectID] = true
+end
+
 -- function Unit:IsExecutable()
 --     if DMW.Player.Target and (DMW.Player.Buffs.SuddenDeathBuff:Exist() or DMW.Player.Target.HP < 20) then
 --         return true
@@ -684,3 +714,52 @@ function Unit:NoTouchDungeons()
     end
 end
 
+function Unit:AddCC(cat)
+    if not self.CC then
+        self.CC = {}
+    end
+    if not self.CC[cat] then
+        self.CC[cat] = {}
+        self.CC[cat]["diminished"] = 1
+    else
+        self.CC[cat]["diminished"] = self.CC[cat]["diminished"] + 1
+    end
+    local time_left = DRList:GetResetTime()
+    self.CC[cat]["reset_time"] = DMW.Time + time_left
+end
+
+function Unit:CheckCC(cat)
+    if not self.CC or self.CC[cat] < 3 then
+        return true
+    end
+    return false
+end
+
+function Unit:NextDR(cat)
+    if not self.CC or not self.CC[cat]then return 1 end
+    return DRList:GetNextDR(self.CC[cat]["diminished"])
+end
+
+function Unit:NoDRTime(cat)
+    if not self.CC and not not self.CC[cat] then return 0 end
+    return not self.CC[cat]["reset_time"] - DMW.Time
+end
+
+function Unit:CanCC(cat)
+    return (self.Player or (self.CCable and self.CCable[cat])) and self:NextDR(cat) > 0 or false
+end
+
+function Unit:isInstanceBoss()
+	if IsInInstance() then
+		local _, _, encountersTotal = GetInstanceLockTimeRemaining();
+		for i=1,encountersTotal do
+			if UnitExists(self.Pointer) then
+				local bossName = GetInstanceLockTimeRemainingEncounter(i)
+				local targetName = UnitName(self.Pointer)
+				-- Print("Target: "..targetName.." | Boss: "..bossName.." | Match: "..tostring(targetName == bossName))
+				if targetName == bossName then return true end
+			end
+		end
+	end
+	return false
+end

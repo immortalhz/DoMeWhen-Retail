@@ -856,9 +856,21 @@ local Options = {
                         DMW.Settings.profile.Helpers.ShowIDs = value
                     end
                 },
-                AcceptQueues = {
+                DirectX = {
                     type = "toggle",
                     order = 11,
+                    name = "Use DirectX",
+                    width = "full",
+                    get = function()
+                        return DMW.Settings.profile.Helpers.DirectX
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Helpers.DirectX = value
+                    end
+                },
+                AcceptQueues = {
+                    type = "toggle",
+                    order = 12,
                     name = "Auto Accept Queues",
                     width = "full",
                     get = function()
@@ -870,7 +882,7 @@ local Options = {
                 },
                 Trackshit = {
                     type = "execute",
-                    order = 12,
+                    order = 13,
                     name = "Advanced Tracking",
                     desc = "Track options",
                     width = "full",
@@ -886,7 +898,7 @@ local Options = {
                     type = "execute",
                     name = "Export Settings",
                     width = 1,
-                    order = 13,
+                    order = 14,
                     func = function()
                         export("export")
                     end
@@ -895,7 +907,7 @@ local Options = {
                     type = "execute",
                     name = "Import Settings",
                     width = 1,
-                    order = 14,
+                    order = 15,
                     func = function()
                         export("import")
                     end
@@ -1087,9 +1099,22 @@ local Options = {
                         DMW.Settings.profile.Enemy.SortingTarget = value
                     end
                 },
-                SortingLowestHealth = {
+                SortingThreat = {
                     type = "toggle",
                     order = 14,
+                    name = "Threat",
+                    -- desc = "Will auto face instant cast spells on target",
+                    width = "full",
+                    get = function()
+                        return DMW.Settings.profile.Enemy.SortingThreat
+                    end,
+                    set = function(info, value)
+                        DMW.Settings.profile.Enemy.SortingThreat = value
+                    end
+                },
+                SortingLowestHealth = {
+                    type = "toggle",
+                    order = 15,
                     name = "Lowest Health",
                     -- desc = "Will auto face instant cast spells on target",
                     width = "full",
@@ -1103,7 +1128,7 @@ local Options = {
                 },
                 SortingHighestHealth = {
                     type = "toggle",
-                    order = 15,
+                    order = 16,
                     name = "Highest Health",
                     -- desc = "Will auto face instant cast spells on target",
                     width = "full",
@@ -1117,7 +1142,7 @@ local Options = {
                 },
                 SortingAuraID = {
                     type = "toggle",
-                    order = 16,
+                    order = 17,
                     name = "Debuffs",
                     -- desc = "Will auto face instant cast spells on target",
                     width = "full",
@@ -1130,7 +1155,7 @@ local Options = {
                 },
                 SortingAuraIDString = {
                     type = "input",
-                    order = 17,
+                    order = 18,
                     name = "Has those Debuffs ID to Sort",
                     -- desc = "Only Interrupt Those Spells if Toggled",
                     hidden  = function()
@@ -1147,7 +1172,7 @@ local Options = {
                 },
                 SortingAuraName = {
                     type = "toggle",
-                    order = 18,
+                    order = 19,
                     name = "Has Buffs",
                     -- desc = "Will auto face instant cast spells on target",
                     width = "full",
@@ -1160,7 +1185,7 @@ local Options = {
                 },
                 SortingAuraNameString = {
                     type = "input",
-                    order = 19,
+                    order = 20,
                     name = "Has those Buffs ID to Sort",
                     -- desc = "Only Interrupt Those Spells if Toggled",
                     hidden  = function()
@@ -1177,7 +1202,7 @@ local Options = {
                 },
                 SortingObjectIDs = {
                     type = "toggle",
-                    order = 20,
+                    order = 21,
                     name = "Object IDs",
                     -- desc = "Will auto face instant cast spells on target",
                     width = "full",
@@ -1190,7 +1215,7 @@ local Options = {
                 },
                 SortingObjectIDsString = {
                     type = "input",
-                    order = 21,
+                    order = 22,
                     name = "",
                     -- desc = "Only Interrupt Those Spells if Toggled",
                     hidden  = function()

@@ -3,6 +3,7 @@ local LocalPlayer = DMW.Classes.LocalPlayer
 local Spell = DMW.Classes.Spell
 local Buff = DMW.Classes.Buff
 local Debuff = DMW.Classes.Debuff
+DMW.Tables.AuraList = {}
 
 local function HasSpell(id)
     return select(7,GetSpellInfo(GetSpellInfo(id))) == id
@@ -36,6 +37,50 @@ function LocalPlayer:GetSpells()
     for k, v in pairs(DMW.Enums.Spells) do
         if k == self.Class then
         -- local table = v["Shared"]) v[self.SpecID]
+
+            if v["Shared"] then
+                for SpellType, SpellTable in pairs(v["Shared"]) do
+                    if SpellType == "Abilities" then
+                        for SpellName, SpellInfo in pairs(SpellTable) do
+                            -- print(SpellName)
+                            CastType = type(SpellInfo[#SpellInfo]) ~= "number" and SpellInfo[#SpellInfo] or "Normal"
+                            if #SpellInfo >= 2 then
+                                for _, spellID in pairs(SpellInfo) do
+                                    if type(spellID) == "number" and HasSpell(spellID) then
+                                        self.Spells[SpellName] = Spell(spellID, CastType)
+                                        self.Spells[SpellName].Key = SpellName
+                                        break
+                                    end
+                                end
+                            else
+                                self.Spells[SpellName] = Spell(SpellInfo[1], CastType)
+                                self.Spells[SpellName].Key = SpellName
+                            end
+                        end
+                    elseif SpellType == "Buffs" then
+                        for SpellName, SpellInfo in pairs(SpellTable) do
+                            if #SpellInfo >= 2 then
+                                for _, spellID in pairs(SpellInfo) do
+                                    if type(spellID) == "number" and HasSpell(spellID) then
+                                        self.Buffs[SpellName] = Buff(spellID)
+                                        DMW.Tables.AuraList[spellID] = true
+                                        break
+                                    end
+                                end
+                            else
+                                self.Buffs[SpellName] = Buff(SpellInfo[1])
+                                DMW.Tables.AuraList[SpellInfo[1]] = true
+                            end
+                        end
+
+                    elseif SpellType == "Debuffs" then
+                        for SpellName, SpellInfo in pairs(SpellTable) do
+                            self.Debuffs[SpellName] = Debuff(SpellInfo)
+                            DMW.Tables.AuraList[SpellInfo] = true
+                        end
+                    end
+                end
+            end
             if v[self.SpecID] then
                 for SpellType, SpellTable in pairs(v[self.SpecID]) do
                     if SpellType == "Abilities" then
@@ -73,55 +118,19 @@ function LocalPlayer:GetSpells()
                                 for _, spellID in pairs(SpellInfo) do
                                     if type(spellID) == "number" and HasSpell(spellID) then
                                         self.Buffs[SpellName] = Buff(spellID)
+                                        DMW.Tables.AuraList[spellID] = true
                                         break
                                     end
                                 end
                             else
                                 self.Buffs[SpellName] = Buff(SpellInfo[1])
+                                DMW.Tables.AuraList[SpellInfo[1]] = true
                             end
                         end
                     elseif SpellType == "Debuffs" then
                         for SpellName, SpellInfo in pairs(SpellTable) do
                             self.Debuffs[SpellName] = Debuff(SpellInfo)
-                        end
-                    end
-                end
-            end
-            if v["Shared"] then
-                for SpellType, SpellTable in pairs(v["Shared"]) do
-                    if SpellType == "Abilities" then
-                        for SpellName, SpellInfo in pairs(SpellTable) do
-                            -- print(SpellName)
-                            CastType = type(SpellInfo[#SpellInfo]) ~= "number" and SpellInfo[#SpellInfo] or "Normal"
-                            if #SpellInfo >= 2 then
-                                for _, spellID in pairs(SpellInfo) do
-                                    if type(spellID) == "number" and HasSpell(spellID) then
-                                        self.Spells[SpellName] = Spell(spellID, CastType)
-                                        self.Spells[SpellName].Key = SpellName
-                                        break
-                                    end
-                                end
-                            else
-                                self.Spells[SpellName] = Spell(SpellInfo[1], CastType)
-                                self.Spells[SpellName].Key = SpellName
-                            end
-                        end
-                    elseif SpellType == "Buffs" then
-                        for SpellName, SpellInfo in pairs(SpellTable) do
-                            if #SpellInfo >= 2 then
-                                for _, spellID in pairs(SpellInfo) do
-                                    if type(spellID) == "number" and HasSpell(spellID) then
-                                        self.Buffs[SpellName] = Buff(spellID)
-                                        break
-                                    end
-                                end
-                            else
-                                self.Buffs[SpellName] = Buff(SpellInfo[1])
-                            end
-                        end
-                    elseif SpellType == "Debuffs" then
-                        for SpellName, SpellInfo in pairs(SpellTable) do
-                            self.Debuffs[SpellName] = Debuff(SpellInfo)
+                            DMW.Tables.AuraList[SpellInfo] = true
                         end
                     end
                 end
@@ -151,16 +160,19 @@ function LocalPlayer:GetSpells()
                             for _, spellID in pairs(SpellInfo) do
                                 if type(spellID) == "number" and HasSpell(spellID) then
                                     self.Buffs[SpellName] = Buff(spellID)
+                                    DMW.Tables.AuraList[spellID] = true
                                     break
                                 end
                             end
                         else
                             self.Buffs[SpellName] = Buff(SpellInfo[1])
+                            DMW.Tables.AuraList[SpellInfo[1]] = true
                         end
                     end
                 elseif SpellType == "Debuffs" then
                     for SpellName, SpellInfo in pairs(SpellTable) do
                         self.Debuffs[SpellName] = Debuff(SpellInfo)
+                        DMW.Tables.AuraList[SpellInfo] = true
                     end
                 end
             end
@@ -193,25 +205,25 @@ end
 
 --https://github.com/simulationcraft/simc/blob/bfa-dev/engine/dbc/generated/azerite.inc
 function LocalPlayer:GetTraits()
-    if self.Traits then
-        table.wipe(self.Traits)
-    else
-        self.Traits = {}
-    end
-    if AzeriteUtil.AreAnyAzeriteEmpoweredItemsEquipped() and DMW.Enums.Spells[self.Class][self.SpecID]["Traits"] then
-        local isSelected
-        for _, itemLocation in AzeriteUtil.EnumerateEquipedAzeriteEmpoweredItems() do
-            for k, v in pairs(DMW.Enums.Spells[self.Class][self.SpecID]["Traits"]) do
-                isSelected = C_AzeriteEmpoweredItem.IsPowerSelected(itemLocation, v)
-                if not self.Traits[k] then
-                    self.Traits[k] = 0
-                end
-                if isSelected then
-                    self.Traits[k] = self.Traits[k] + 1
-                end
-            end
-        end
-    end
+    -- if self.Traits then
+    --     table.wipe(self.Traits)
+    -- else
+    --     self.Traits = {}
+    -- end
+    -- if AzeriteUtil.AreAnyAzeriteEmpoweredItemsEquipped() and DMW.Enums.Spells[self.Class][self.SpecID]["Traits"] then
+    --     local isSelected
+    --     for _, itemLocation in AzeriteUtil.EnumerateEquipedAzeriteEmpoweredItems() do
+    --         for k, v in pairs(DMW.Enums.Spells[self.Class][self.SpecID]["Traits"]) do
+    --             isSelected = C_AzeriteEmpoweredItem.IsPowerSelected(itemLocation, v)
+    --             if not self.Traits[k] then
+    --                 self.Traits[k] = 0
+    --             end
+    --             if isSelected then
+    --                 self.Traits[k] = self.Traits[k] + 1
+    --             end
+    --         end
+    --     end
+    -- end
 end
 
 function LocalPlayer:GetAzerite()
@@ -255,7 +267,6 @@ function LocalPlayer:GetAzerite()
                                 -- self.Essences.Major.Name = essence[1]
                                 -- self.Essences.Major.Rank = rank
                                 tinsert(self.Essences.Minor,tempEssence)
-
                             end
                         end
                     end
@@ -266,7 +277,8 @@ function LocalPlayer:GetAzerite()
 end
 
 function LocalPlayer:UpdateEquipment()
-    table.wipe(self.Equipment)
+	table.wipe(self.Equipment)
+	self.Runeforge = nil
     self.Items.Trinket1 = nil
     self.Items.Trinket2 = nil
     local ItemID
@@ -279,7 +291,16 @@ function LocalPlayer:UpdateEquipment()
             elseif i == 14 then
                 self.Items.Trinket2 = DMW.Classes.Item(ItemID)
             end
-        end
+		end
+		if not self.Runeforge then
+			local string = GetInventoryItemLink("player",i)
+			if string then
+				local legID = select(15,strsplit(":", string))
+				if DMW.Enums.Runeforge[tonumber(legID)] then
+					self.Runeforge = DMW.Enums.Runeforge[tonumber(legID)]
+				end
+			end
+		end
     end
 end
 
@@ -289,6 +310,40 @@ function LocalPlayer:GetItems()
         self.Items[Name] = Item(ItemID)
     end
 end
+
+function LocalPlayer:GetCovenant()
+    local activeCovenantID = C_Covenants.GetActiveCovenantID()
+    if activeCovenantID > 0 then
+        local covenantData =  C_Covenants.GetCovenantData(activeCovenantID)
+        if covenantData then
+            self.Covenant = covenantData.textureKit
+		end
+		local id = C_Soulbinds.GetActiveSoulbindID()
+		local data = C_Soulbinds.GetSoulbindData(id)
+		self.Soulbind = data.textureKit
+		self.Conduits = {}
+		for _, node in pairs(data.tree.nodes) do
+			local id = C_Soulbinds.GetInstalledConduitID(node.ID)
+			if id > 0 then
+				local data = C_Soulbinds.GetConduitCollectionData(id)
+				if data.conduitID > 0 then
+					local spellID = C_Soulbinds.GetConduitSpellID(data.conduitID, data.conduitRank)
+					local enum = DMW.Enums.Spells[self.Class].Conduits and DMW.Enums.Spells[self.Class].Conduits[spellID]
+					if enum then
+						self.Conduits[enum] = true
+					end
+				end
+			end
+		end
+    end
+end
+
+function LocalPlayer:RefreshItems()
+    for _, Item in pairs(DMW.Player.Items) do
+        Item:Refresh()
+    end
+end
+
 
 -- function LocalPlayer:UpdateProfessions()
 --     table.wipe(self.Professions)

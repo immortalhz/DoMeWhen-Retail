@@ -44,7 +44,7 @@ end
 
 local function DrawRoute()
     LibDraw.SetWidth(4)
-    LibDraw.SetColorRaw(0, 128, 128, 100)
+    DMW.Helpers.DrawColor(0, 128, 128, 100)
     for i = PathIndex, #Path do
         if i == PathIndex then
             LibDraw.Line(DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ, Path[i][1], Path[i][2], Path[i][3])
@@ -271,7 +271,7 @@ function Navigation:InitWorldMap()
     WorldMapFrame.ScrollContainer:HookScript(
         "OnMouseDown",
         function(self, button)
-            if (button == "LeftButton") and IsLeftControlKeyDown() then
+            if (button == "LeftButton") and IsLeftAltKeyDown() then
                 Navigation:MoveToMapCursorPosition()
             elseif (button == "LeftButton") and IsLeftShiftKeyDown() then
                 Navigation:AddMapCursorPosition()

@@ -9,26 +9,27 @@ local friends = {
 
 function DMW.Helpers.Trackers.Run()
     local tX, tY, tZ
-    if (DMW.Settings.profile.Tracker.TrackUnits and DMW.Settings.profile.Tracker.TrackUnits ~= "") or DMW.Settings.profile.Tracker.TrackNPC or DMW.Settings.profile.Tracker.TrackRare or DMW.Settings.profile.Tracker.DrawTTD then
+    -- if (DMW.Settings.profile.Tracker.TrackUnits and DMW.Settings.profile.Tracker.TrackUnits ~= "") or DMW.Settings.profile.Tracker.TrackNPC or DMW.Settings.profile.Tracker.TrackRare or DMW.Settings.profile.Tracker.DrawTTD or DMW.Settings.profile.Helpers.ShowIDs then
+    if true then
         local s = 1
         for _, Unit in pairs(DMW.Units) do
             -- if friends[Unit.Name] then return end
             if DMW.Settings.profile.Tracker.TrackNPC and not Unit.Player and Unit.Friend then
                 local r, b, g, a = DMW.Settings.profile.Tracker.TrackNPCColor[1], DMW.Settings.profile.Tracker.TrackNPCColor[2], DMW.Settings.profile.Tracker.TrackNPCColor[3], DMW.Settings.profile.Tracker.TrackNPCColor[4]
-                LibDraw.SetColorRaw(r, b, g, a)
+                DMW.Helpers.DrawColor(r, b, g, a)
                 for k, v in pairs(DMW.Enums.NpcFlags) do
                     if Unit:HasNPCFlag(v) then
-                        LibDraw.Text(k, "GameFontNormalSmall", Unit.PosX, Unit.PosY, Unit.PosZ + 2)
+                        DMW.Helpers.DrawText(k, "GameFontNormalSmall", Unit.PosX, Unit.PosY, Unit.PosZ + 2)
                         break
                     end
                 end
             end
             if DMW.Settings.profile.Tracker.DrawTTD and Unit.Attackable and Unit.CreatureType ~= "Critter" and Unit.TTD then
-                LibDraw.Text(math.floor(Unit.TTD), "GameFontNormalSmall", Unit.PosX, Unit.PosY, Unit.PosZ)
+                DMW.Helpers.DrawText(math.floor(Unit.TTD), "GameFontNormalSmall", Unit.PosX, Unit.PosY, Unit.PosZ)
             end
             if (DMW.Settings.profile.Tracker.TrackUnits ~= nil and DMW.Settings.profile.Tracker.TrackUnits ~= "") and not Unit.Player and Unit.Trackable and not Unit.Dead and not Unit.Target then
                 local r, b, g, a = DMW.Settings.profile.Tracker.TrackUnitsColor[1], DMW.Settings.profile.Tracker.TrackUnitsColor[2], DMW.Settings.profile.Tracker.TrackUnitsColor[3], DMW.Settings.profile.Tracker.TrackUnitsColor[4]
-                LibDraw.SetColorRaw(r, b, g, a)
+                DMW.Helpers.DrawColor(r, b, g, a)
                 if DMW.Settings.profile.Tracker.TrackUnitsAlert > 0 and (AlertTimer + 5) < DMW.Time and not IsForeground() then
                     FlashClientIcon()
                     if GetCVarBool("Sound_EnableSFX") then
@@ -47,12 +48,12 @@ function DMW.Helpers.Trackers.Run()
                 if DMW.Settings.profile.Tracker.TrackUnitsLine > 0 then
                     local w = DMW.Settings.profile.Tracker.TrackUnitsLine
                     LibDraw.SetWidth(w)
-                    DMW.Helpers.DrawLineDMWC(tX, tY, tZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
+                    DMW.Helpers.DrawLine(tX, tY, tZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
                 end
             end
             if DMW.Settings.profile.Tracker.TrackRare and (Unit.Classification == "rareelite" or Unit.Classification == "rare") and not Unit.Dead and not Unit.Target then
                 local r, b, g, a = DMW.Settings.profile.Tracker.TrackRareColor[1], DMW.Settings.profile.Tracker.TrackRareColor[2], DMW.Settings.profile.Tracker.TrackRareColor[3], DMW.Settings.profile.Tracker.TrackRareColor[4]
-                LibDraw.SetColorRaw(r, b, g, a)
+                DMW.Helpers.DrawColor(r, b, g, a)
                 if DMW.Settings.profile.Tracker.TrackRareAlert > 0 and (AlertTimer + 5) < DMW.Time and not IsForeground() then
                     FlashClientIcon()
                     if GetCVarBool("Sound_EnableSFX") then
@@ -71,18 +72,29 @@ function DMW.Helpers.Trackers.Run()
                 if DMW.Settings.profile.Tracker.TrackRareLine > 0 then
                     local w = DMW.Settings.profile.Tracker.TrackRareLine
                     LibDraw.SetWidth(w)
-                    DMW.Helpers.DrawLineDMWC(tX, tY, tZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
+                    DMW.Helpers.DrawLine(tX, tY, tZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
                 end
             end
             -- if Unit.NPC ~= false then
-            --     LibDraw.Text(Unit.NPC, "GameFontNormal", self.PosX, self.PosY, self.PosZ + 2)
+            --     DMW.Helpers.DrawText(Unit.NPC, "GameFontNormal", self.PosX, self.PosY, self.PosZ + 2)
             -- end
+            if DMW.Settings.profile.Helpers.ShowIDs then
+                if Unit.ObjectID then
+                    Unit:UpdatePosition()
+                DMW.Helpers.DrawText(Unit.Name.. " - " .. Unit.ObjectID .. " - " .. UnitFlags(Unit.Pointer) .. " - " .. ObjectDynamicFlags(Unit.Pointer) , "GameFontNormal", Unit.PosX, Unit.PosY, Unit.PosZ + 2)
+                end
+            elseif Unit.Trackable then
+                local r, b, g, a = DMW.Settings.profile.Tracker.TrackObjectsColor[1], DMW.Settings.profile.Tracker.TrackObjectsColor[2], DMW.Settings.profile.Tracker.TrackObjectsColor[3], DMW.Settings.profile.Tracker.TrackObjectsColor[4]
+                DMW.Helpers.DrawColor(r, b, g, a)
+                Unit:UpdatePosition()
+                DMW.Helpers.DrawText(Unit.Name .. " - " .. math.floor(Unit.Distance) .. " Yards", "GameFontNormal", Unit.PosX, Unit.PosY, Unit.PosZ + 2)
+            end
         end
     end
     for _, Object in pairs(DMW.GameObjects) do
         if Object.Herb and not Object.HerbTaken then
             local r, b, g, a = DMW.Settings.profile.Tracker.HerbsColor[1], DMW.Settings.profile.Tracker.HerbsColor[2], DMW.Settings.profile.Tracker.HerbsColor[3], DMW.Settings.profile.Tracker.HerbsColor[4]
-            LibDraw.SetColorRaw(r, b, g, a)
+            DMW.Helpers.DrawColor(r, b, g, a)
             if DMW.Settings.profile.Tracker.HerbsAlert > 0 and (AlertTimer + 5) < DMW.Time and not IsForeground() then
                 FlashClientIcon()
                 if GetCVarBool("Sound_EnableSFX") then
@@ -95,19 +107,19 @@ function DMW.Helpers.Trackers.Run()
             -- for k, v in pairs(DMW.Enums.GameObjectFlags) do
             --     if Object:HasDynFlag(v) then
             --         print(k)
-            --         LibDraw.Text(k, "GameFontNormalSmall", Object.PosX, Object.PosY, Object.PosZ + 5)
+            --         DMW.Helpers.DrawText(k, "GameFontNormalSmall", Object.PosX, Object.PosY, Object.PosZ + 5)
             --         break
             --     end
             -- end
-            LibDraw.Text(Object.Name .. " - " .. math.floor(Object.Distance) .. " Yards", "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
+            DMW.Helpers.DrawText(Object.Name .. " - " .. math.floor(Object.Distance) .. " Yards", "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
             if DMW.Settings.profile.Tracker.HerbsLine > 0 then
                 local w = DMW.Settings.profile.Tracker.HerbsLine
                 LibDraw.SetWidth(w)
-                DMW.Helpers.DrawLineDMWC(Object.PosX, Object.PosY, Object.PosZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
+                DMW.Helpers.DrawLine(Object.PosX, Object.PosY, Object.PosZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
             end
         elseif Object.Ore then
             local r, b, g, a = DMW.Settings.profile.Tracker.OreColor[1], DMW.Settings.profile.Tracker.OreColor[2], DMW.Settings.profile.Tracker.OreColor[3], DMW.Settings.profile.Tracker.OreColor[4]
-            LibDraw.SetColorRaw(r, b, g, a)
+            DMW.Helpers.DrawColor(r, b, g, a)
             ----------------------------------------------------------------------------
             if DMW.Settings.profile.Tracker.OreAlert > 0 and (AlertTimer + 5) < DMW.Time and not IsForeground() then
                 FlashClientIcon()
@@ -118,15 +130,15 @@ function DMW.Helpers.Trackers.Run()
                 end
                 AlertTimer = DMW.Time
             end
-            LibDraw.Text(Object.Name .. " - " .. math.floor(Object.Distance) .. " Yards", "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
+            DMW.Helpers.DrawText(Object.Name .. " - " .. math.floor(Object.Distance) .. " Yards", "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
             if DMW.Settings.profile.Tracker.OreLine > 0 then
                 local w = DMW.Settings.profile.Tracker.OreLine
                 LibDraw.SetWidth(w)
-                DMW.Helpers.DrawLineDMWC(Object.PosX, Object.PosY, Object.PosZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
+                DMW.Helpers.DrawLine(Object.PosX, Object.PosY, Object.PosZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
             end
         elseif Object.Trackable then
             local r, b, g, a = DMW.Settings.profile.Tracker.TrackObjectsColor[1], DMW.Settings.profile.Tracker.TrackObjectsColor[2], DMW.Settings.profile.Tracker.TrackObjectsColor[3], DMW.Settings.profile.Tracker.TrackObjectsColor[4]
-            LibDraw.SetColorRaw(r, b, g, a)
+            DMW.Helpers.DrawColor(r, b, g, a)
             ----------------------------------------------------------------------------
             if DMW.Settings.profile.Tracker.TrackObjectsAlert > 0 and (AlertTimer + 5) < DMW.Time and not IsForeground() then
                 local sound = DMW.Settings.profile.Tracker.TrackObjectsAlert
@@ -139,22 +151,22 @@ function DMW.Helpers.Trackers.Run()
                 AlertTimer = DMW.Time
             end
             if DMW.Settings.profile.Helpers.ShowIDs then
-                LibDraw.Text(Object.Name .. " - " .. ObjectDescriptor(Object.Pointer, GetOffset("CGGameObjectData__Flags"), "uint") .. " - " .. ObjectDescriptor(Object.Pointer, GetOffset("CGObjectData__DynamicFlags"), "uint") , "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
+                DMW.Helpers.DrawText(Object.Name.. " - " .. Object.ObjectID .. " - " .. GameObjectFlags(Object.Pointer) .. " - " .. ObjectDynamicFlags(Object.Pointer), "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ)
             else
-                LibDraw.Text(Object.Name .. " - " .. math.floor(Object.Distance) .. " Yards", "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
+                DMW.Helpers.DrawText(Object.Name .. " - " .. math.floor(Object.Distance) .. " Yards", "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
             end
             if DMW.Settings.profile.Tracker.TrackObjectsLine > 0 then
                 local w = DMW.Settings.profile.Tracker.TrackObjectsLine
                 LibDraw.SetWidth(w)
-                DMW.Helpers.DrawLineDMWC(Object.PosX, Object.PosY, Object.PosZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
+                DMW.Helpers.DrawLine(Object.PosX, Object.PosY, Object.PosZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
             end
         elseif DMW.Settings.profile.Tracker.TrackObjectsMailbox and strmatch(string.lower(Object.Name), "mailbox") then
             local r, b, g, a = DMW.Settings.profile.Tracker.TrackObjectsColor[1], DMW.Settings.profile.Tracker.TrackObjectsColor[2], DMW.Settings.profile.Tracker.TrackObjectsColor[3], DMW.Settings.profile.Tracker.TrackObjectsColor[4]
-            LibDraw.SetColorRaw(r, b, g, a)
-            LibDraw.Text(Object.Name .. " - " .. math.floor(Object.Distance) .. " Yards", "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
+            DMW.Helpers.DrawColor(r, b, g, a)
+            DMW.Helpers.DrawText(Object.Name .. " - " .. math.floor(Object.Distance) .. " Yards", "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
             local w = DMW.Settings.profile.Tracker.TrackObjectsLine
             LibDraw.SetWidth(w)
-            DMW.Helpers.DrawLineDMWC(Object.PosX, Object.PosY, Object.PosZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
+            DMW.Helpers.DrawLine(Object.PosX, Object.PosY, Object.PosZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
         end
     end
     for _, Object in pairs(DMW.AreaTriggers) do
@@ -164,11 +176,11 @@ function DMW.Helpers.Trackers.Run()
         end
         if Object.Trackable then
             local r, b, g, a = 1, 0 , 0 ,1
-            LibDraw.SetColorRaw(r, b, g, a)
+            DMW.Helpers.DrawColor(r, b, g, a)
 
 
             if DMW.Settings.profile.Helpers.ShowIDs then
-                LibDraw.Text(Object.ObjectID, "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ + 2)
+                DMW.Helpers.DrawText(Object.ObjectID, "GameFontNormal", Object.PosX, Object.PosY, Object.PosZ -2)
             end
         end
     end
@@ -177,9 +189,9 @@ function DMW.Helpers.Trackers.Run()
         local s = 1
         for _, Unit in pairs(DMW.Units) do
             if ((DMW.Settings.profile.Tracker.TrackPlayers ~= nil and DMW.Settings.profile.Tracker.TrackPlayers ~= "") or DMW.Settings.profile.Tracker.TrackPlayersAny or DMW.Settings.profile.Tracker.TrackPlayersEnemy)
-             and Unit.Player and not Unit.Dead and Unit.Trackable and not UnitIsUnit("target", Unit.Pointer) then
+             and Unit.Player and not Unit.Dead and Unit.Trackable and (not DMW.Player.Target or DMW.Player.Target.Pointer ~= Unit.Pointer) then
                 local r, b, g, a = DMW.Settings.profile.Tracker.TrackPlayersColor[1], DMW.Settings.profile.Tracker.TrackPlayersColor[2], DMW.Settings.profile.Tracker.TrackPlayersColor[3], DMW.Settings.profile.Tracker.TrackPlayersColor[4]
-                LibDraw.SetColorRaw(r, b, g, a)
+                DMW.Helpers.DrawColor(r, b, g, a)
                 if DMW.Settings.profile.Tracker.TrackPlayersAlert > 0 and (AlertTimer + 5) < DMW.Time and not IsForeground() then
                     local sound = DMW.Settings.profile.Tracker.TrackPlayersAlert
                     FlashClientIcon()
@@ -199,17 +211,17 @@ function DMW.Helpers.Trackers.Run()
                 if DMW.Settings.profile.Tracker.TrackPlayersLine > 0 then
                     local w = DMW.Settings.profile.Tracker.TrackPlayersLine
                     LibDraw.SetWidth(w)
-                    DMW.Helpers.DrawLineDMWC(tX, tY, tZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
+                    DMW.Helpers.DrawLine(tX, tY, tZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
                 end
             end
             if DMW.Settings.profile.Tracker.TrackPlayersNamePlates and Unit.Player and not Unit.Dead and not UnitIsFriend("player", Unit.Pointer) and not C_NamePlate.GetNamePlateForUnit(Unit.Pointer) then
                 Unit:UpdatePosition()
                 Color = DMW.Enums.ClassColor[Unit.Class]
-                LibDraw.SetColor(Color.r, Color.g, Color.b)
+                DMW.Helpers.DrawColor(Color.r, Color.g, Color.b)
                 if Unit.RealisticHonor then
-                    LibDraw.Text(Unit.RealisticHonor .. " HP: " .. Unit.HP .. " - " .. math.floor(Unit.Distance), "GameFontNormalSmall", Unit.PosX, Unit.PosY, Unit.PosZ + 2)
+                    DMW.Helpers.DrawText(Unit.RealisticHonor .. " HP: " .. Unit.HP .. " - " .. math.floor(Unit.Distance), "GameFontNormalSmall", Unit.PosX, Unit.PosY, Unit.PosZ + 2)
                 else
-                    LibDraw.Text(Unit.Name .. " (" .. Unit.Level .. ") - HP: " .. Unit.HP .. " - " .. math.floor(Unit.Distance) .. " Yards", "GameFontNormalSmall", Unit.PosX, Unit.PosY, Unit.PosZ + 2)
+                    DMW.Helpers.DrawText(Unit.Name .. " (" .. Unit.Level .. ") - HP: " .. Unit.HP .. " - " .. math.floor(Unit.Distance) .. " Yards", "GameFontNormalSmall", Unit.PosX, Unit.PosY, Unit.PosZ + 2)
                 end
             end
         end

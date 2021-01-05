@@ -4,40 +4,12 @@ local AlertTimer = GetTime()
 DMW.Helpers.QuestieHelper = {}
 DMW.Cache.QuestieCache = {}
 
-function DMW.Helpers.DrawLineDMWC(sx, sy, sz, ex, ey, ez)
-    local function WorldToScreen(wX, wY, wZ)
-        local sX, sY = _G.WorldToScreen(wX, wY, wZ)
-        if sX and sY then
-            return sX, -(WorldFrame:GetTop() - sY)
-        else
-            return sX, sY
-        end
-    end
-    local startx, starty = WorldToScreen(sx, sy, sz)
-    local endx, endy = WorldToScreen(ex, ey, ez)
-    if (endx == nil or endy == nil) and (startx and starty) then
-        local i = 1
-        while (endx == nil or endy == nil) and i < 50 do
-            endx, endy = WorldToScreen(GetPositionBetweenPositions(ex, ey, ez, sx, sy, sz, i))
-            i = i + 1
-        end
-    end
-    if (startx == nil or starty == nil) and (endx and endy) then
-        local i = 1
-        while (startx == nil or starty == nil) and i < 50 do
-            startx, starty = WorldToScreen(GetPositionBetweenPositions(sx, sy, sz, ex, ey, ez, i))
-            i = i + 1
-        end
-    end
-    LibDraw.Draw2DLine(startx, starty, endx, endy)
-end
-
 function DMW.Helpers.QuestieHelper.Run()
     if DMW.Settings.profile.Tracker.QuestieHelper then
         local s = 1
         local tX, tY, tZ
         local r, b, g, a = DMW.Settings.profile.Tracker.QuestieHelperColor[1], DMW.Settings.profile.Tracker.QuestieHelperColor[2], DMW.Settings.profile.Tracker.QuestieHelperColor[3], DMW.Settings.profile.Tracker.QuestieHelperColor[4]
-        LibDraw.SetColorRaw(r, b, g, a)
+        DMW.Helpers.DrawColor(r, b, g, a)
         for _, Unit in pairs(DMW.Units) do
             if Unit.Quest and (not Unit.Dead or UnitCanBeLooted(Unit.Pointer)) and not Unit.Target and not UnitIsTapDenied(Unit.Pointer) then
                 if tonumber(DMW.Settings.profile.Tracker.QuestieHelperAlert) > 0 and (AlertTimer + 5) < DMW.Time and not IsForeground() then
@@ -58,7 +30,7 @@ function DMW.Helpers.QuestieHelper.Run()
                 if DMW.Settings.profile.Tracker.QuestieHelperLine > 0 then
                     local w = DMW.Settings.profile.Tracker.QuestieHelperLine
                     LibDraw.SetWidth(w)
-                    DMW.Helpers.DrawLineDMWC(tX, tY, tZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
+                    DMW.Helpers.DrawLine(tX, tY, tZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
                 end
             end
         end
@@ -81,7 +53,7 @@ function DMW.Helpers.QuestieHelper.Run()
                 if DMW.Settings.profile.Tracker.QuestieHelperLine > 0 then
                     local w = DMW.Settings.profile.Tracker.QuestieHelperLine
                     LibDraw.SetWidth(w)
-                    DMW.Helpers.DrawLineDMWC(tX, tY, tZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
+                    DMW.Helpers.DrawLine(tX, tY, tZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
                 end
             end
         end
@@ -152,8 +124,8 @@ function DMW.Helpers.QuestieHelper.isQuestieUnit(Pointer, GUID)
 	end
 	if isQuestUnit and atLeastOneQuestUnfinished and (not UnitIsDeadOrGhost(Pointer) or UnitCanBeLooted(Pointer) or UnitIsFriend("player", Pointer)) then
 		return true
-	elseif DMW.Units[Pointer].ObjectID and visionsNPCs[DMW.Units[Pointer].ObjectID] then
-		return true
+	-- elseif DMW.Units[Pointer].ObjectID and visionsNPCs[DMW.Units[Pointer].ObjectID] then
+	-- 	return true
 	else
 		return false
 	end
@@ -218,9 +190,9 @@ function DMW.Helpers.QuestieHelper.isQuestObject(objectID, Pointer) --Ty Ssatene
 		or objectID == 335709 or objectID == 334237 or objectID == 334228 or objectID == 334229 or objectID == 334232-- Uldum chest
     then return true end
     local glow = ObjectDescriptor(Pointer,GetOffset("CGObjectData__DynamicFlags"),"uint")
-    if glow and (bit.band(glow,0x4)~=0 or bit.band(glow,0x20)~=0) then
-        return true
-    end
+    -- if glow and (bit.band(glow,0x4)~=0 or bit.band(glow,0x20)~=0) then
+    --     return true
+    -- end
     return false
 end
 

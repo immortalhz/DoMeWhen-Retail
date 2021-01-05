@@ -49,7 +49,12 @@ DMW.Enums.LoS = {
 	[157486] = true, -- опухоль гер
 	[157475] = true,
 	[307306] = true,
-	[158041] = true
+	[158041] = true,
+	[166608] = true, -- Mueh'zala - De Other Side
+    [166618] = true,
+    [169769] = true,
+    [171665] = true,
+    [168326] = true
 
 }
 
@@ -106,7 +111,12 @@ DMW.Enums.Threat = {
     [158375] = true, --"Corrupter Tentacle", -- Ny'alotha - N'zoth
     [160249] = true, --"Spike Tentacle", -- Ny'alotha - N'zoth
     [162933] = true, --"Thought Harvester", -- Ny'alotha - N'zoth
-    [161895] = true, --"The Thing from beyond", -- corruption thingy
+	[161895] = true, --"The Thing from beyond", -- corruption thingy
+	[166608] = true, -- Mueh'zala - De Other Side
+    [166618] = true,
+    [169769] = true,
+    [171665] = true,
+    [168326] = true
 }
 
 DMW.Enums.EnemyBlacklist = {
@@ -116,7 +126,12 @@ DMW.Enums.EnemyBlacklist = {
 DMW.Enums.SkipChecks = {
 	[158478] = true, -- shits in horrific visions on the ground
 }
+
 DMW.Enums.DoNotTouchList = {
+
+}
+
+DMW.Enums.MeleeForced = {
 
 }
 

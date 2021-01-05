@@ -4,42 +4,16 @@ DMW.Functions.AuraCache = {}
 local AuraCache = DMW.Functions.AuraCache
 local Buff = DMW.Classes.Buff
 local Debuff = DMW.Classes.Debuff
--- local DurationLib = LibStub("LibClassicDurationsDMW")
--- DurationLib:Register("DMW")
--- local UnitAura = DurationLib.UnitAuraWithBuffs
--- local f = CreateFrame("Frame", nil)
--- f:RegisterUnitEvent("UNIT_AURA", "player")
 
-
--- function AuraCache.Player_AURA(...)
-    -- if not DMW.Player.GUID then return end
-    -- AuraCache.Refresh(DMW.Player.Pointer, DMW.Player.GUID)
-    -- for i=1,100 do
-    --     local name, _, _, _, duration, expirationTime, _, _, _, spellId = UnitAura(Pointer, i, "HELPFUL")
-    --     if not name then break end
-    --     print(name, duration, expirationTime)
-    -- end
-    -- for i=1,100 do
-    --     local name, _, _, _, duration, expirationTime, _, _, _, spellId = UnitAura(Pointer, i, "HARMFUL")
-    --     if not name then break end
-    --     print(name, duration, expirationTime)
-    -- end
--- end
-
--- f:SetScript("OnEvent", AuraCache.Player_AURA)
 
 function AuraCache.Refresh(Unit)
     if DMW.Tables.AuraCache[Unit] ~= nil then
         DMW.Tables.AuraCache[Unit] = nil
     end
     local AuraReturn, Name, Source
-
     for i = 1, 40 do
         AuraReturn = {UnitBuff(Unit, i)}
         Name, Source = GetSpellInfo(AuraReturn[10]), AuraReturn[7]
-        if AuraReturn[10] == 294027 then
-            Name = "AvengingWrathAutocrit"
-        end
         if Name == nil then
             break
         end
@@ -59,7 +33,6 @@ function AuraCache.Refresh(Unit)
             }
         end
     end
-
     for i = 1, 40 do
         AuraReturn = {UnitDebuff(Unit, i)}
         Name, Source = GetSpellInfo(AuraReturn[10]), AuraReturn[7]
@@ -84,30 +57,24 @@ function AuraCache.Refresh(Unit)
     end
 end
 
+local forceUse = {
+	[77575] = true, -- outbreak
+	[316099] = true, -- unstable affliction
+	[85948] = true, --Festering Strike
+}
+
 function AuraCache.Event(...)
     local timeStamp, event, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags,
           spellID, spellName, spellSchool, auraType = ...
-    if destGUID and
+    if destGUID and ((--DMW.Tables.AuraList[spellID] and
         (event == "SPELL_AURA_APPLIED" or event == "SPELL_AURA_APPLIED_DOSE" or event == "SPELL_AURA_REMOVED_DOSE" or event ==
-            "SPELL_AURA_REFRESH" or event == "SPELL_AURA_REMOVED" or event == "SPELL_PERIODIC_AURA_REMOVED")
-            --or (DurationLib.indirectRefreshSpells[spellName] and DurationLib.indirectRefreshSpells[spellName].events[event]))
-            then
-                -- if DMW.Enums.Spells and DMW.Enums.Spells[DMW.Player.Class] and DMW.Enums.Spells[DMW.Player.Class][DMW.Player.SpecID] then
-                --     for _,v in pairs(DMW.Enums.Spells[DMW.Player.Class][DMW.Player.SpecID].Debuffs) do
-                --         if v == spellID and sourceGUID == DMW.Player.GUID and destGUID ~= DMW.Player.GUID then
-                            -- print(spellID)
-                            -- local destobj = DMW.Tables.Misc.guid2pointer[destGUID]
-                            -- print(destobj, GetObjectWithGUID(destGUID), ObjectName(GetObjectWithGUID(destGUID)))
-                            -- print(spellName)
-                            -- print(spellID)
-                            -- print(destGUID, destobj)
-                            local destobj = GetObjectWithGUID(destGUID)
-                            if destobj then
-                                AuraCache.Refresh(destobj, destGUID)
-                            end
-                        -- end
-                    -- end
-                -- end
+            "SPELL_AURA_REFRESH" or event == "SPELL_AURA_REMOVED" or event == "SPELL_PERIODIC_AURA_REMOVED"))
+            or forceUse[spellID]) then
+                -- print(spellName)
+                local destobj = GetObjectWithGUID(destGUID)
+                if destobj then --and (not DMW.Tables.AuraCache[destobj] or DMW.Time > DMW.Tables.AuraCache[destobj].CacheTime) then
+                    AuraCache.Refresh(destobj)
+                end
                 if DMW.Player.SpecID == "Assassination" then
                     if sourceGUID == DMW.Player.GUID and (spellID == 1943 or spellID == 703) then
                         local destobj = DMW.Tables.Misc.guid2pointer[destGUID]
@@ -144,10 +111,6 @@ function AuraCache.Event(...)
                         -- print(event)
                     end
                 end
-        -- DMW.Tables.AuraUpdate[destGUID] = true
-        -- if destGUID == DMW.Player.GUID then
-        --     DMW.Player.AuraUpdate = true
-        -- end
     elseif event == "PARTY_KILL" then
         if DMW.Tables.AuraCache[destGUID] then DMW.Tables.AuraCache[destGUID] = nil end
     elseif event == "UNIT_DIED" or event == "UNIT_DESTROYED" then
@@ -177,7 +140,6 @@ end
 
 function Buff:Query(Unit, OnlyPlayer)
     OnlyPlayer = OnlyPlayer or false
-    if not Unit then return nil end
     Unit = Unit.Pointer
     if DMW.Tables.AuraCache[Unit] ~= nil and DMW.Tables.AuraCache[Unit][self.SpellName] ~= nil and
         (not OnlyPlayer or DMW.Tables.AuraCache[Unit][self.SpellName]["player"] ~= nil) then
@@ -194,10 +156,9 @@ end
 
 function Debuff:Query(Unit, OnlyPlayer)
     OnlyPlayer = OnlyPlayer or false
-    if not Unit then return nil end
+    -- if not Unit.Pointer then print(Unit) end
     Unit = Unit.Pointer
-    if DMW.Tables.AuraCache[Unit] ~= nil and DMW.Tables.AuraCache[Unit][self.SpellName] ~= nil and
-        (not OnlyPlayer or DMW.Tables.AuraCache[Unit][self.SpellName]["player"] ~= nil) then
+    if DMW.Tables.AuraCache[Unit] ~= nil and DMW.Tables.AuraCache[Unit][self.SpellName] ~= nil and (not OnlyPlayer or DMW.Tables.AuraCache[Unit][self.SpellName]["player"] ~= nil) then
         local AuraReturn
         if OnlyPlayer then
             AuraReturn = DMW.Tables.AuraCache[Unit][self.SpellName]["player"].AuraReturn

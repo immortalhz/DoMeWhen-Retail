@@ -4,27 +4,24 @@ Spells.DEATHKNIGHT = {
     --Protection
     Blood = {
         Abilities = {
-			AncestralCall         = {274738},
-			ArcanePulse           = {260364},
-			ArcaneTorrent         = {50613},
-			Berserking            = {26297},
-			BloodFury             = {20572},
-			Fireblood             = {265221},
-			LightsJudgment        = {255647},
-			BagofTricks           = {312411},
+			-- AncestralCall         = {274738},
+			-- ArcanePulse           = {260364},
+			-- ArcaneTorrent         = {50613},
+			-- Berserking            = {26297},
+			-- BloodFury             = {20572},
+			-- Fireblood             = {265221},
+			-- LightsJudgment        = {255647},
+			-- BagofTricks           = {312411},
 			-- Abilities
 			Asphyxiate            = {221562},
 			BloodBoil             = {50842},
 			Blooddrinker          = {206931},
 			BloodMirror           = {206977},
-			BloodPlague           = {55078},
-			BloodShield           = {77535},
-			Bonestorm             = {194844},
+			-- BloodShield           = {77535},
+			BoneStorm             = {194844},
 			Consumption           = {205223},
-			CrimsonScourge        = {81141},
+			-- CrimsonScourge        = {81141},
 			DancingRuneWeapon     = {49028},
-
-			DeathandDecay         = {43265},
 			DeathsCaress          = {195292},
 			DeathStrike           = {49998},
 			HeartBreaker          = {221536},
@@ -32,7 +29,7 @@ Spells.DEATHKNIGHT = {
 
 			Marrowrend            = {195182},
 			MindFreeze            = {47528},
-			Ossuary               = {219786},
+			Ossuary               = {219788},
 			RapidDecomposition    = {194662},
 			RuneStrike            = {210764},
 			RuneTap               = {194679},
@@ -40,17 +37,23 @@ Spells.DEATHKNIGHT = {
 
 			UnholyStrengthBuff    = {53365},
 			VampiricBlood         = {55233},
-			-- Pool                  = {9999000010}
+			-- Pool                  = {9999000010},
+			GorefiendsGrasp = {108199},
+			Lifetap = {194679}
         },
         Buffs = {
 			BoneShield            = {195181},
-
 			DancingRuneWeaponBuff = {81256},
 			HemostasisBuff        = {273947},
 			TombstoneBuff         = {219809},
+			CrimsonScourge 		  = {81141},
+			Lifetap = {194679},
+			VampiricBlood = {55233},
+			RuneTap = {194679}
         },
         Debuffs = {
-			RazorCoralDebuff      = {303568},
+			-- RazorCoralDebuff      = {303568},
+			BloodPlague = 55078
         },
         Talents = {
 
@@ -147,128 +150,83 @@ Spells.DEATHKNIGHT = {
 			-- FervorofBattle                        = {202316},
         }
     },
-    --Arms
     Unholy = {
         Abilities = {
-			Skullsplitter                         = {260643},
-			DeadlyCalm                            = {262228},
-			Ravager                               = {152277},
-			ColossusSmash                         = {167105},
-			Warbreaker                            = {262161},
-			Bladestorm                            = {227847},
-			Cleave                                = {845},
-			Slam                                  = {1464},
-			MortalStrike                          = {12294},
-			Dreadnaught                           = {262150},
-			Execute                               = {163201, 281000},
-			Overpower                             = {7384},
-			TestofMight                           = {275529},
-			SweepingStrikes                       = {260708},
-			Whirlwind                             = {1680},
-			Rend                                  = {772},
-			AngerManagement                       = {152278},
-			SeismicWave                           = {277639},
-			Charge                                = {100},
-			HeroicLeap                            = {6544},
-			BloodFury                             = {20572},
-			Berserking                            = {26297},
-			ArcaneTorrent                         = {50613},
-			LightsJudgment                        = {255647},
-			Fireblood                             = {265221},
-			AncestralCall                         = {274738},
-			BagofTricks                           = {312411},
-			Avatar                                = {107574},
-			Massacre                              = {281001},
-			Pummel                                = {6552},
-			IntimidatingShout                     = {5246},
-			BloodoftheEnemy                       = {297108},
-			PurifyingBlast                        = {295337},
-			RippleInSpace                         = {302731},
-			ConcentratedFlame                     = {295373},
-			TheUnboundForce                       = {298452},
-			WorldveinResonance                    = {295186},
-			FocusedAzeriteBeam                    = {295258},
-			GuardianofAzeroth                     = {295840},
-			ReapingFlames                         = {310690},
-			ConcentratedFlameBurn                 = {295368},
-			-- VictoryRush = {34428},
-			-- VictoryRush = {34428},
-			VictoryRush = {34428},
+			Outbreak = {77575},
+			ScourgeStrike = {55090},
+			FesteringStrike = {85948},
+			DarkTransformation = {63560},
+			Apocalypse = {275699},
+			UnholyAssault = {207289},
+			Epidemic = {207317},
+			SummonGargoyle = {49206},
+			SoulReaper = {343294},
+			UnholyBlight = {115989},
+			RaiseDead = {46584},
+			ArmyOfTheDead = {42650},
+			DeathAndDecay = {43265},
+			Asphyxiate 	= {108194},
+			ClawingShadows = {207311},
+			Defile = {152280}
         },
         Buffs = {
-			MemoryofLucidDreams                   = {298357},
-			VictoryRush = {32216},
-			DeadlyCalmBuff                        = {262228},
-			CrushingAssaultBuff                   = {278826},
-			ExecutionersPrecisionBuff             = {242188},
-			SweepingStrikesBuff                   = {260708},
-			TestofMightBuff                       = {275540},
-			SuddenDeathBuff                       = {52437},
-			StoneHeartBuff                        = {225947},
-			RecklessForceBuff                     = {302932},
-			OverpowerBuff                         = {7384},
+			DeathAndDecay = {188290},
+			SuddenDoom = {81340},
+			RunicSpeed = {51460},
+			DarkSuccor = {101568},
+			RunicCorruption = {51460},
+			UnholyBlight = {115989},
+			DarkTransformation = {63560}
         },
         Debuffs = {
-			ColossusSmashDebuff                   = {208086},
-
-			DeepWoundsDebuff                      = {262115},
-
-			RazorCoralDebuff                      = {303568},
-
-			ConductiveInkDebuff                   = {302565},
-			RendDebuff                            = {772},
-
+			FesteringWound = 194310,
+			VirulentPlague = 191587,
+			UnholyBlight = 115994
         },
         Talents = {
-			WarMachine                        = 262231,
-			SuddenDeath                   = 29725,
-			Skullsplitter             = 26043,
-			DoubleTime             = 103827,
-			ImpendingVictory                   = 202168,
-			StormBolt                       = 107570,
-			Massacre                       = 281001,
-			FervorOfBattle                        = 202316,
-			Rend                     = 772,
-			SecondWind                         = 29838,
-			BoundingStride                        = 202163,
-			DefensiveStance                   = 197690,
-			CollateralDamage                       = 268243,
-			Warbreaker                       = 262161,
-			Cleave                        = 845,
-			InForTheKill                     = 248621,
-			Avatar                         = 107574,
-			DeadlyCalm                        = 262228,
-			AngerManagement                     = 152278,
-			Dreadnaught                         = 262150,
-			Ravager                        = 152277,
+			UnholyBlight = 22029,
+			UnholyAssault = 22538,
+			SummonGargoyle = 22110,
+			ArmyOfTheDamned = 22030,
+			SoulReaper = 22526,
+			ClawingShadows = 22026,
+			Defile = 22536
         }
     },
     LowLevel = {
         Abilities = {
-			Charge = {100},
-			-- VictoryRush = {34428},
-			-- VictoryRush = {34428},
-			Execute = {163201},
-			MortalStrike = {12294},
-			Slam = {1464},
-			VictoryRush = {34428},
+
+
         },
         Buffs = {
-			VictoryRush = {32216},
+
         },
         Debuffs = {
 
         }
 	},
+	Conduits = {
+		[337381] = "EternalHunger",
+	},
 	Shared = {
         Abilities = {
-			BattleShout = {6673},
-			-- VictoryRush = {34428},
-			-- VictoryRush = {34428},
-
+			MindFreeze = {47528},
+			DeathCoil = {47541},
+			DeathStrike = {49998},
+			DeathAndDecay = {43265},
+			DeathGrip = {49576},
+			AbominationLimb = {315443},
+			DarkCommand = {56222},
+			Asphyxiate            = {221562},
+			IceboundFortitude = {48792},
+			Lichborne = {49039},
+			AntimagicZone = {51052},
+			WraithWalk = {212552}
         },
         Buffs = {
-			BattleShout = {6673},
+			DeathAndDecay = {188290},
+			IceboundFortitude = {48792},
+			Lichborne = {49039},
         },
         Debuffs = {
 

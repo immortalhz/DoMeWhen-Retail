@@ -24,7 +24,7 @@ local Initialized = false
 local DebugStart
 local RotationCount = 0
 
-local function FindRotation()
+function DMW.Helpers.FindRotation()
     if DMW.Rotations[DMW.Player.Class] and DMW.Rotations[DMW.Player.Class].Rotation then
         DMW.Player.Rotation = DMW.Rotations[DMW.Player.Class].Rotation
         if DMW.Rotations[DMW.Player.Class].Settings then
@@ -32,6 +32,14 @@ local function FindRotation()
         end
         DMW.UI.HUD.Load()
         DMW.Tables.Misc.GROUP_ROSTER_UPDATE()
+    end
+end
+
+function DMW.Helpers.ReloadSettings()
+    if DMW.Rotations[DMW.Player.Class] and DMW.Rotations[DMW.Player.Class].Rotation then
+        if DMW.Rotations[DMW.Player.Class].Settings then
+            DMW.Rotations[DMW.Player.Class].Settings()
+        end
     end
 end
 
@@ -95,13 +103,17 @@ f:SetScript(
             -- end
             ExecutePlugins()
             if not DMW.Player.Rotation then
-                FindRotation()
+                DMW.Helpers.FindRotation()
                 return
             else
-                if DMW.Helpers.Queue.Run() then
-                    return
-                end
-                if DMW.Helpers.Rotation.Active() then
+                -- print(DMW.Player:SpellQueued())
+                -- print(UnitCastID("player"))
+                -- print(DMW.Player:GCDRemain())
+
+				if DMW.Helpers.Rotation.Active() then
+					if DMW.Helpers.Queue.Run() then
+						return
+					end
                     if DMW.Player.Combat then
                         RotationCount = RotationCount + 1
                         DebugStart = debugprofilestop()

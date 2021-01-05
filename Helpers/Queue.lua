@@ -8,7 +8,6 @@ function Queue.GetBindings()
     table.wipe(DMW.Tables.Bindings)
     local Type, ID, Key1, Key2, BindingID
     for k, frame in pairs(ActionBarButtonEventsFrame.frames) do
-        -- local BindingID = frame:GetAttribute('bindingid') or frame:GetID()
         if frame.buttonType then
             Key1, Key2 = GetBindingKey(frame.buttonType .. frame:GetID())
         else
@@ -20,6 +19,35 @@ function Queue.GetBindings()
         end
         if Key2 then
             DMW.Tables.Bindings[Key2] = {["Type"] = Type, ["ID"] = ID}
+        end
+    end
+    if IsAddOnLoaded('ElvUI') then
+        for i = 1, 10 do
+            for k = 1, 12 do
+                local Type, ID = GetActionInfo(_G["ElvUI_Bar" .. i .. "Button" .. k]._state_action)
+                local Hotkey = _G["ElvUI_Bar" .. i .. "Button" .. k .. "HotKey"]:GetText()
+                if ID then
+                    if strsub(Hotkey, 1, 1) == 'S' and strlen(Hotkey) == 2 then
+                        local Key = strsub(Hotkey, 2, 2)
+                        DMW.Tables.Bindings["SHIFT-" .. Key] = {["Type"] = Type, ["ID"] = ID}
+                    elseif strsub(Hotkey, 1, 1) == 'C' and strlen(Hotkey) == 2 then
+                        local Key = strsub(Hotkey, 2, 2)
+                        DMW.Tables.Bindings["CTRL-" .. Key] = {["Type"] = Type, ["ID"] = ID}
+                    elseif strsub(Hotkey, 1, 1) == 'A' and strlen(Hotkey) == 2  then
+                        local Key = strsub(Hotkey, 2, 2)
+                        DMW.Tables.Bindings["ALT-" .. Key] = {["Type"] = Type, ["ID"] = ID}
+                    elseif strsub(Hotkey, 1, 1) == 'M' and strlen(Hotkey) == 2 then
+                        local Key = strsub(Hotkey, 2, 2)
+                        DMW.Tables.Bindings["BUTTON" .. Key] = {["Type"] = Type, ["ID"] = ID}
+                    elseif strsub(Hotkey, 1, 1) == 'F' and strlen(Hotkey) == 2 then
+                        local Key = strsub(Hotkey, 2, 2)
+                        DMW.Tables.Bindings[Hotkey] = {["Type"] = Type, ["ID"] = ID}
+                    elseif strlen(Hotkey) == 1 then
+                        local Key = strsub(Hotkey, 1, 1)
+                        DMW.Tables.Bindings[Key] = {["Type"] = Type, ["ID"] = ID}
+                    end
+                end
+            end
         end
     end
 end
@@ -55,7 +83,9 @@ local function CheckPress(self, Key)
         if DMW.Tables.Bindings[KeyPress] then
             local Type, ID = DMW.Tables.Bindings[KeyPress].Type, DMW.Tables.Bindings[KeyPress].ID
             if Type == "spell" then
+                -- print(ID)
                 local Spell = DMW.Helpers.Rotation.GetSpellByID(ID)
+                -- print(Spell.Key)
                 if Spell and Spell:CD() < DMW.Settings.profile.Queue.Wait then
                     local QueueSetting = DMW.Settings.profile.Queue[Spell.SpellName]
                     if QueueSetting == 2 then
@@ -91,7 +121,31 @@ local function CheckPress(self, Key)
                     Queue.Target = DMW.Player.Target
                 else
                     Queue.Target = DMW.Player
-                end
+				end
+			elseif Type == "macro" then
+				if ID then
+					local macroSpell = GetMacroSpell(ID)
+					local Spell = DMW.Helpers.Rotation.GetSpellByID(macroSpell)
+					if Spell and Spell:CD() < DMW.Settings.profile.Queue.Wait then
+						Queue.Spell = Spell
+						Queue.Time = DMW.Time
+						Queue.Type = 3
+						local macroBody = GetMacroBody(ID)
+						for token in string.gmatch(macroBody, "\@[a-z]+") do
+							if token == "@player" then
+								Queue.Target = DMW.Player
+							elseif token == "@mouseover" then
+								Queue.Target = DMW.Player.Mouseover
+							elseif token == "@focus" then
+								Queue.Target = DMW.Player.Focus
+							elseif token == "@target" then
+								Queue.Target = DMW.Player.Target
+							elseif token == "@pet" then
+								Queue.Target = DMW.Player.Pet
+							end
+						end
+					end
+				end
             end
         end
     end
@@ -121,16 +175,16 @@ function Queue.Run()
     end
     if Queue.Spell and DMW.Player.Combat then
         if Queue.Type == 2 then
-            if Queue.Target and IsSpellInRange(Queue.Spell.SpellName, Queue.Target.Pointer) ~= nil then
+            if Queue.Target then--and IsSpellInRange(Queue.Spell.SpellName, Queue.Target.Pointer) ~= nil then
                 if Queue.Spell:Cast(Queue.Target) then
-                    -- print(Queue.Target.Name, Queue.Spell.SpellName)
+                    print(Queue.Target.Name, Queue.Spell.SpellName)
                     return true
                 end
             else
                 if Queue.Spell:Cast(DMW.Player) then
                     return true
                 end
-            end
+			end
         elseif Queue.Type == 3 then
             if Queue.Spell:Cast(Queue.Target) then
                 return true
@@ -143,6 +197,7 @@ function Queue.Run()
             -- print(Queue.Spell.Key)
             if IsAoEPending() then
                 if GetKeyState(0x02) then
+                    print("clear")
                     Queue.Spell = false
                     Queue.Target = false
                     Queue.Item = false

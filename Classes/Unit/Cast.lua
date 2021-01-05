@@ -9,21 +9,52 @@ function Unit:GetProperCastingInfo()
     end
 end
 
+function Unit:PopulateCasting()
+    if not self.CacheCasting or DMW.Time > self.CacheCasting then
+        local castingInfo = self:GetCastingInfo()
+        self.CacheCasting = DMW.Time
+        if castingInfo[1] then
+            self.Cast = "Cast"
+			self.Casting = castingInfo
+			if DMW.Tables.Dodgie.SpellsToDraw[castingInfo[9]] ~= nil then
+				self.DrawDodgie = DMW.Tables.Dodgie.SpellsToDraw[castingInfo[9]]
+				self.NextUpdate = DMW.Time
+            end
+			-- print("cast")
+            return
+        end
+        local channelInfo = self:GetChannelingInfo()
+        if channelInfo[1] then
+            self.Cast = "Channel"
+			self.Casting = channelInfo
+			if DMW.Tables.Dodgie.SpellsToDraw[channelInfo[8]] ~= nil then
+				self.DrawDodgie = DMW.Tables.Dodgie.SpellsToDraw[channelInfo[8]]
+				self.NextUpdate = DMW.Time
+
+            end
+            -- print("chan")
+            return
+        end
+        self.CastingCheck = nil
+        self.Cast = nil
+        self.Casting = nil
+		self.DrawDodgie = nil
+		-- print("nil")
+    end
+end
+
 function Unit:GetCastingInfo()
-    -- if not self.Casting then
-        -- name, nameSubtext, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID
-        self.Casting = {UnitCastingInfo(self.Pointer)}
-    -- end
+    return {UnitCastingInfo(self.Pointer)}
 end
 
 
 -- Get the Casting Infos from the Cache.
 function Unit:CastingInfo(Index)
-    if not self.Casting then
-        -- name, nameSubtext, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID
-        self:GetProperCastingInfo()
-    end
-    if not self.Cast then return nil end
+    -- if not self.Casting then
+    --     -- name, nameSubtext, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID
+    --     self:GetProperCastingInfo()
+    -- end
+    if not self.Casting then return false end
     if Index then
         return self.Casting[Index]
     else
@@ -52,6 +83,13 @@ function Unit:CastIdCheck()
     return 0
 end
 
+function Unit:CastIdName()
+    if self:IsCasting() then
+        return self:CastingInfo(1)
+    end
+    return "False"
+end
+
 function Unit:PlayerCastCheck()
     if self:IsCasting() then
         if self.Cast == "Cast" then
@@ -70,9 +108,10 @@ function Unit:CastName() return self:IsCasting() and self:CastingInfo(1) or "" e
 function Unit:CastID() return self:IsCasting() and self:CastingInfo(9) or -1 end
 
 --- Get all the Channeling Infos from an unit and put it into the Cache.
-function Unit:GetChannelingInfo(Index)
+function Unit:GetChannelingInfo()
         -- name, nameSubtext, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID
-        self.Casting = {UnitChannelInfo(self.Pointer)}
+        -- self.Casting = {UnitChannelInfo(self.Pointer)}
+        return {UnitChannelInfo(self.Pointer)}
 end
 
 -- Get the Channeling Infos from the Cache.
@@ -80,7 +119,8 @@ function Unit:ChannelingInfo(Index)
     if not self.Casting then
         -- name, nameSubtext, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID
         self:GetProperCastingInfo()
-    end
+	end
+	if not self.Casting then return false end
     if Index then
         return self.Casting[Index]
     else
@@ -110,7 +150,17 @@ function Unit:IsInterruptible()
             return not self:CastingInfo(7)
         end
     end
+    return false
     -- return (self:CastingInfo(8) == false or self:ChannelingInfo(7) == false) and true or false
+end
+
+function Unit:CastGetName()
+	if self:IsChanneling() then
+		return self:ChannelingInfo(1)
+	elseif self:IsCasting() then
+		return self:CastingInfo(1)
+	end
+	return ""
 end
 
 -- Get when the cast, if there is any, started (in seconds).
@@ -127,6 +177,12 @@ end
 
 -- Get the full duration, in seconds, of the current cast, if there is any.
 function Unit:CastDuration() return self:CastEnd() - self:CastStart() end
+
+function Unit:CastCurrent()
+	-- print(DMW.Time - self:CastStart())
+	if self:IsCasting() then return DMW.Time - self:CastStart() end
+	return 0
+end
 
 -- Get the remaining cast time, if there is any.
 function Unit:CastRemains()

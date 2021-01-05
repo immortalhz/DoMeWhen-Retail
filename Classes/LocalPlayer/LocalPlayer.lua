@@ -21,7 +21,7 @@ function LocalPlayer:New(Pointer)
     self.Items = {}
     self.Looting = false
     self.Instance = select(2, IsInInstance())
-    DMW.Functions.AuraCache.Refresh(self.Pointer, self.GUID)
+    DMW.Functions.AuraCache.Refresh(self.Pointer)
     self:UpdateVariables()
     -- self:UpdateProfessions()
 
@@ -44,13 +44,14 @@ end
 -- functio
 
 function LocalPlayer:UpdateVariables()
-    self.SpecID = DMW.Enums.ClassSpec[GetSpecializationInfo(GetSpecialization())][2]
+    self.SpecID = DMW.Enums.ClassSpec[GetSpecializationInfo(GetSpecialization())] and DMW.Enums.ClassSpec[GetSpecializationInfo(GetSpecialization())][2] or "sub10"
     self:GetSpells()
     self:GetTalents()
     self:UpdateEquipment()
     self:GetItems()
+    C_Timer.After(1, function() LocalPlayer:RefreshItems() end)
     self:GetTraits()
-    self:GetAzerite()
+    self:GetCovenant()
     self:UpdatePower("Fill")
     DMW.Helpers.Queue.GetBindings()
 end
@@ -66,7 +67,7 @@ function LocalPlayer:PlayerCastingCheck()
     elseif channel ~= 0 then
         return channel
     end
-    return nil
+    return false
 end
 
 function LocalPlayer:Update()
@@ -78,7 +79,14 @@ function LocalPlayer:Update()
     self.Health = UnitHealth(self.Pointer)
     self.HealthMax = UnitHealthMax(self.Pointer)
     self.HP = self.Health / self.HealthMax * 100
-    self.Casting = self:PlayerCastingCheck()
+	self.Casting = self:PlayerCastingCheck()
+	-- if self.Casting and self.Casting == 8613 then
+	-- 	local skinned = select(3,UnitCastID("player"))
+	-- 	if DMW.Units[skinned] then
+	-- 		DMW.Units[skinned]["JustSkinned"] = true
+	-- 	end
+	-- end
+	self.Looting = self:HasFlag(DMW.Enums.UnitFlags.Looting)
     -- if self.Casting ~= nil then
     --     print(self.Casting)
     -- end
@@ -292,16 +300,23 @@ function LocalPlayer:PredictedPower()
     return self.Power
 end
 
+local GCDSpell = 61304
 function LocalPlayer:GCDRemain()
-    local GCDSpell = 61304
+    if not self.CachedGCDTime or DMW.Time > self.CachedGCDTime then
     -- if self.Class == "DRUID" then
     --     if self:AuraByID(768,true) then GCDSpell = GCDList[self.Class].CAT else GCDSpell = GCDList[self.Class].NONE end
     -- else
     --     GCDSpell = GCDList[self.Class]
     -- end
-    local Start, CD = GetSpellCooldown(GCDSpell)
-    if Start == 0 then return 0 end
-    return math.max(0, (Start + CD) - DMW.Time)
+        self.CachedGCDTime = DMW.Time
+        local Start, CD = GetSpellCooldown(GCDSpell)
+        if Start == 0 then
+            self.CachedGCD = 0
+        else
+            self.CachedGCD = math.max(0, (Start + CD) - DMW.Time)
+        end
+    end
+    return self.CachedGCD
 end
 
 function LocalPlayer:GCD()
@@ -310,6 +325,24 @@ function LocalPlayer:GCD()
     else
         return 1.5
     end
+end
+
+local sqCached, sqCachedTime
+function LocalPlayer:SpellQueued()
+    if not sqCached or DMW.Time - sqCachedTime > 0 then
+        sqCached = false
+        sqCachedTime = DMW.Time
+        for _, spell in pairs(DMW.Player.Spells) do
+            if spell.SpellID ~= 232698 and spell.SpellID ~= 6603 and IsCurrentSpell(spell.SpellID) then
+                -- print("queued "..spell.Key)
+                -- print(DMW.Time, 'sq Found')
+                -- print(DMW.Player:GCDRemain(), " gcd")
+                sqCached = spell.SpellName
+                break
+            end
+        end
+    end
+    return sqCached
 end
 
 function LocalPlayer:CDs()
@@ -385,29 +418,45 @@ function LocalPlayer:HasFlag(Flag) return bit.band(ObjectDescriptor(self.Pointer
 function LocalPlayer:AuraByID(SpellID, OnlyPlayer)
     OnlyPlayer = OnlyPlayer or false
     local SpellName = GetSpellInfo(SpellID)
-    if DMW.Tables.AuraCache[self.GUID] ~= nil and DMW.Tables.AuraCache[self.GUID][SpellName] ~= nil and
-        (not OnlyPlayer or DMW.Tables.AuraCache[self.GUID][SpellName]["player"] ~= nil) then
+    if DMW.Tables.AuraCache[self.Pointer] ~= nil and DMW.Tables.AuraCache[self.Pointer][SpellName] ~= nil and
+        (not OnlyPlayer or DMW.Tables.AuraCache[self.Pointer][SpellName]["player"] ~= nil) then
         local AuraReturn
         if OnlyPlayer then
-            AuraReturn = DMW.Tables.AuraCache[self.GUID][SpellName]["player"].AuraReturn
+            AuraReturn = DMW.Tables.AuraCache[self.Pointer][SpellName]["player"].AuraReturn
         else
-            AuraReturn = DMW.Tables.AuraCache[self.GUID][SpellName].AuraReturn
+            AuraReturn = DMW.Tables.AuraCache[self.Pointer][SpellName].AuraReturn
         end
         return unpack(AuraReturn)
     end
     return nil
 end
 
+function LocalPlayer:StacksByID(SpellID, OnlyPlayer)
+    OnlyPlayer = OnlyPlayer or false
+    local SpellName = GetSpellInfo(SpellID)
+    if DMW.Tables.AuraCache[self.Pointer] ~= nil and DMW.Tables.AuraCache[self.Pointer][SpellName] ~= nil and
+        (not OnlyPlayer or DMW.Tables.AuraCache[self.Pointer][SpellName]["player"] ~= nil) then
+        local Stacks
+        if OnlyPlayer then
+            Stacks = DMW.Tables.AuraCache[self.Pointer][SpellName]["player"].AuraReturn[3]
+        else
+            Stacks = DMW.Tables.AuraCache[self.Pointer][SpellName].AuraReturn[3]
+        end
+        return Stacks
+    end
+    return 0
+end
+
 function LocalPlayer:AuraByName(SpellName, OnlyPlayer)
     OnlyPlayer = OnlyPlayer or false
     local SpellName = SpellName
-    if DMW.Tables.AuraCache[self.GUID] ~= nil and DMW.Tables.AuraCache[self.GUID][SpellName] ~= nil and
-        (not OnlyPlayer or DMW.Tables.AuraCache[self.GUID][SpellName]["player"] ~= nil) then
+    if DMW.Tables.AuraCache[self.Pointer] ~= nil and DMW.Tables.AuraCache[self.Pointer][SpellName] ~= nil and
+        (not OnlyPlayer or DMW.Tables.AuraCache[self.Pointer][SpellName]["player"] ~= nil) then
         local AuraReturn
         if OnlyPlayer then
-            AuraReturn = DMW.Tables.AuraCache[self.GUID][SpellName]["player"].AuraReturn
+            AuraReturn = DMW.Tables.AuraCache[self.Pointer][SpellName]["player"].AuraReturn
         else
-            AuraReturn = DMW.Tables.AuraCache[self.GUID][SpellName].AuraReturn
+            AuraReturn = DMW.Tables.AuraCache[self.Pointer][SpellName].AuraReturn
         end
         return unpack(AuraReturn)
     end
@@ -422,7 +471,6 @@ end
 
 function LocalPlayer:GetFreeBagSlots()
     local Slots = 0
-    local Temp
     for i = 0, 4, 1 do Slots = Slots + GetContainerNumFreeSlots(i) end
     return Slots
 end
@@ -517,11 +565,11 @@ function LocalPlayer:TraitRank(TraitName)
 end
 
 function LocalPlayer:EssenceMajor(Name)
-    if #self.Essences.Major == 1 then
-        if self.Essences.Major[1].Name == Name then
-            return true
-        end
-    end
+    -- if #self.Essences.Major == 1 then
+    --     if self.Essences.Major[1].Name == Name then
+    --         return true
+    --     end
+    -- end
     return false
 end
 
@@ -538,6 +586,7 @@ function LocalPlayer:UseTrinket(TrinketID)
 end
 
 function LocalPlayer:IsCCed(Effect)
+    --C_LossOfControl.GetActiveLossOfControlData
     local eventIndex = C_LossOfControl.GetNumEvents()
     while (eventIndex > 0) do
         local _,_,text = C_LossOfControl.GetEventInfo(eventIndex)
@@ -548,3 +597,38 @@ function LocalPlayer:IsCCed(Effect)
     end
 end
 
+function LocalPlayer:DumpSpells()
+	for _, Unit in pairs(DMW.Units) do
+		if Unit:IsCasting() and not Unit.Player then
+			WriteFile("CastsDump.txt", Unit.Name.." (".. Unit.ObjectID ..") is casting "..Unit:CastIdName().."("..Unit:CastIdCheck()..")\n", true)
+		end
+	end
+end
+
+function LocalPlayer:TargetOverride()
+	if not self.Target or not self.Target.ObjectID then print("Error, no Target found"); return end
+	local losCheck = self.Target.LoS
+	local threatCheck = self.Target:IsEnemy()
+	local string = "ID = "..self.Target.ObjectID..", Name = "..self.Target.Name .. ", Dist = "..self.Target.Distance
+	if not losCheck then
+		string = string .. " LoS Failed "
+	end
+	if not threatCheck then
+		string = string .. " Enemy Check Failed"
+	end
+	print(string)
+	WriteFile("LosThreatChecks.txt", string.."\n", true)
+    DMW.Enums.LoS[self.Target.ObjectID] = true
+	DMW.Enums.Threat[self.Target.ObjectID] = true
+	-- DMW.Enums.MeleeForced[self.Target.ObjectID] = true
+end
+
+function LocalPlayer:Conduit(Name)
+	if self.Conduits[Name] then return true end
+	return false
+end
+
+function LocalPlayer:Soulbind(Name)
+	if self.Soulbind == Name then return true end
+	return false
+end

@@ -51,6 +51,28 @@ Label.Update = function(self)
     self:SetText("Friends Table Count: " .. #DMW.Friends.Units)
 end
 Frame:AddChild(Label)
+--GameObjects
+Label = AceGUI:Create("Label")
+Label:SetFullWidth(true)
+Label.Update = function(self)
+    local Count = 0
+    for k, v in pairs(DMW.GameObjects) do
+        Count = Count + 1
+    end
+    self:SetText("Game Objects Table Count: " .. Count)
+end
+Frame:AddChild(Label)
+--AreaTriggers
+Label = AceGUI:Create("Label")
+Label:SetFullWidth(true)
+Label.Update = function(self)
+    local Count = 0
+    for k, v in pairs(DMW.AreaTriggers) do
+        Count = Count + 1
+    end
+    self:SetText("Area Triggers Table Count: " .. Count)
+end
+Frame:AddChild(Label)
 
 --Timers
 local Label = AceGUI:Create("Heading")
@@ -65,12 +87,12 @@ Label.Update = function(self)
 end
 Frame:AddChild(Label)
 --Questie Helper
-Label = AceGUI:Create("Label")
-Label:SetFullWidth(true)
-Label.Update = function(self)
-    self:SetText("Questie Helper - Average: " .. round(DMW.Timers.QuestieHelper.Average, 3) .. " - Last: " .. round(DMW.Timers.QuestieHelper.Last, 3))
-end
-Frame:AddChild(Label)
+-- Label = AceGUI:Create("Label")
+-- Label:SetFullWidth(true)
+-- Label.Update = function(self)
+--     self:SetText("Navigation - Average: " .. round(DMW.Timers.Navigation.Average, 3) .. " - Last: " .. round(DMW.Timers.Navigation.Last, 3))
+-- end
+-- Frame:AddChild(Label)
 --Trackers
 Label = AceGUI:Create("Label")
 Label:SetFullWidth(true)
@@ -105,19 +127,6 @@ Label = AceGUI:Create("Label")
 Label:SetFullWidth(true)
 Label.Update = function(self)
     self:SetText("Position - X: " .. round(DMW.Player.PosX, 2) .. " - Y: " .. round(DMW.Player.PosY, 2) .. " - Z: " .. round(DMW.Player.PosZ, 2))
-end
-Frame:AddChild(Label)
---Position stuff
--- Label = AceGUI:Create("Label")
--- Label:SetFullWidth(true)
--- Label.Update = function(self)
---     self:SetText("CombatReach: " .. DMW.Player.CombatReach .. " - BoundingRadius " .. DMW.Player.BoundingRadius.. " - Scale " .. DMW.Player.Scale)
--- end
--- Frame:AddChild(Label)
-Label = AceGUI:Create("Label")
-Label:SetFullWidth(true)
-Label.Update = function(self)
-    self:SetText("Pitch: " .. UnitPitch("player"))
 end
 Frame:AddChild(Label)
 --Facing
@@ -197,24 +206,12 @@ Label = AceGUI:Create("Label")
 Label:SetFullWidth(true)
 Label.Update = function(self)
     if DMW.Player.Target then
-        -- self:SetText("Distance: " .. round(DMW.Player.Target.Distance, 2) .. " - Raw Distance: " .. round(DMW.Player.Target:RawDistance(), 2))
-        self:SetText("Distance: " .. DMW.Player.Target.Distance .. " - Raw Distance: " .. DMW.Player.Target:RawDistance() )--.. "-BR Dist " .. DMW.Player.Target:BRDistance())
+        self:SetText("Distance: " .. round(DMW.Player.Target.Distance, 2) .. " - Raw Distance: " .. round(DMW.Player.Target:RawDistance(), 2))
     else
         self:SetText("")
     end
 end
 Frame:AddChild(Label)
--- --Distance stuff
--- Label = AceGUI:Create("Label")
--- Label:SetFullWidth(true)
--- Label.Update = function(self)
---     if DMW.Player.Target then
---         self:SetText("MeleeR"..DMW.Player.Target.MeleeRange .. " - CReach: " .. DMW.Player.Target.CombatReach .. " - BRadius " .. DMW.Player.Target.BoundingRadius.. " - Scale " .. DMW.Player.Target.Scale)
---     else
---         self:SetText("")
---     end
--- end
--- Frame:AddChild(Label)
 --Facing
 Label = AceGUI:Create("Label")
 Label:SetFullWidth(true)
@@ -233,6 +230,17 @@ Label:SetFullWidth(true)
 Label.Update = function(self)
     if DMW.Player.Target then
         self:SetText("Unit Flags: " .. string.format("%X", ObjectDescriptor(DMW.Player.Target.Pointer, GetOffset("CGUnitData__Flags"), "int")) .. " - Unit Flags2: " .. string.format("%X", ObjectDescriptor(DMW.Player.Target.Pointer, GetOffset("CGUnitData__Flags2"), "int")) .. " - Unit Flags3: " .. string.format("%X", ObjectDescriptor(DMW.Player.Target.Pointer, GetOffset("CGUnitData__Flags3"), "int")) .. " - NPC Flags: " .. string.format("%X", ObjectDescriptor(DMW.Player.Target.Pointer, GetOffset("CGUnitData__NPCFlags"), "int")))
+    else
+        self:SetText("")
+    end
+end
+Frame:AddChild(Label)
+--Dynamic Flags
+Label = AceGUI:Create("Label")
+Label:SetFullWidth(true)
+Label.Update = function(self)
+    if DMW.Player.Target then
+        self:SetText("Dynamic Flags: " .. ObjectDynamicFlags(DMW.Player.Target.Pointer))
     else
         self:SetText("")
     end
@@ -283,35 +291,22 @@ Label.Update = function(self)
 end
 Frame:AddChild(Label)
 --Threat
--- Label = AceGUI:Create("Label")
--- Label:SetFullWidth(true)
--- Label.Update = function(self)
---     if DMW.Player.Target and DMW.Player.Combat then
---         -- isTanking, status, threatpct, rawthreatpct, threatvalue = UnitDetailedThreatSituation()
---         local isTanking, threatStatus, threatPercent, rawThreatPercent, threatValue = UnitDetailedThreatSituation("player", "target")
---         self:SetText("Player Threat - Is Tanking: " .. tostring(isTanking) .. " - Threat Status: " .. threatStatus .. " - Threat Pct: " .. tostring(threatPercent) .. " - Raw Threat Percent: " .. tostring(rawThreatPercent) .. " - Threat Value: " .. threatValue)
---     else
---         self:SetText("")
---     end
--- end
--- Frame:AddChild(Label)
+Label = AceGUI:Create("Label")
+Label:SetFullWidth(true)
+Label.Update = function(self)
+    if DMW.Player.Target then
+        self:SetText("Threat: " .. tostring(DMW.Player.Target:HasThreat()))
+    else
+        self:SetText("")
+    end
+end
+Frame:AddChild(Label)
 --Movement
 Label = AceGUI:Create("Label")
 Label:SetFullWidth(true)
 Label.Update = function(self)
     if DMW.Player.Target then
         self:SetText("Moving: " .. tostring(DMW.Player.Target:HasMovementFlag(DMW.Enums.MovementFlags.Moving)) .. " - Movement Flag: " .. string.format("%X", UnitMovementFlags(DMW.Player.Target.Pointer)))
-    else
-        self:SetText("")
-    end
-end
-Frame:AddChild(Label)
---Casting
-Label = AceGUI:Create("Label")
-Label:SetFullWidth(true)
-Label.Update = function(self)
-    if DMW.Player.Casting then
-        self:SetText("Casting: " .. tostring(DMW.Player.Casting))--" at  " .. DMW.Player.CastingDestination))
     else
         self:SetText("")
     end

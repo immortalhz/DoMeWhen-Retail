@@ -19,9 +19,41 @@ Spells.DRUID = {
 			-- WarMachine = 22632, -- 262231
 			--
 		},
-		Traits = {
-			-- ColdSteel = 176
-		}
+
+	},
+	Feral = {
+        Abilities = {
+           Berserk = {106951},
+           BrutalSlash = {202028},
+		   FeralFrenzy = {274837},
+		   Maim = {22570},
+		   Rake = {1822},
+		   Rip = {1079},
+		   SkullBash = {106839},
+		   SurvivalInstincts = {61336},
+		   Thrash = {106830},
+		   TigersFury = {5217},
+		   WildCharge = {49376},
+		   Swipe = {213764},
+		   MightyBash = {5211}
+        },
+        Buffs = {
+            EclipseLunar = {48518},
+			EclipseSonar = {48517},
+			BloodTalons = {145152},
+			PredatorySwiftness = {69369},
+			Berserk = {106951}
+        },
+        Debuffs = {
+			-- ConcentratedFlameBurn                 = 295368,
+			Thrash = 106830
+        },
+        Talents = {
+			-- WarMachine = 22632, -- 262231
+			BloodTalons = 21649,
+			BrutalSlash = 21711
+		},
+
     },
     Restoration = {
         Abilities = {
@@ -32,49 +64,40 @@ Spells.DRUID = {
             Rejuvenation            = {774},
             WildGrowth = {48438},
             Wrath = {5176},
+            Starfire = {197628},
+            Starsurge = {197626},
             UrsolVortex = {102793},
             Tranquility = {740},
-            Efflorence = {145205}
-
+            Efflorence = {145205},
+            FormMoonkin = {197625},
+            Rip = {1079},
+            Rake = {1822},
+            Shred = {5221},
+            FerociousBite = {22568},
+            Swipe = {106832},
+            Stealth = {5215}
         },
         Buffs = {
             WildGrowth                 = {183415},
             Ironbark            = {102342},
             Lifebloom            = {33763},
             Rejuvenation            = {774},
-            Clearcasting = {16870}
+            Clearcasting = {16870},
+            EclipseLunar = {48518},
+            EclipseSonar = {48517},
+            FormMoonkin = {197625},
+            Stealth = {5215}
+
         },
         Debuffs = {
             -- GlimmerOfLight              = 287280
+            Rip = 1079,
+            Rake = 1822,
         },
         Talents = {
-            CrusadersMight = 17565,
-            BestowFaith = 17567,
-            LightsHammer = 17569,
-
-            SavedByTheLight = 22176,
-            JudgmentOfLight = 17575,
-            HolyPrism = 17577,
-
-            FistOfJustice = 22179,
-            Repentance = 22180,
-            BlindingLight = 21811,
-
-            UnbreakableSpirit = 22433,
-            Cavalier = 22434,
-            RuleOfLaw = 17593,
-
-            DivinePurpose = 17597,
-            HolyAvenger = 17599,
-            Seraphim = 17601,
-
-            -- SanctifiedWrath = , -- 23191, 23456, 23457
-            AvengingCrusader = 22190,
-            Awakening = 22484,
-
-            GlimmerOfLight = 21201,
-            BeaconOfFaith = 21671,
-            BeaconOfVirtue = 21203,
+            BalanceAffinity = 22366,
+            FeralAffinity = 22367,
+            GuardianAffinity = 22160
 		},
 		Traits = {
 			BreakingDawn                = 394,
@@ -97,13 +120,17 @@ Spells.DRUID = {
             Mangle = {33917},
             Ressurection = {50769},
             Growl = {6795},
-            Stealth = {5215},
             IronFur = {192081},
             Barkskin = {22812},
             RemoveCorruption = {2782},
             Sunfire = {93402},
             Typhoon = {132469},
-            WildCharge = {102401},
+			WildChargeCat = {102401},
+			WildChargeTravel = {102417},
+			Convoke = {323764},
+			Prowl = {5215},
+			Soothe = {2908}
+
         },
         Buffs = {
             FormCat = {768},
@@ -111,11 +138,15 @@ Spells.DRUID = {
             FormTravel = {783},
             FormMoonkin = {24858},
             FormFly = {276029},
-            Regrowth = {8936}
+			Regrowth = {8936},
+			Prowl = {5215},
+			Clearcasting = {135700}
         },
         Debuffs = {
             Moonfire                = 164812,
-            Sunfire = 164815
+			Sunfire = 164815,
+			Rake = 1822,
+			Rip = 1079
 
         }
     }

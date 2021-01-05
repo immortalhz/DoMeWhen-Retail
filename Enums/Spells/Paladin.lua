@@ -4,66 +4,33 @@ Spells.PALADIN = {
     --Protection
     Protection = {
         Abilities = {
-			ThunderClap                           = {6343},
-			DemoralizingShout                     = {1160},
-			DragonRoar                            = {118000},
-			Revenge                               = {6572},
-			Ravager                               = {228920},
-			ShieldBlock                           = {2565},
-			ShieldSlam                            = {23922},
-			UnstoppableForce                      = {275336},
-			BraceForImpact                        = {277636},
-			DeafeningCrash                        = {272824},
-			Devastate                             = {20243},
-			Intercept                             = {198304},
-			Taunt                             	  = {355},
-			BloodFury                             = {20572},
-			Berserking                            = {26297},
-			BerserkerRage 						  = {18499},
-			ArcaneTorrent                         = {50613},
-			LightsJudgment                        = {255647},
-			Fireblood                             = {265221},
-			AncestralCall                         = {274738},
-			BagofTricks                           = {312411},
-			IgnorePain                            = {190456},
-			Avatar                                = {107574},
-			LastStand                             = {12975},
-			ShieldWall                            = {871},
-			ShockWave                             = {46968},
-			VictoryRush                           = {34428},
-			ImpendingVictory                      = {202168},
-			Pummel                                = {6552},
-			SpellReflect 						  = {23920},
-			RallyingCry 						  = {97462},
-			IntimidatingShout                     = {5246},
-			HeroicThrow 						  = {57755},
-			RazorCoralDebuff                      = {303568},
-			BloodoftheEnemy                       = {297108},
-			MemoryofLucidDreams                   = {298357},
-			PurifyingBlast                        = {295337},
-			RippleInSpace                         = {302731},
-			ConcentratedFlame                     = {295373},
-			TheUnboundForce                       = {298452},
-			WorldveinResonance                    = {295186},
-			FocusedAzeriteBeam                    = {295258},
-			GuardianofAzeroth                     = {295840},
-			AnimaofDeath                          = {294926},
-			ConcentratedFlameBurn                 = {295368},
+            Judgement = {275779},
+            ArdentDefender = {31850},
+            CleanseToxins               = {213644},
+            -- ShieldOfVengeance           = {53600},
+            GuardianOfAncientKings = {86659},
+            HammerOfRighteous = {53595},
+            Rebuke                      = {96231},
+            AvengerShield = {31935},
+            Seraphim = {152262},
+			HolyAvenger = {105809},
+			BlessedHammer = {204019}
         },
         Buffs = {
-			FreeRevenge                           = {5302},
-			ShieldBlock               			= {132404},
-			Avatar                           	 = {107574},
-			LastStandBuff                         = {12975},
-			IgnorePain                            = {190456},
-			RecklessForceBuff                     = {302932}
-
+			ShiningLight = {327510},
+			ShiningLightStacks = {182104},
+            Seraphim = {152262},
+			Consecration = {188370},
+			BulwarkSoR = {337848}
         },
         Debuffs = {
 
         },
         Talents = {
-
+            HolyAvenger = 17599,
+            Seraphim = 17601,
+			DivinePurpose = 17597,
+			BlessedHammer = 23469
         }
     },
     Retribution = {
@@ -71,19 +38,21 @@ Spells.PALADIN = {
             BladeOfJustice              = {184575},
             CleanseToxins               = {213644},
             DivineStorm                 = {53385},
-            GreaterBlessingOfKings      = {203538},
-            GreaterBlessingOfWisdom     = {203539},
+            -- GreaterBlessingOfKings      = {203538},
+            -- GreaterBlessingOfWisdom     = {203539},
             HandOfHinderance            = {183218},
             Judgement                   = {20271},
             Rebuke                      = {96231},
             ShieldOfVengeance           = {184662},
             TemplarsVerdict             = {85256},
-            WakeOfAshes                 = {255937}
+            WakeOfAshes                 = {255937},
+            Judgment                    = {275773},
+
         },
         Buffs = {
             -- Recklessness                      = {1719},
-            GreaterBlessingOfKings      = {203538},
-            GreaterBlessingOfWisdom     = {203539},
+            -- GreaterBlessingOfKings      = {203538},
+            -- GreaterBlessingOfWisdom     = {203539},
             SelflessHealer              = {114250}
         },
         Debuffs = {
@@ -111,7 +80,9 @@ Spells.PALADIN = {
             LightOfTheMartyr            = {183998},
             RuleOfLaw                   = {214202},
             Judgement                   = {275773},
-            HolyAvenger                 = {105809}
+            HolyAvenger                 = {105809},
+            Judgment                    = {275773},
+
         },
         Buffs = {
             AuraOfMercy                 = {183415},
@@ -125,7 +96,6 @@ Spells.PALADIN = {
             BestowFaith                 = {223306},
             GlimmerOfLight              = {287280},
             DivineProtection            = {498},
-            DivinePurpose               = {223819},
             FerventMartyr               = {223316},
             InfusionOfLight             = {54149},
             HolyAvenger                 = {105809},
@@ -184,7 +154,7 @@ Spells.PALADIN = {
             Contemplation               = {12118},
             CrusaderStrike              = {35395},
             DivineShield                = {642},
-            DivineSteed                 = {19078},
+            DivineSteed                 = {190784},
             FlashOfLight                = {19750},
             HammerOfJustice             = {853},
             HandOfReckoning             = {62124},
@@ -199,14 +169,20 @@ Spells.PALADIN = {
             BlessingOfSacrifice         = {6940},
             TurnEvil = {10326},
             Consecration                = {26573},
-            Judgment                    = {275773},
             WordOfGlory = {85673},
-            ShieldOfTheRighteous = {53600}
+			ShieldOfTheRighteous = {53600},
+			DivineToll = {304971}
         },
         Buffs = {
             DivineShield                = {642},
             DivineSteed                 = {221885},
             BlessingOfProtection        = {1022},
+            ShieldOfTheRighteous = {132403},
+            DivinePurpose               = {223819},
+            DevotionAura = {465},
+            CrusaderAura = {32223},
+            AvengingWrath = {31884}
+
         },
         Debuffs = {
             Forbearance                 = 25771,

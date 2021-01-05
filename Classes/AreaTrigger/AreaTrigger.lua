@@ -21,7 +21,14 @@ function AreaTrigger:Update()
     -- end
     -- self.Herb = self:IsHerb()
     -- self.Ore = self:IsOre()
-    self.Trackable = self:IsTrackable()
+    self.Trackable = self:IsTrackable() and not self:AlreadyUsed()
+    -- if self.Trackable then
+    --     print(self.Name)
+    -- end
+end
+
+function AreaTrigger:AlreadyUsed()
+    return bit.band(ObjectDescriptor(self.Pointer, GetOffset("CGObjectData__DynamicFlags"), "int"), 0x0000000016) ~= 0
 end
 
 function AreaTrigger:GetDistance(OtherUnit)
@@ -55,7 +62,7 @@ end
 function AreaTrigger:IsTrackable() --TODO: enums
     if DMW.Settings.profile.Helpers.ShowIDs then
         return true
-    elseif DMW.Settings.profile.Tracker.Trackable and DMW.Enums.Trackable[self.ObjectID] then
+    elseif DMW.Settings.profile.Tracker.Trackable and DMW.Enums.Trackable[self.ObjectID] ~= nil then
         return true
     elseif DMW.Enums.VisionsPots[self.ObjectID] and DMW.Player.BadPotion and DMW.Player.BadPotion ~= self.ObjectID then
         return true
@@ -76,16 +83,16 @@ local LibDraw = LibStub("LibDraw-1.0")
 function AreaTrigger:Draw(Type, size1, size2, size3) --TODO: enums
     if Type == "Circle" then
         local r, b, g, a = 1, 0 , 0 ,1
-        LibDraw.SetColorRaw(r, b, g, a)
+        DMW.Helpers.DrawColor(r, b, g, a)
         LibDraw.Circle(self.PosX, self.PosY, self.PosZ, size1)
     elseif Type == "Rect" then
         local rotation = select(2, ObjectFacing(self.Pointer))
         local nlX, nlY, nrX, nrY, frX, frY, flX, flY, flZ, nlZ, nrZ, frZ = DMW.Tables.Dodgie.getRectUnit(size1, size2, self, rotation) --self.PosX, self.PosY, self.PosZ, rotation)
-        DMW.Helpers.DrawLineDMWC(flX, flY, DMW.Player.PosZ, nlX, nlY, DMW.Player.PosZ)
-        DMW.Helpers.DrawLineDMWC(frX, frY, DMW.Player.PosZ, nrX, nrY, DMW.Player.PosZ)
-        DMW.Helpers.DrawLineDMWC(frX, frY, DMW.Player.PosZ, flX, flY, DMW.Player.PosZ)
-        DMW.Helpers.DrawLineDMWC(nlX, nlY, DMW.Player.PosZ, nrX, nrY, DMW.Player.PosZ)
-    elseif Type == "Cross" then
+        DMW.Helpers.DrawLine(flX, flY, DMW.Player.PosZ, nlX, nlY, DMW.Player.PosZ)
+        DMW.Helpers.DrawLine(frX, frY, DMW.Player.PosZ, nrX, nrY, DMW.Player.PosZ)
+        DMW.Helpers.DrawLine(frX, frY, DMW.Player.PosZ, flX, flY, DMW.Player.PosZ)
+        DMW.Helpers.DrawLine(nlX, nlY, DMW.Player.PosZ, nrX, nrY, DMW.Player.PosZ)
+    elseif Type == "Text" then
 
     elseif Type == "Cone" then
         local rotation = select(2, ObjectFacing(self.Pointer))

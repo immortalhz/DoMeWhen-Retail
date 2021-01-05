@@ -1,72 +1,94 @@
 local Spells = DMW.Enums.Spells
 
 Spells.PRIEST = {
-    Abilities = {
-        -- AbolishDisease = {Ranks = {552}},
-        -- CureDisease = {Ranks = {528}},
-        -- DesperatePrayer = {Ranks = {19236, 19238, 19240, 19241, 19242, 19243}},
-        -- DevouringPlague = {Ranks = {2944, 19276, 19277, 19278, 19279, 19280}},
-        -- DispelMagic = {Ranks = {527, 988}},
-        -- DivineSpirit = {Ranks = {14752, 14818, 14819, 27841}},
-        -- Fade = {Ranks = {586}},
-        -- FearWard = {Ranks = {6346}},
-        -- FlashHeal = {Ranks = {2061, 9472, 9473, 9474, 10915, 10916, 10917}},
-        -- GreaterHeal = {Ranks = {2060, 10963, 10964, 10965, 25314}},
-        -- Heal = {Ranks = {2054, 2055, 6063, 6064}},
-        -- HolyFire = {Ranks = {14914, 15262, 15263, 15264, 15265, 15266, 15267, 15261}},
-        -- HolyNova = {Ranks = {15237, 15430, 15431, 27799, 27800, 27801}},
-        -- InnerFire = {Ranks = {588, 7128, 602, 1006, 10951, 10952}},
-        -- LesserHeal = {Ranks = {2050, 2052, 2053}},
-        -- Levitate = {Ranks = {1706}},
-        -- Lightwell = {Ranks = {724, 27870, 27871}},
-        -- LightwellRenew = {Ranks = {7001, 27873, 27874}},
-        -- ManaBurn = {Ranks = {8129}},
-        -- MindBlast = {Ranks = {8092, 8102, 8103, 8104, 8105, 8106, 10945, 10946, 10947}},
-        -- MindControl = {Ranks = {605}},
-        -- MindFlay = {Ranks = {15407, 17311, 17312, 17313, 17314, 18807}},
-        -- MindSoothe = {Ranks = {453}},
-        -- MindVision = {Ranks = {2096, 10909}},
-        -- PowerInfusion = {Ranks = {10060}},
-        -- PowerWordFortitude = {Ranks = {1243, 1244, 1245, 2791, 10937, 10938}},
-        -- PowerWordShield = {Ranks = {17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901}},
-        -- PrayerOfFortitude = {Ranks = {21562, 21564}},
-        -- PrayerOfHealing = {Ranks = {596, 996, 10960, 10961, 25316}},
-        -- PrayerOfShadowProtection = {Ranks = {27683}},
-        -- PrayerOfSpirit = {Ranks = {27681}},
-        -- PsychicScream = {Ranks = {8122, 8124, 10888, 10890}},
-        -- Renew = {Ranks = {139, 6074, 6075, 6076, 6077, 6078, 10927, 10928, 10929, 25315}},
-        -- Resurrection = {Ranks = {2006, 2010, 10880, 10881, 20770}},
-        -- ShackleUndead = {Ranks = {9484, 9485, 10955}},
-        -- Shadowguard = {Ranks = {18137}},
-        -- ShadowProtection = {Ranks = {976, 10957, 10958}},
-        -- ShadowWordPain = {Ranks = {589, 594, 970, 992, 2767, 10892, 10893, 10894}},
-        Smite = {Ranks = {585}},
-        -- VampiricEmbrace = {Ranks = {15286}}
+
+    Shadow = {
+        Abilities = {
+            DevouringPlague = {335467},
+            Mindfly = {15407},
+            VampiricTouch = {34914},
+            DarkMending = {186263},
+            Shadowfiend = {34433},
+            VoidErruption = {228260},
+            VoidBolt = {205448},
+            ShadowForm = {232698},
+            MindSear = {48045},
+            PurifyDisease = {213634}
+        },
+        Buffs = {
+            ShadowForm = {232698},
+            VoidForm = {194249},
+            DarkThoughts = {341207}
+        },
+        Debuffs = {
+            VampiricTouch              = 34914,
+            DevouringPlague = 335467
+        },
+        Talents = {
+            -- WarMachine = 22632, -- 262231
+            Misery = 23126,
+
+			--
+		},
+		Traits = {
+			-- ColdSteel = 176
+		}
     },
-    Buffs = {
-        -- DivineSpirit = {Ranks = {14752, 14818, 14819, 27841}},
-        -- FearWard = {Ranks = {6346}},
-        -- InnerFire = {Ranks = {588, 7128, 602, 1006, 10951, 10952}},
-        -- Levitate = {Ranks = {1706}},
-        -- PowerInfusion = {Ranks = {10060}},
-        -- PowerWordFortitude = {Ranks = {1243, 1244, 1245, 2791, 10937, 10938}},
-        -- PowerWordShield = {Ranks = {17, 592, 600, 3747, 6065, 6066, 10898, 10899, 10900, 10901}},
-        -- PrayerOfFortitude = {Ranks = {21562, 21564}},
-        -- PrayerOfShadowProtection = {Ranks = {27683}},
-        -- PrayerOfSpirit = {Ranks = {27681}},
-        -- Renew = {Ranks = {139, 6074, 6075, 6076, 6077, 6078, 10927, 10928, 10929, 25315}},
-        -- Shadowguard = {Ranks = {18137}},
-        -- ShadowProtection = {Ranks = {976, 10957, 10958}}
+    Holy = {
+        Abilities = {
+            Purify = {527}
+        },
+        Buffs = {
+
+        },
+        Debuffs = {
+            -- GlimmerOfLight              = 287280
+        },
+        Talents = {
+
+
+            -- SanctifiedWrath = , -- 23191, 23456, 23457
+		},
+		Traits = {
+		}
     },
-    Debuffs = {
-        -- DevouringPlague = {Ranks = {2944, 19276, 19277, 19278, 19279, 19280}},
-        -- HolyFire = {Ranks = {14914, 15262, 15263, 15264, 15265, 15266, 15267, 15261}},
-        -- MindControl = {Ranks = {605}},
-        -- PsychicScream = {Ranks = {8122, 8124, 10888, 10890}},
-        -- ShadowWordPain = {Ranks = {589, 594, 970, 992, 2767, 10892, 10893, 10894}},
-        -- ShackleUndead = {Ranks = {9484, 9485, 10955}},
-        -- VampiricEmbrace = {Ranks = {15286}},
-        -- WeakenedSoul = {Ranks = {6788}}
+    Discipline = {
+        Abilities = {
+            Purify = {527}
+        },
+        Buffs = {
+
+        },
+        Debuffs = {
+            -- GlimmerOfLight              = 287280
+        },
+        Talents = {
+
+
+            -- SanctifiedWrath = , -- 23191, 23456, 23457
+		},
+		Traits = {
+		}
     },
-    Talents = {}
+	Shared = {
+        Abilities = {
+            FlashHeal = {2061},
+            MindBlast = {8092},
+            Ressurection = {2006},
+            MentalFear = {8122},
+            PWFortitude = {21562},
+            PWShield = {17},
+            SWPain = {589},
+            SWDeath = {32379},
+            DispelMagic = {528}
+        },
+        Buffs = {
+            PWShield = {17}
+        },
+        Debuffs = {
+            SWPain = 589,
+
+            WeakenedSoul = 6788
+        }
+    }
 }

@@ -10,7 +10,7 @@ EHFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
 EHFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 EHFrame:RegisterEvent("LOOT_OPENED")
 EHFrame:RegisterEvent("LOOT_CLOSED")
--- EHFrame:RegisterEvent("GET_ITEM_INFO_RECEIVED")
+EHFrame:RegisterEvent("GET_ITEM_INFO_RECEIVED")
 EHFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
 -- EHFrame:RegisterEvent("SKILL_LINES_CHANGED")
 EHFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
@@ -34,8 +34,8 @@ EHFrame:RegisterEvent("AZERITE_ESSENCE_ACTIVATED")
 EHFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 EHFrame:RegisterEvent("RAID_TARGET_UPDATE")
 EHFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
-EHFrame:RegisterEvent("UNIT_ENTERING_VEHICLE")
-EHFrame:RegisterEvent("UNIT_EXITED_VEHICLE")
+EHFrame:RegisterUnitEvent("UNIT_ENTERING_VEHICLE", "player")
+EHFrame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
 EHFrame:RegisterEvent("PLAYER_LEVEL_UP")
 EHFrame:RegisterEvent("LFG_PROPOSAL_SHOW")
 
@@ -60,24 +60,36 @@ function EHFrame.EventHandler(self, event, ...)
                 if slot == 1 or slot == 3 or slot == 5 then
                     DMW.Player:GetTraits()
                 end
-            end
+			end
+			-- if DMW.Player.Covenant then
+			-- 	DMW.Player:GetRuneforge()
+			-- end
         elseif event == "PLAYER_TALENT_UPDATE" then -- event == "CHARACTER_POINTS_CHANGED" or event == "ACTIVE_TALENT_GROUP_CHANGED" or
-            if DMW.Player then
+            if DMW.Player and DMW.Player.UpdateVariables then
                 C_Timer.After(0.3, function() DMW.Player:UpdateVariables() end)
+                DMW.Helpers.ReloadSettings()
             end
             if DMW.Player.GetTalents then DMW.Player:GetTalents() end
         elseif event == "AZERITE_ESSENCE_ACTIVATED" then
             DMW.Player:GetAzerite()
-        elseif event == "RAID_TARGET_UPDATE" then
-            DMW.Player.UpdateMarkCache()
-        elseif event == "LOOT_OPENED" then
-            DMW.Player.Looting = true
-        elseif event == "LOOT_CLOSED" then
-            DMW.Player.Looting = false
-        elseif event == "UNIT_SPELLCAST_FAILED" then
-            local unit,_,id = ...
-            if unit == "player" then
-                print(GetSpellInfo(id))
+		elseif event == "RAID_TARGET_UPDATE" then
+			if DMW.Player.UpdateMarkCache then
+				DMW.Player.UpdateMarkCache()
+			end
+        -- elseif event == "LOOT_OPENED" then
+        --     DMW.Player.Looting = true
+        -- elseif event == "LOOT_CLOSED" then
+        --     DMW.Player.Looting = false
+        -- elseif event == "UNIT_SPELLCAST_FAILED" then
+            -- local unit,_,id = ...
+            -- if unit == "player" then
+            --     print(GetSpellInfo(id))
+            -- end
+        elseif event == "GET_ITEM_INFO_RECEIVED" then
+            local ItemID = select(1, ...)
+            if DMW.Tables.ItemInfo[ItemID] then
+                DMW.Tables.ItemInfo[ItemID]:Refresh()
+                DMW.Tables.ItemInfo[ItemID] = nil
             end
         -- elseif event == "UNIT_INVENTORY_CHANGED" then
         --     local unit = select(1, ...)

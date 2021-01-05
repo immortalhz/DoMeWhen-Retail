@@ -20,9 +20,16 @@ function GameObject:Update()
     if not self.Quest or (DMW.Cache.QuestieCache.CacheTimer and DMW.Time > DMW.Cache.QuestieCache.CacheTimer) then
         self.Quest = self:IsQuest()
     end
-    self.Herb = self:IsHerb()
-    self.Ore = self:IsOre()
-    self.Trackable = self:IsTrackable()
+    self.Herb = self:IsHerb() and not self:AlreadyUsed()
+    self.Ore = self:IsOre() and not self:AlreadyUsed()
+    self.Trackable = self:IsTrackable() and not self:AlreadyUsed()
+    -- if self.Trackable then
+    --     print(self.Name)
+    -- end
+end
+
+function GameObject:AlreadyUsed()
+    return bit.band(ObjectDescriptor(self.Pointer, GetOffset("CGObjectData__DynamicFlags"), "int"), 0x0000000016) ~= 0
 end
 
 function GameObject:GetDistance(OtherUnit)
@@ -31,8 +38,9 @@ function GameObject:GetDistance(OtherUnit)
 end
 
 function GameObject:IsQuest()
-    -- if IsQuestObject(self.Pointer) then print(self.Name) end
-    if IsQuestObject(self.Pointer) or DMW.Helpers.QuestieHelper.isQuestObject(self.ObjectID, self.Pointer) then return true end
+	-- if IsQuestObject(self.Pointer) then print(self.Name) end
+	local boolQuest, statusQuest = IsQuestObject(self.Pointer)
+    if (boolQuest and (statusQuest == 5 or statusQuest == 9)) or DMW.Helpers.QuestieHelper.isQuestObject(self.ObjectID, self.Pointer) then return true end
     return false
 end
 
@@ -63,7 +71,7 @@ end
 function GameObject:IsTrackable() --TODO: enums
     if DMW.Settings.profile.Helpers.ShowIDs then
         return true
-    elseif DMW.Settings.profile.Tracker.Trackable and DMW.Enums.Trackable[self.ObjectID] then
+    elseif DMW.Settings.profile.Tracker.Trackable and DMW.Enums.Trackable[self.ObjectID] ~= nil then
         return true
     elseif DMW.Enums.VisionsPots[self.ObjectID] and DMW.Player.BadPotion and DMW.Player.BadPotion ~= self.ObjectID then
         return true

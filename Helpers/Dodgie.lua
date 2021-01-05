@@ -6,110 +6,56 @@ local Dodgie = DMW.Helpers.Dodgie
 local LibDraw = LibStub("LibDraw-1.0")
 DMW.Tables.Dodgie.DrawUnits = {}
 DMW.Tables.Dodgie.SpellsToDraw = {
-    [270487] = {"cone", 45, 5},-- kr berserk cleave
-    [270507] = {"cone", 60, 20},-- kr bm poison sting
-    [265540] = {"cone", 40, 30},-- UR maggot aoe
-    [265019] = {"cone", 45, 5},-- UR Matron melee cleave
-    [260894] = {"cone", 45, 5},-- UR 1st boss aoe
-    [272609] = {"rect", 45, 5},-- UR Faceless corruptor aoe
-    [293957] = {"rect", 45, 5},-- cos trash
-    [257426] = {"cone", 60, 10},-- FH Enforcer melee cleave
-    [257784] = {"cone", 30, 5},-- FH ratlike shit frost 30m aoe
-    [274400] = {"cone", 45, 5},-- FH duelist charge
-    [257870] = {"cone", 360, 4},-- FH https://www.wowhead.com/spell=257870/blade-barrage
-    [256589] = {"cone", 360, 10},-- FH Council smash https://www.wowhead.com/spell=256589/barrel-smash
-    [258381] = {"cone", 45, 5},-- FH Council boss jump + shoot stuff
-    [258352] = {"cone", 45, 5},-- same
-    [276268] = {"cone", 45, 10},-- SotS Templar melee cleave
-    [264101] = {"rect", 30, 12},-- SotS aqua boss charge
-    [267899] = {"cone", 45, 5},-- SotS 2nd boss melee cleave
-    [267385] = {"cone", 45, 5},-- tentacle cast last boss SotS
-    [256627] = {"cone", 45, 5},-- SoB Halberd cleave
-    [257292] = {"rect", 40, 5},-- SoB 1st boss melee cleave
-    [279761] = {"rect", 40, 5},-- SoB 1st boss melee cleave
-    [257288] = {"rect", 40, 5},-- SoB 1st boss melee cleave
-    [272874] = {"rect", 40, 7},-- SoB horse charge
-    [268260] = {"cone", 45, 5},-- SoB Cannoneer bambam
-    [269029] = {"cone", 45, 5},-- SoB 2nd boss cleave 45
-    [272827] = {"cone", 45, 5},-- SoB Pillager poison aoe
-    [269266] = {"cone", 15, 35},-- SoB last boss tentacle cleave
-    [272711] = {"rect", 45, 10},-- SoB Crushing Slam https://www.wowhead.com/spell=272711/crushing-slam
-    [268230] = {"cone", 45, 5},-- SoB thrash cleave
-    [256709] = {"cone", 45, 5},-- >.>
-    [257036] = {"cone", 45, 5},-- <.<
-    [270003] = {"cone", 65, 25},-- kr robots aoe
-    [268391] = {"cone", 45, 5},-- SoB cultist aoe stun
-    [264574] = {"rect", 30, 2.5},-- ToS power shot
-    [263309] = {"cone", 45, 10},-- ToS 1st boss Cyclone Strike
-    [263573] = {"cone", 45, 5},--Tos 1st boss stuff
-    [263912] = {"cone", 45, 5},--TOS 2nd boss green poo
-    [255741] = {"cone", 45, 8},--TOS rider melee
-    [273995] = {"cone", 360, 10},--TOS Pyrrhic Blast
-    [272657] = {"cone", 60, 20},-- tos thrashe aoe green stuff
-    [257337] = {"cone", 55, 25},-- ML 1st boss cone
-    [268415] = {"cone", 90, 5},-- ML trash cleave
-    [268846] = {"cone", 60, 5},-- ml trash cleave
-    [275907] = {"cone", 60, 20},-- ML tectonic smash
-    [269313] = {"cone", 360, 8},-- ml final blast
-    [268865] = {"cone", 45, 5},--
-    [262804] = {"cone", 45, 5},--
-    [260669] = {"rect", 20, 3},--ml rixxa pewpew ??
-    [272457] = {"cone", 45, 5},-- ur 2nd boss
-    [269843] = {"cone", 45, 5},-- ur last boss
-    [258864] = {"cone", 10, 15},-- td thrash  suppression fire
-    [256955] = {"cone", 45, 5},-- td 2nd boss
-    [265372] = {"cone", 60, 10},-- wm thrash cleave
-    [271174] = {"cone", 45, 5},--
-    [264923] = {"cone", 90, 10},-- wm pig boss cleave
-    [264694] = {"cone", 60, 10},-- wm pig boss cleave
-    [259711] = {"cone", 360, 6},-- block warden aoe cleave td
-    [288694] = {"cone", 45, 5},-- Reaping smash https://www.wowhead.com/spell=288694/shadow-smash
-    ------------------------Uldir-------------------------------------------
-    [273538] = {"rect", 40, 6}, --mytrax
-    [274113] = {"rect", 40, 6}, --mytrax transmission lazor
-    [272115] = {"rect", 40, 6}, --mytrax p2 beam
-    [273282] = {"cone", 60, 18}, --mytrax
-    [265264] = {"cone", 60, 18},-- zekvoz boss cleave
-    [267787] = {"cone", 40, 15},-- 2nd boss cleave
-    [262292] = {"cone", 60, 20},-- fetid cleave
-    ------------------------BoD----------------------------------------------
-    [285177] = {"rect", 40, 7},-- Jaina https://www.wowhead.com/spell=285177/freezing-blast
-    [288345] = {"rect", 40, 5},-- Jaina https://www.wowhead.com/spell=288345/glacial-ray
-    [282153] = {"rect", 40, 6},-- High Tinker Mekkatorque https://www.wowhead.com/spell=282153/buster-cannon
-    [283606] = {"cone", 45, 15},-- Opulence https://www.wowhead.com/spell=283606/crush
-    [289906] = {"cone", 45, 15},-- Opulence https://www.wowhead.com/spell=289906/crush
-    [282939] = {"cone", 40, 15},-- Opulence https://www.wowhead.com/spell=282939/flames-of-punishment
-    [287659] = {"cone", 40, 15},-- Opulence https://www.wowhead.com/spell=287659/flames-of-punishment
-    [283063] = {"cone", 40, 15},-- Opulence https://www.wowhead.com/spell=283063/flames-of-punishment
-    [287513] = {"cone", 40, 15},-- Opulence https://www.wowhead.com/spell=287513/flames-of-punishment
-    [283587] = {"rect", 60, 5},-- Champion of the Light https://www.wowhead.com/spell=283587/wave-of-light
-    [283598] = {"rect", 60, 5},-- Champion of the Light https://ptr.wowhead.com/spell=283598/wave-of-light
-    [289572] = {"rect", 20, 3},-- Trash charge https://www.wowhead.com/spell=289572/charge
-    [285893] = {"cone", 90, 10},-- Gonk Wild Maul https://www.wowhead.com/spell=285893/wild-maul
-    [289560] = {"cone", 90, 12},-- Kimbul Lacerating Claws https://www.wowhead.com/spell=282444/lacerating-claws
-    [285178] = {"rect", 45, 10},-- Rastakhan Serpent Totem https://www.wowhead.com/spell=285178/serpents-breath
-    [270833] = {"rect", 25, 10},-- tests
-    [270839] = {"cone", 90, 12},-- tests
-    ------------------------CoS----------------------------------------------
-    [282589] = {"cone", 30, 45},-- The Restless Cabal https://www.wowhead.com/spell=282589/cerebral-assault
-    -----------------Nzo--------------------------------------
-    [309671] = {"cone", 60, 10},-- HV Empowered Forge Breath
-    [305875] = {"cone", 45, 15},-- HV Visceral Fluid
-    [298502] = {"cone", 45, 10},-- HV Toxic Breath
-    [297746] = {"rect", 20, 3},-- HV Seismic Slam
-    [300388] = {"rect", 20, 5},-- HV Decimator
-    [300351] = {"rect", 20, 5},-- HV Surging Fist
-    [306726] = {"rect", 20, 5},-- HV Defiled Ground
-    [300424] = {"rect", 30, 4},-- Junkyard Shockwave
-    [300777] = {"rect", 30, 4},-- Junkyard Slimewave
-    [299475] = {"cone", 15, 10},-- Junkyard B.O.R.K
-    [293986] = {"cone", 60, 15},-- Workshop Sonic Pulse
-    [314483] = {"cone", 360, 5},-- Cascading Terror M+
-    [305663] = {"cone", 20, 30},-- Maut Black Wings
-    [310396] = {"rect", 60, 5},-- Drest'agath Void Glare
-    [310614] = {"cone", 60, 10},-- Drest'agath Crushing Slam
-    [308742] = {"cone", 35, 50} -- tests
+	-- [308742] = {"rect", 35, 50}, -- tests
+	--Shadowlands
+
+	--NecroticWake
+	[324323] = {"cone", 5, 120}, --Gruesome Cleave
+	[333489] = {"rect", 25, 10}, --Amarth Necrotic Breath???????????????????????
+	[333488] = {"rect", 25, 10}, --Amarth Necrotic Breath
+	[333477] = {"cone", 10, 60}, -- Gut Slice
+
+	--De Other Side
+	[334051] = {"rect", 20, 7},  --Erupting Darkness
+	--Mists of Tirna Scithe
+	[323137] = {"cone", 35, 20}, --Bewildering Pollen
+	[321968] = {"cone", 35, 20}, --Bewildering Pollen
+	[340160] = {"cone", 20,45}, --Radiant Breath
+	[340300] = {"cone", 12,60}, --Tongue Lashing
+	--PlagueFall
+	[324667] = {"cone", 100,60}, -- Slime Wave
+	[328395] = {"cone",15,30}, --Venompiercer
+	[330404] = {"rect", 15,10}, --Wing Buffet
+	[318949] = {"cone", 20, 60}, --FesteringBelch
+	[327233] = {"cone", 30,45}, --Belch Plague
+	--Halls of Attonement
+	-- [325797] = {"cone"} -- Rapid Fire 325797 325793 325799 not found
+	--322936 First boss ???
+	[346866] = {"cone", 15, 60}, --Stone Breath
+	[325523] = {"cone",  8, 40}, --Deadly Thrust
+	[326623] = {"cone",  8, 90}, --Reaping Strike
+	[326997] = {"cone",  7, 60}, --Powerful Swipe
+	[323236] = {"cone", 25, 30}, --Unleashed Suffering
+	--Sanguine Depths
+	[320991] = {"rect",   8, 5}, --Echoing Thrust ??? add areatriggers
+	[322429] = {"cone", 8,60}, --Severing Slice
+	--Spires of Ascension
+	[317943] = {"cone", 8, 60}, --Sweeping Blow
+	[323943] = {"rect", 25, 4}, --Run Through
+	[324205] = {"cone", 30, 25}, --Blinding Flash
+	--Theeatre of Pain
+
+
+	--misc
+	[331718] = {"cone", 60, 15}, --Spear Flurry ???
+	[333294] = {"rect", 25, 10}, --Death Winds ??? or 333297
+	[334329] = {"cone", 60, 15}, --Sweeping Slash
+	-- [330403] = {"rect", 10, 20}, --WingBuffet ???
+	[329518] = {"cone", 60, 20},
+	[326455] = {"cone", 75, 10},
+	[329181] = {"rect", 15, 5}, --last Cleave
 }
+--no info 328458,333488,
 
 --Circle, radius
 --Rect, length, width
@@ -119,10 +65,10 @@ DMW.Tables.Dodgie.GameObjectsToDraw = {
 }
 DMW.Tables.Dodgie.AreaTriggersToDraw = {
     -- [12929] = {"Cone", 5, 90}
-    [17760] = {"Cone", 2.5, 360}, -- sots tornado council boss
-    [18334] = {"Cone", 2.5, 360}, -- sots thrash tornado
-    [19019] = {"Cone", 5, 360}, -- sots
-
+    -- [17760] = {"Cone", 2.5, 360}, -- sots tornado council boss
+    -- [18334] = {"Cone", 2.5, 360}, -- sots thrash tornado
+	-- [19019] = {"Cone", 5, 360}, -- sots
+	[26228] = {"Cone", 5, 360}
 }
 local function Line(sx, sy, sz, ex, ey, ez)
     local function WorldToScreen (wX, wY, wZ)
@@ -170,27 +116,29 @@ function DMW.Tables.Dodgie.getRectUnit(length,width, Unit, facing)
     return nlX, nlY, nrX, nrY, frX, frY, flX, flY, flZ, nlZ, nrZ, frZ
 end
 
-function Unit:DrawCleave(spellid)
+function Unit:DrawCleave()
     -- local spellID =
     -- if self.Dead or UnitCastingInfo(self.Pointer) == nil then return true end
-    local drawType, size1, size2 = DMW.Tables.Dodgie.SpellsToDraw[spellid][1], DMW.Tables.Dodgie.SpellsToDraw[spellid][2], DMW.Tables.Dodgie.SpellsToDraw[spellid][3]
+    self:UpdatePosition()
+    local drawType, size1, size2 = self.DrawDodgie[1], self.DrawDodgie[2], self.DrawDodgie[3]
     local rotation = select(2, ObjectFacing(self.Pointer))
-    LibDraw.SetColorRaw(0, 1, 0)
+    DMW.Helpers.DrawColor(0, 1, 0)
+
     if drawType == "rect" then
-        local nlX, nlY, nrX, nrY, frX, frY, flX, flY, flZ, nlZ, nrZ, frZ = DMW.Tables.Dodgie.getRectUnit(size1, size2, self, rotation) --self.PosX, self.PosY, self.PosZ, rotation)
-        DMW.Helpers.DrawLineDMWC(flX, flY, self.PosZ, nlX, nlY, self.PosZ)
-        DMW.Helpers.DrawLineDMWC(frX, frY, self.PosZ, nrX, nrY, self.PosZ)
-        DMW.Helpers.DrawLineDMWC(frX, frY, self.PosZ, flX, flY, self.PosZ)
-        DMW.Helpers.DrawLineDMWC(nlX, nlY, self.PosZ, nrX, nrY, self.PosZ)
+        local nlX, nlY, nrX, nrY, frX, frY, flX, flY, flZ, nlZ, nrZ, frZ = DMW.Tables.Dodgie.getRectUnit(size1, size2, self, rotation)
+        DMW.Helpers.DrawLine(flX, flY, self.PosZ, nlX, nlY, self.PosZ)
+        DMW.Helpers.DrawLine(frX, frY, self.PosZ, nrX, nrY, self.PosZ)
+        DMW.Helpers.DrawLine(frX, frY, self.PosZ, flX, flY, self.PosZ)
+        DMW.Helpers.DrawLine(nlX, nlY, self.PosZ, nrX, nrY, self.PosZ)
     elseif drawType == "cone" then
         LibDraw.Arc(self.PosX, self.PosY, self.PosZ, size1, size2, rotation)
     end
     local castRemainReal = self:CastRemains()
     local castRemainPrint = string.format("%0.1f", castRemainReal)
     if castRemainReal <= 3 then
-        LibDraw.SetColorRaw(1, 0, 0)
+        DMW.Helpers.DrawColor(1, 0, 0)
     end
-    LibDraw.Text(castRemainPrint, "GameFontNormalSmall", self.PosX, self.PosY, self.PosZ + 2)
+    DMW.Helpers.DrawText(castRemainPrint, "GameFontNormalSmall", self.PosX, self.PosY, self.PosZ + 2)
 end
 
 -- function Dodgie.Run()
@@ -202,27 +150,32 @@ local function CacheCasts(_, event, _, source, sourceName, sourceFlag, _, destin
     --     print(event, spell, sourceFlag)
     -- end
     -- print(sourceName, event)
-    if not DMW.Settings.profile.Helpers.ShowVisuals then return end
     if event == "SPELL_CAST_START" then
         -- print(sourceName, event)
-        local sourceobj = DMW.Tables.Misc.guid2pointer[source]
+        local sourceobj = GetObjectWithGUID(source)
         local Unit = DMW.Units[sourceobj]
-        if Unit then
+		if Unit then
             -- print(Unit.Name)
-            Unit:GetCastingInfo()
-            local toDraw = DMW.Tables.Dodgie.SpellsToDraw[spell]
-            if toDraw ~= nil then
-                Unit.DrawCleaveInfo = toDraw
-                tinsert(DMW.Tables.Dodgie.DrawUnits, Unit)
+            -- print(UnitCastingInfo(Unit.Pointer), "start")
+            Unit:PopulateCasting()
+            -- local toDraw = DMW.Tables.Dodgie.SpellsToDraw[spell]
+            -- if toDraw ~= nil then
+            --     Unit.DrawCleaveInfo = toDraw
+            --     tinsert(DMW.Tables.Dodgie.DrawUnits, Unit)
+            -- end
+			local spellid = Unit:CastIdCheck()
+			-- print(Unit.Name, spellid)
+            if DMW.Tables.Dodgie.SpellsToDraw[spellid] ~= nil then
+                Unit.DrawDodgie = DMW.Tables.Dodgie.SpellsToDraw[spellid]
             end
         end
-    elseif event == "SPELL_CAST_SUCCESS" or event == "SPELL_CAST_FAILED" or event == "UNIT_DIED" or event == "SPELL_INTERRUPT" or event == "PARTY_KILL" then
-        local sourceobj = DMW.Tables.Misc.guid2pointer[source]
-        local Unit = DMW.Units[sourceobj]
-        if Unit and Unit.DrawCleaveInfo then
-            Unit:CheckCastingInfo()
-
-        end
+    -- elseif event == "SPELL_CAST_SUCCESS" or event == "SPELL_CAST_FAILED" or event == "UNIT_DIED" or event == "SPELL_INTERRUPT" or event == "PARTY_KILL" then
+    --     local sourceobj = GetObjectWithGUID(source)
+    --     local Unit = DMW.Units[sourceobj]
+    --     if Unit then
+    --         -- print(UnitCastingInfo(Unit.Pointer), "finish")
+    --         Unit:PopulateCasting()
+    --     end
     -- elseif event == "SPELL_CAST_SUCCESS" or event == "SPELL_CAST_FAILED" then
     --     local sourceobj = DMW.Tables.Misc.guid2pointer[source]
     --     local Unit = DMW.Units[sourceobj]
@@ -237,52 +190,28 @@ end
 
 
 function DMW.Tables.Dodgie.DrawStuff()
-    -- for k,v in ipairs(DMW.Tables.Dodgie.DrawUnits) do
-    --     -- print(v)
-    --     if v.DrawCleaveInfo then
-    --         if v:DrawCleave() then tremove(DMW.Tables.Dodgie.DrawUnits, k); end
-    --     end
-    -- end
+    if not DMW.Settings.profile.Helpers.ShowVisuals then return end
     for _, Unit in pairs(DMW.Units) do
-        if Unit.Casting then
-            local spellid = Unit:CastIdCheck()
-            if DMW.Tables.Dodgie.SpellsToDraw[spellid] ~= nil then
-                Unit:DrawCleave(spellid)
-            end
+        if Unit.DrawDodgie then
+            Unit:DrawCleave()
+        end
+	end
+	for _, Object in pairs(DMW.AreaTriggers) do
+		if DMW.Tables.Dodgie.AreaTriggersToDraw[Object.ObjectID] ~= nil and ObjectCreator(Object.Pointer) == DMW.Player.Pointer then
+            Object:Draw(Object.ID)
+            -- print(Object.ObjectID, DMW.Tables.Dodgie.AreaTriggersToDraw[Object.ObjectID])
         end
     end
 end
 
-
-
-    -- if checkCleave(thisUnit, spellID) then
-    --     LibDraw.SetColorRaw(1, 0, 0)
-    -- elseif endtime ~= nil and endtime/1000 <= GetTime() + 2 then
-    --     LibDraw.SetColorRaw(1, 0, 1)
-    -- else
-    --     LibDraw.SetColorRaw(0, 1, 0)
-    -- end
-
-
-
-
-
 DMW.Helpers.Dodgie.Init = function()
     -- if not DodgieFrame then
-    --     DodgieFrame = CreateFrame("frame")
-    --     DodgieFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+        DodgieFrame = CreateFrame("frame")
+        DodgieFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     --     -- swingTimerFrame:RegisterEvent("PLAYER_ENTER_COMBAT")
-    --     DodgieFrame:SetScript("OnEvent", function(_, event, ...)
-    --         if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-    --             CacheCasts(CombatLogGetCurrentEventInfo())
-    --             -- print(CombatLogGetCurrentEventInfo())
-    --         end
-    --     end)
-    --     -- DodgieFrame:SetScript("OnUpdate", function(self, elapsed)
-    --     --     DrawStuff()
-    --     -- end)
-    --     -- selfGUID = UnitGUID("player")
-    -- end
+        -- DodgieFrame:SetScript("OnEvent", function(_, event, ...)
+        --         CacheCasts(CombatLogGetCurrentEventInfo())
+        -- end)
 end
 
 

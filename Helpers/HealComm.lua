@@ -92,7 +92,7 @@
 
 --     -- local HealAmount = HealCommLib:GetCasterHealAmount(destUnit, 1, DMW.Time + 1)
 --     -- print(HealAmount)
---     -- WriteFile("checkychecky.txt", "HealComm_HealStopped , ".. DMW.Time .. " , ".. DMW.Player.Target.Health.."\n", true)
+    -- WriteFile("checkychecky.txt", "HealComm_HealStopped , ".. DMW.Time .. " , ".. DMW.Player.Target.Health.."\n", true)
 -- 	self:UpdateIncoming(...)
 -- end
 

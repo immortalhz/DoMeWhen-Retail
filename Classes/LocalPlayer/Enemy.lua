@@ -78,7 +78,7 @@ function LocalPlayer:AutoTargetMelee(Yards, Facing)
     Facing = Facing or false
     if not self.Target or self.Target.Dead or not self.Target.Facing or self.Target.Distance > Yards then
         for _, Unit in ipairs(DMW.Attackable) do
-            if Unit.Distance <= Yards and (not Facing or Unit.Facing) and not Unit.Dead and not UnitIsUnit("target", Unit.Pointer) and not UnitIsTapDenied(Unit.Pointer) then
+            if Unit.Distance <= Yards and (not Facing or Unit.Facing) and not Unit.Dead and (not self.Target or self.Target.Pointer ~= Unit.Pointer) and not UnitIsTapDenied(Unit.Pointer) then
                 TargetUnit(Unit.Pointer)
                 DMW.Player.Target = Unit
                 return true
@@ -155,7 +155,7 @@ local function SortEnemies()
             table.sort(
                 Enemies,
                 function(x)
-                    if UnitIsUnit(x.Pointer, "target") then
+                    if DMW.Player.Target and DMW.Player.Target.Pointer == x.Pointer then
                         -- print("target sort")
                         return true
                     else
@@ -164,12 +164,24 @@ local function SortEnemies()
                 end
             )
         end
+        if DMW.Settings.profile.Enemy.SortingThreat then
+            table.sort(
+                    Enemies,
+					function(x,y)
+						return x:NotPlayerTanking() and not y:NotPlayerTanking()
+                    end
+                )
+        end
         if DMW.Settings.profile.Enemy.SortingAuraID and DMW.Settings.profile.Enemy.SortingAuraIDString ~= "" then
             for k in string.gmatch(DMW.Settings.profile.Enemy.SortingAuraIDString, "([^,]+)") do
                 table.sort(
                     Enemies,
                     function(x)
-                        return x:AuraByID(k)
+						if x:AuraByID(tonumber(k)) then
+							return true
+						else
+							return false
+						end
                     end
                 )
             end
@@ -194,7 +206,6 @@ local function SortEnemies()
                 )
             end
         end
-
         DMW.Cache.EnemiesSorting = DMW.Pulses
     end
 end

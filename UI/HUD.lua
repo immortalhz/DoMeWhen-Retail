@@ -47,6 +47,7 @@ HUD.CoreOptions = {
 function HUD.Load()
     if not HUD.Options then
         HUD.Options = {}
+        HUD.Frames = {}
     end
     Settings = DMW.Settings.profile
     local ofsy = 0
@@ -131,6 +132,12 @@ function HUD.Load()
     end
     HUDFrame:SetHeight(math.abs(ofsy))
     HUD.Loaded = true
+end
+
+function HUD.Clear()
+    if HUD.Loaded then
+
+    end
 end
 
 HUDFrame:SetScript(

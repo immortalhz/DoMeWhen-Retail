@@ -149,7 +149,14 @@ DMW.Enums.ClassPowerTypes = {
         "Rage",
         "Energy",
         "LunarPower"
-    }
+    },
+    PRIEST ={
+        "Power",
+        "Insanity"
+	},
+	HUNTER = {
+		"Focus"
+	}
 }
 
 DMW.Enums.PowerTypes = {

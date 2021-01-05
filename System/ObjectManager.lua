@@ -91,6 +91,8 @@ end
 FriendsNPCs = {
     [144075] = true
 }
+
+local TargetExists, FocusExists, MouseoverExists
 local function UpdateUnits()
     table.wipe(Attackable)
     table.wipe(Enemies)
@@ -105,25 +107,42 @@ local function UpdateUnits()
     DMW.Player.Focus = nil
     DMW.Player.Mouseover = nil
     DMW.Player.Pet = nil
-
-
-
+	-- TargetExists =
+    -- FocusExists = UnitIsVisible("focus")
+	-- MouseoverExists = UnitIsVisible("mouseover")
+	if UnitIsVisible("target") then
+		local target = ObjectPointer("target")
+		if Units[target] then
+			DMW.Player.Target = Units[target]
+		end
+	end
+	if UnitIsVisible("focus") then
+		local focus = ObjectPointer("focus")
+		if Units[focus] then
+			DMW.Player.Focus = Units[focus]
+		end
+	end
+	if UnitIsVisible("mouseover") then
+		local mouseover = ObjectPointer("mouseover")
+		if Units[mouseover] then
+			DMW.Player.Mouseover = Units[mouseover]
+		end
+	end
+	if UnitIsVisible("mouseover") then
+		local mouseover = ObjectPointer("mouseover")
+		if Units[mouseover] then
+			DMW.Player.Mouseover = Units[mouseover]
+		end
+	end
+	if UnitIsVisible("pet") then
+		local pet = ObjectPointer("pet")
+		if Units[pet] then
+			DMW.Player.Pet = Units[pet]
+		end
+	end
     for Pointer, Unit in pairs(Units) do
         if not Unit.NextUpdate or Unit.NextUpdate < DMW.Time then
             Unit:Update()
-        end
-        if not DMW.Player.Target and UnitIsUnit(Pointer, "target") then
-            DMW.Player.Target = Unit
-            -- DMW.Tables.Misc.unit2pointer["target"] = Pointer
-        end
-        if not DMW.Player.Mouseover and UnitIsUnit(Pointer, "mouseover") then
-            DMW.Player.Mouseover = Unit
-        end
-        if not DMW.Player.Focus and UnitIsUnit(Pointer, "focus") then
-            DMW.Player.Focus = Unit
-        end
-        if DMW.Player.PetActive and not DMW.Player.Pet and UnitIsUnit(Pointer, "pet") then
-            DMW.Player.Pet = Unit
         end
         if Unit.Attackable then
             table.insert(Attackable, Unit)
@@ -147,8 +166,7 @@ local function UpdateUnits()
                 if Unit.LoS then
                     if Unit.MainTank then
                         table.insert(DMW.Friends.Tanks, Unit)
-                    end
-                    if Unit.Healer then
+                    elseif Unit.Healer then
                         table.insert(DMW.Friends.Healers, Unit)
                     end
                     table.insert(Friends, Unit)
@@ -160,7 +178,6 @@ local function UpdateUnits()
             -- print("added")
             table.insert(Friends, Unit)
         end
-
     end
     HandleFriends()
 end
@@ -198,7 +215,7 @@ function DMW.UpdateOM()
     end
     if updated and #added > 0 then
         for _, v in pairs(added) do
-            if ObjectIsUnit(v) and not Units[v] then
+            if ObjectIsUnit(v) and not Units[v] and (UnitCreatureTypeID(v) ~= 8) then
                 --and (UnitCreatureTypeID(v) ~= 8 or UnitAffectingCombat(v)) then --and (UnitCreatureTypeID(v) ~= 8
                 Units[v] = Unit(v)
             elseif ObjectIsGameObject(v) and not GameObjects[v] then

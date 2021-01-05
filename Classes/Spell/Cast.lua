@@ -29,7 +29,7 @@ local function FacingCast(SpellName, Target)
 end
 
 function Spell:FacingCast(Unit)
-	if DMW.Settings.profile.Enemy.AutoFace and not UnitIsUnit("player", Unit.Pointer) and self:CastTime() == 0 and not Unit:Facing() then
+	if DMW.Settings.profile.Enemy.AutoFace and not DMW.Player.Pointer ~= Unit.Pointer and self:CastTime() == 0 and not Unit:Facing() then
 		local Facing = ObjectFacing("player")
 		local MouselookActive = false
 		if IsMouselooking() then
@@ -51,7 +51,7 @@ function Spell:FacingCast(Unit)
 end
 
 function Spell:FacingCastRevenge(Facing)
-	if DMW.Settings.profile.Enemy.AutoFace  then
+	if DMW.Settings.profile.Enemy.AutoFace then
 		local FacingOld = ObjectFacing("Player")
 		local MouselookActive = false
 		if IsMouselooking() then
@@ -71,6 +71,9 @@ function Spell:FacingCastRevenge(Facing)
 	end
 end
 
+local SpellQueued
+local lastBotCast
+
 function Spell:Cast(Unit, Extra)
 	if not Unit then
 		if self.IsHarmful and DMW.Player.Target then
@@ -81,23 +84,28 @@ function Spell:Cast(Unit, Extra)
 			return false
 		end
 	end
-    -- if self:Known() and self:IsReady() and ((Unit.Distance <= self.MaxRange and (self.MinRange == 0 or Unit.Distance >= self.MinRange)) or IsSpellInRange(self.SpellName, Unit.Pointer) == 1) then
-    if DMW.Time > CastTimer and self:IsReady() and (Unit.Distance <= self.MaxRange or IsSpellInRange(self.SpellName, Unit.Pointer) == 1) then
-        -- if self:CD() == 0 and (DMW.Time - CastTimer) >= 0 then
-        --     CastTimer = DMW.Time
-        --     if self.CastType == "Ground" then
-        --         if self:CastGround(Unit.PosX, Unit.PosY, Unit.PosZ) then
-        --             self.LastBotTarget = Unit.Pointer
-        --         else
-        --             return false
-        --         end
-        --     else
-        --         self:FacingCast(Unit)
-        --         self.LastBotTarget = Unit.Pointer
-        --     end
-        --     return true
-        -- end
-        CastTimer = DMW.Time + (math.random(110, 170) / 1000)
+	local range = self.MaxRange < 5 and 5 or self.MaxRange
+
+	-- if IsCurrentSpell(lastBotCast) then
+	-- 	print("queued "..lastBotCast)
+	-- 	return false
+	-- end
+	-- print(self.Key)
+	-- if DMW.Time > CastTimer and
+	-- if Unit.Distance == nil then
+	-- 	print(self.Key)
+	-- end
+	if (not self.CastTimer or
+	DMW.Time > self.CastTimer)
+	and self:IsReady() and
+	(Unit.Distance <= range or
+	IsSpellInRange(self.SpellName, Unit.Pointer) == 1) then
+		if self.BaseGCD ~= 0 then
+			self.CastTimer = DMW.Time + (math.random(250, 270) / 1000)
+		else
+			self.CastTimer = DMW.Time + (math.random(400, 500) / 1000)
+		end
+		CastTimer = DMW.Time + (math.random(150,170)/1000)
 		if DMW.Player.Moving then
 			SendMovementUpdate()
         end
@@ -112,7 +120,10 @@ function Spell:Cast(Unit, Extra)
 		else
 			FacingCast(self.SpellName, Unit.Pointer)
 			self.LastBotTarget = Unit.Pointer
-        end
+			lastBotCast = self.SpellID
+			-- print(lastBotCast)
+		end
+		-- print(DMW.Player:SpellQueued())
         DMW.UI.Log.AddCast(self.SpellName, Unit.Name, Extra)
 		return true
     end
@@ -145,7 +156,7 @@ function Spell:CastNoGCD(Unit)
         --     end
         --     return true
         -- end
-        -- CastTimer = DMW.Time + (math.random(110, 170) / 1000)
+		-- CastTimer = DMW.Time + (math.random(110, 170) / 1000)
 		if DMW.Player.Moving then
 			SendMovementUpdate()
         end
@@ -181,6 +192,31 @@ function Spell:CastSpellGround(Unit)
         if self:CD() == 0 and (DMW.Time - CastTimer) >= 0 then
             CastTimer = DMW.Time
             if self:CastGround(Unit.PosX, Unit.PosY, Unit.PosZ) then
+                self.LastBotTarget = Unit.Pointer
+            else
+                return false
+            end
+            return true
+        end
+    end
+    return false
+end
+
+function Spell:CastSpellGroundRandom(Unit, Dif)
+    if not Unit then
+        if self.IsHarmful and DMW.Player.Target then
+            Unit = DMW.Player.Target
+        elseif self.IsHelpful then
+            Unit = DMW.Player
+        else
+            return false
+        end
+	end
+	Dif = Dif or 3
+    if self:Known() and self:IsReady() and ((Unit.Distance <= self.MaxRange and (self.MinRange == 0 or Unit.Distance >= self.MinRange)) or IsSpellInRange(self.SpellName, Unit.Pointer) == 1) then
+        if self:CD() == 0 and (DMW.Time - CastTimer) >= 0 then
+            CastTimer = DMW.Time
+            if self:CastGround(Unit.PosX + math.random(-Dif, Dif), Unit.PosY + math.random(-Dif, Dif), Unit.PosZ) then
                 self.LastBotTarget = Unit.Pointer
             else
                 return false
@@ -235,15 +271,21 @@ function Spell:CastGround(X, Y, Z)
     return false
 end
 
+local BestConeTime = GetTime()
 function Spell:CastBestConeEnemy(Length, Angle, MinHit, TTD)
-	if not self:IsReady() then
+	if not self:IsReady() or DMW.Time < BestConeTime then
 		return false
 	end
 	MinHit = MinHit or 1
 	TTD = TTD or 0
-	local Table, TableCount = DMW.Player:GetEnemies("player", Length)
+	local Table, TableCount = DMW.Player:GetEnemies(Length)
 	if TableCount < MinHit then
 		return false
+	end
+	if not DMW.Settings.profile.Enemy.AutoFace then
+		CastSpellByName(self.SpellName)
+		BestConeTime = DMW.Time + 0.3
+		return true
 	end
 	local PX, PY, PZ = DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ
 	local ConeTable = {}
@@ -298,6 +340,7 @@ function Spell:CastBestConeEnemy(Length, Angle, MinHit, TTD)
 				FaceDirection(ObjectFacing("player"), true)
 			end
 		)
+		BestConeTime = DMW.Time + 0.3
 		return true
 	end
 	return false

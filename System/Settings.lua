@@ -27,6 +27,7 @@ local defaults = {
             InterruptSpells = "",
             SortingEnemyScore = false,
             SortingTarget = false,
+            SortingThreat = false,
             SortingHighestHealth = false,
             SortingLowestHealth = false,
             SortingAuraID = false,
@@ -50,6 +51,7 @@ local defaults = {
             AutoGather = false,
             ShowVisuals = false,
             ShowIDs = false,
+            DirectX = false
         },
         Tracker = {
             Herbs = false,
@@ -119,7 +121,7 @@ local function MigrateSettings()
     end
     for k,v in pairs(DMW.Settings.profile.Helpers) do
         local moveNew = true
-        if k == "AutoGather" or k == "AutoLoot" or k == "AutoSkinning" or k == "ShowVisuals" or k == "ShowIDs" then
+        if k == "AutoGather" or k == "AutoLoot" or k == "AutoSkinning" or k == "ShowVisuals" or k == "ShowIDs" or k == "DirectX" then
             moveNew = false
         end
         if moveNew then

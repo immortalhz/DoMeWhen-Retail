@@ -3,6 +3,10 @@ local Player, Buff, Debuff, Spell
 local timeStamp, param, hideCaster, source, sourceName, sourceFlags, sourceRaidFlags, destination, destName, destFlags, destRaidFlags,
       spell, spellName, _, spellType
 
+local DRList = LibStub("DRList-1.0")
+
+DMW.Tables.DRList = {}
+
 local function Locals()
     Player = DMW.Player
     Buff = Player.Buffs
@@ -19,8 +23,33 @@ function frame:Reader(event, ...)
     if GetObjectWithGUID then
         timeStamp, param, hideCaster, source, sourceName, sourceFlags, sourceRaidFlags, destination, destName, destFlags, destRaidFlags, spell, spellName, _, spellType =
             ...
-        Locals()
+		Locals()
+
         DMW.Functions.AuraCache.Event(...)
+        if spellType == "DEBUFF" then
+            local category = DRList:GetCategoryBySpellID(spell)
+            if not category or category == "knockback" then return end
+            local isNPC = bit.band(destFlags, COMBATLOG_OBJECT_CONTROL_NPC) ~= 0
+            if not isNPC then return end
+            if param == "SPELL_AURA_APPLIED" or param == "SPELL_AURA_REFRESH" then --if eventType == "SPELL_AURA_REFRESH" or eventType == "SPELL_AURA_REMOVED" then
+                local destobj = GetObjectWithGUID(destination)
+                local destUnit = DMW.Units[destobj]
+                if destUnit then
+                    destUnit:AddCC(category)
+                end
+            end
+        -- elseif param == "SPELL_CAST_START" or param == "SPELL_CAST_FAILED" then
+            -- print("")
+        -- else
+        --     print(param)
+		end
+		if param == "SPELL_MISSED" and spellType == "EVADE" then
+			local destobj = GetObjectWithGUID(destination)
+			local destUnit = DMW.Units[destobj]
+			if destUnit then
+				destUnit.Evaded = true
+			end
+		end
         -- if source == Player.GUID or destination == Player.GUID then
         --     local sourceobj = DMW.Tables.Misc.guid2pointer[source]
         --     local destobj = DMW.Tables.Misc.guid2pointer[destination]
@@ -37,7 +66,7 @@ function frame:Reader(event, ...)
             --                 if Player.OverpowerUnit[destobj] ~= nil then Player.OverpowerUnit[destobj] = nil end
             --                 if Player.RevengeUnit[destobj] ~= nil then Player.RevengeUnit[destobj] = nil end
             --             end)
-            --         elseif missType == "PARRY" or spellType == "BLOCK" then
+            --         elseif missType == "PARRY" dor spellType == "BLOCK" then
             --             Player.RevengeUnit[destobj] = {}
             --             Player.RevengeUnit[destobj].time = DMW.Time + 5
             --             C_Timer.After(5, function()

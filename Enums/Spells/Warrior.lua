@@ -128,6 +128,9 @@ Spells.WARRIOR = {
 			FocusedAzeriteBeam                    = {295258},
 			GuardianofAzeroth                     = {295840},
 			ReapingFlames                         = {310690},
+			BloodBath = {335096},
+			CrushingBlow = {335097}
+
         },
         Buffs = {
 			Recklessness                      = {1719},
@@ -160,7 +163,7 @@ Spells.WARRIOR = {
 			ImpendingVictory = 22625, -- 202168
 			StormBolt = 23093, -- 107570
 
-			Massacre = 22393, -- 206315
+			Massacre = 22379, -- 206315
 			Frenzy = 22381,
 			Onslaught = 23372,
 			-- InnerRage = 22379, -- 215573
@@ -178,8 +181,8 @@ Spells.WARRIOR = {
 			DragonRoar = 22398, -- 118000
 			Bladestorm = 22400, -- 46924
 
-			AngerManagement = 22402, -- 152278
-			RecklessAbandon = 22405, -- 202751
+			AngerManagement = 22405, -- 152278
+			RecklessAbandon = 22402, -- 202751
 			Siegebreaker = 16037, -- 280772
 		},
 		Traits = {
@@ -290,7 +293,7 @@ Spells.WARRIOR = {
 			HeroicThrow = {57755},
 			HeroicLeap = {6544},
 			Pummel = {6552},
-			Execute = {163201},
+			Execute = {5308},
 			Slam = {1464},
 			ShieldSlam = {23922},
 			RallyingCry = {97462},
