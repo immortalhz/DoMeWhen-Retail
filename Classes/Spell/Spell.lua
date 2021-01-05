@@ -17,7 +17,17 @@ function Spell:New(SpellID, CastType)
     self.IsAvailable = IsPlayerSpell(self.SpellID) or IsSpellKnown(self.SpellID, true)
     -- if self.IsAvailable then self.CooldownInfo = {GetSpellCooldown(self.SpellID)} end
     local costTable = GetSpellPowerCost(self.SpellID)
-    for _, costInfo in pairs(costTable) do if costInfo.costPerSec > 0 then self.CastType = "Channel" end end
+    if costTable then
+        for _, costInfo in pairs(costTable) do
+            if costInfo.cost > 0 then
+                self.Cost = costInfo.cost
+            end
+            if costInfo.costPerSec > 0 then
+                self.Cost = costInfo.costPerSec
+                self.CastType = "Channel"
+            end
+        end
+    end
 end
 
 -- Check if the spell is in the Spell Learned Cache.

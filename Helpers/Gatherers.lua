@@ -11,7 +11,7 @@ function DMW.Helpers.Gatherers.Run()
         if DMW.Settings.profile.Helpers.AutoLoot then
             if not Looting and (not DMW.Player.Combat or DMW.Player.Instance == "pvp") then
                 for _, Unit in pairs(DMW.Units) do
-                    if Unit.Dead and Unit.Distance < 1.5 and UnitCanBeLooted(Unit.Pointer) then
+                    if Unit.Dead and Unit.Distance < 5 and UnitCanBeLooted(Unit.Pointer) then
                         InteractUnit(Unit.Pointer)
                         Looting = DMW.Time + 0.6
                     end
@@ -24,7 +24,7 @@ function DMW.Helpers.Gatherers.Run()
             end
             if not Skinning and not DMW.Player.Combat and not DMW.Player.Moving and not DMW.Player.Casting then
                 for _, Unit in pairs(DMW.Units) do
-                    if Unit.Dead and Unit.Distance < 1.5 and UnitCanBeSkinned(Unit.Pointer) then
+                    if Unit.Dead and Unit.Distance < 5 and UnitCanBeSkinned(Unit.Pointer) then
                         InteractUnit(Unit.Pointer)
                         Skinning = DMW.Time
                     end
