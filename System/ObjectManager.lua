@@ -104,7 +104,7 @@ local function UpdateUnits()
 
     DMW.Player.Target = nil
     -- DMW.Tables.Misc.unit2pointer["target"] = nil
-    DMW.Player.Focus = nil
+    DMW.Player.FocusUnit = nil
     DMW.Player.Mouseover = nil
     DMW.Player.Pet = nil
 	-- TargetExists =
@@ -119,7 +119,7 @@ local function UpdateUnits()
 	if UnitIsVisible("focus") then
 		local focus = ObjectPointer("focus")
 		if Units[focus] then
-			DMW.Player.Focus = Units[focus]
+			DMW.Player.FocusUnit = Units[focus]
 		end
 	end
 	if UnitIsVisible("mouseover") then

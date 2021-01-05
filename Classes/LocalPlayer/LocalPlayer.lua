@@ -80,10 +80,7 @@ function LocalPlayer:Update()
     self.HealthMax = UnitHealthMax(self.Pointer)
     self.HP = self.Health / self.HealthMax * 100
 	self.Casting = self:PlayerCastingCheck()
-    self.Power = UnitPower(self.Pointer)
-    self.PowerMax = UnitPowerMax(self.Pointer)
-    self.PowerDeficit = self.PowerMax - self.Power
-    self.PowerPct = self.Power / self.PowerMax * 100
+
 	-- if self.Casting and self.Casting == 8613 then
 	-- 	local skinned = select(3,UnitCastID("player"))
 	-- 	if DMW.Units[skinned] then
