@@ -245,7 +245,7 @@ function Unit:HasThreat()
     if self.Target and (UnitIsUnit(self.Target, "player") or UnitIsUnit(self.Target, "pet") or UnitInParty(self.Target)) then
         return true
 	end
-	if GrindBot and GrindBot.Core and GrindBot.Core.Enabled and UnitThreatSituation(DMW.Player.Pointer, self.Pointer) then
+	if GrindBot and GrindBot.Core and GrindBot.Core.Enabled and not self.Player and UnitThreatSituation(DMW.Player.Pointer, self.Pointer) then
 		return true
 	end
     return false
