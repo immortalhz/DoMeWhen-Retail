@@ -414,7 +414,10 @@ function LocalPlayer:Dispel(Spell)
     return ReturnValue
 end
 
-function LocalPlayer:HasFlag(Flag) return bit.band(ObjectDescriptor(self.Pointer, GetOffset("CGUnitData__Flags"), "int"), Flag) > 0 end
+function LocalPlayer:HasFlag(Flag)
+	local descr = ObjectDescriptor(self.Pointer, GetOffset("CGUnitData__Flags"), "int")
+	return descr and bit.band(descr, Flag) > 0
+end
 
 function LocalPlayer:AuraByID(SpellID, OnlyPlayer)
     OnlyPlayer = OnlyPlayer or false

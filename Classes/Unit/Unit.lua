@@ -4,7 +4,8 @@ local DRList = LibStub("DRList-1.0")
 
 function Unit:New(Pointer)
     self.Pointer = Pointer
-    self.Name = self.Pointer ~= DMW.Player.Pointer and UnitName(Pointer) or "LocalPlayer"
+	self.Name = self.Pointer ~= DMW.Player.Pointer and UnitName(Pointer) or "LocalPlayer"
+	C_Timer.After(1, function() self.Name = self.Pointer ~= DMW.Player.Pointer and UnitName(Pointer) or "LocalPlayer" end)
     self.GUID = UnitGUID(Pointer)
     self.Player = UnitIsPlayer(Pointer)
     self.LoSCache = {}
@@ -106,8 +107,13 @@ function Unit:Update()
     -- end
     self:UpdatePosition()
     self.Distance = self:GetDistance()
-    -- self:CastingCheck()
-    self.Dead = UnitIsDeadOrGhost(self.Pointer) -- CalculateHP
+	-- self:CastingCheck()
+	if not self.Dead and UnitIsDeadOrGhost(self.Pointer) then
+		self.CanBeLootedTime = DMW.Time
+		self.Dead = true
+	end
+	-- end
+    -- self.Dead = UnitIsDeadOrGhost(self.Pointer) -- CalculateHP
     self.LoS = false
     if self.Distance < 50 and not self.Dead then
         self.LoS = self:LineOfSight()
@@ -130,9 +136,7 @@ function Unit:Update()
     self.Quest = self:IsQuest()
     -- end
     self.Trackable = self:IsTrackable()
-    if self.Name == "Unknown" then
-        self.Name = UnitName(self.Pointer)
-    end
+
     -- if self.Casting then
     --     self:PopulateCasting()
     -- end
@@ -164,7 +168,7 @@ function Unit:Update()
                 self.CC[k] = nil
             end
         end
-    end
+	end
 end
 
 function Unit:UpdateHealth(predict, amount)
@@ -227,7 +231,7 @@ end
 
 function Unit:HasThreat()
     if DMW.Enums.Threat[self.ObjectID] or DMW.Enums.SkipChecks[self.ObjectID] then
-        return true
+		return true
     elseif DMW.Enums.EnemyBlacklist[self.ObjectID] then
         return false
     elseif DMW.Player.Instance == "pvp" and (self.Player or UnitAffectingCombat(self.Pointer)) then
@@ -244,9 +248,6 @@ function Unit:HasThreat()
     end
     if self.Target and (UnitIsUnit(self.Target, "player") or UnitIsUnit(self.Target, "pet") or UnitInParty(self.Target)) then
         return true
-	end
-	if GrindBot and GrindBot.Core and GrindBot.Core.Enabled and not self.Player and UnitThreatSituation(DMW.Player.Pointer, self.Pointer) then
-		return true
 	end
     return false
 end

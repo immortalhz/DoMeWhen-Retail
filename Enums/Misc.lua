@@ -15,7 +15,8 @@ DMW.Enums.MeleeSpell = {
     ["Balance"] = 33917,
     ["Enhancment"] = 73889,
 	["Subtlety"] = 1766,
-	["Feral"] = 1822
+	["Feral"] = 1822,
+	["Guardian"] = 1822
 }
 
 DMW.Enums.Range40Spell = {
