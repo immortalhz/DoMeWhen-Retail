@@ -54,6 +54,40 @@ Spells.DRUID = {
 			BrutalSlash = 21711
 		},
 
+	},
+	Guardian = {
+        Abilities = {
+           Berserk = {50334},
+		   Maul = {6807},
+		   FrenziedRegeneration = {22842},
+		   Maim = {22570},
+		   Rip = {1079},
+		   SkullBash = {106839},
+		   SurvivalInstincts = {61336},
+		   WildCharge = {49376},
+		   Swipe = {213764},
+		   MightyBash = {5211},
+		   Thrash = {106832}
+        },
+        Buffs = {
+            EclipseLunar = {48518},
+			EclipseSonar = {48517},
+			PredatorySwiftness = {69369},
+			-- Berserk = {106951},
+			GalacticGuardian = {213708},
+			Berserk = {50334},
+
+        },
+        Debuffs = {
+			-- ConcentratedFlameBurn                 = 295368,
+			Thrash = 192090
+        },
+        Talents = {
+			-- WarMachine = 22632, -- 262231
+			BloodTalons = 21649,
+			BrutalSlash = 21711
+		},
+
     },
     Restoration = {
         Abilities = {
@@ -120,7 +154,7 @@ Spells.DRUID = {
             Mangle = {33917},
             Ressurection = {50769},
             Growl = {6795},
-            IronFur = {192081},
+            Ironfur = {192081},
             Barkskin = {22812},
             RemoveCorruption = {2782},
             Sunfire = {93402},
@@ -129,8 +163,8 @@ Spells.DRUID = {
 			WildChargeTravel = {102417},
 			Convoke = {323764},
 			Prowl = {5215},
-			Soothe = {2908}
-
+			Soothe = {2908},
+			Rake = {1822},
         },
         Buffs = {
             FormCat = {768},
@@ -140,10 +174,11 @@ Spells.DRUID = {
             FormFly = {276029},
 			Regrowth = {8936},
 			Prowl = {5215},
-			Clearcasting = {135700}
+			Clearcasting = {135700},
+			Ironfur = {192081}
         },
         Debuffs = {
-            Moonfire                = 164812,
+            Moonfire  = 164812,
 			Sunfire = 164815,
 			Rake = 1822,
 			Rip = 1079
