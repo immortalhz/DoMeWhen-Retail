@@ -192,13 +192,22 @@ function DMW.Helpers.Trackers.Run()
              and Unit.Player and not Unit.Dead and Unit.Trackable and (not DMW.Player.Target or DMW.Player.Target.Pointer ~= Unit.Pointer) then
                 local r, b, g, a = DMW.Settings.profile.Tracker.TrackPlayersColor[1], DMW.Settings.profile.Tracker.TrackPlayersColor[2], DMW.Settings.profile.Tracker.TrackPlayersColor[3], DMW.Settings.profile.Tracker.TrackPlayersColor[4]
                 DMW.Helpers.DrawColor(r, b, g, a)
-                if DMW.Settings.profile.Tracker.TrackPlayersAlert > 0 and (AlertTimer + 5) < DMW.Time and not IsForeground() and (Unit.Distance < 30 or Unit.Target == DMW.Player.Pointer) then
+                if DMW.Settings.profile.Tracker.TrackPlayersAlert > 2 and (AlertTimer + 5) < DMW.Time and not IsForeground() and (Unit.Distance < 30 or Unit.Target == DMW.Player.Pointer) then
                     local sound = DMW.Settings.profile.Tracker.TrackPlayersAlert
                     FlashClientIcon()
                     if GetCVarBool("Sound_EnableSFX") then
                         PlaySound(sound)
                     else
                         PlaySound(sound, "MASTER")
+                    end
+                    AlertTimer = DMW.Time
+                end
+                if DMW.Settings.profile.Tracker.TrackPlayersAlert == 1 and (AlertTimer + 5) < DMW.Time and not IsForeground() and (Unit.Distance < 30 or Unit.Target == DMW.Player.Pointer) then
+                    FlashClientIcon()
+                    if GetCVarBool("Sound_EnableSFX") then
+                        PlaySoundFile("Interface\\AddOns\\DoMeWhen-Retail\\Sounds\\goes-without-saying-608.mp3", "MASTER")
+                    else
+                        PlaySoundFile("Interface\\AddOns\\DoMeWhen-Retail\\Sounds\\goes-without-saying-608.mp3", "MASTER")
                     end
                     AlertTimer = DMW.Time
                 end
