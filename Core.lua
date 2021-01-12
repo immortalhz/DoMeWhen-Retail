@@ -50,7 +50,8 @@ local function Init()
     DMW.Player = DMW.Classes.LocalPlayer(ObjectPointer("player"))
     DMW.UI.InitQueue()
     -- DMW.Helpers.HealComm:OnInitialize()
-    DMW.Helpers.Dodgie.Init()
+	DMW.Helpers.Dodgie.Init()
+	DMW.Locale = GetLocale()
 
     InitializeNavigation(function(Result)
         if Result then

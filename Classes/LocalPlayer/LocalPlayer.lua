@@ -636,3 +636,5 @@ function LocalPlayer:Soulbind(Name)
 	if self.Soulbind == Name then return true end
 	return false
 end
+
+--https://i.imgur.com/W1Ei7QY.png local palyer form
