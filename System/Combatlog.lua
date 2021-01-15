@@ -47,6 +47,7 @@ function frame:Reader(event, ...)
 			local destobj = GetObjectWithGUID(destination)
 			local destUnit = DMW.Units[destobj]
 			if destUnit then
+				-- print(DMW.Time.. " evade start")
 				destUnit.Evaded = true
 			end
 		end

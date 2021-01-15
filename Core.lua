@@ -61,7 +61,9 @@ local function Init()
             DMW.UI.InitNavigation()
         end
     end)
-    Initialized = true
+	Initialized = true
+	--Unlocks
+	SetupProtectedFuncHook('IsItemInRange')
 end
 
 local function ExecutePlugins()
