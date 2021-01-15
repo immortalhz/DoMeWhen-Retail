@@ -67,7 +67,8 @@ Spells.DRUID = {
 		   WildCharge = {49376},
 		   Swipe = {213764},
 		   MightyBash = {5211},
-		   Thrash = {106832}
+		   Thrash = {106832},
+           IncarnationGuardianOfUrsoc = {102558}
         },
         Buffs = {
             EclipseLunar = {48518},
@@ -75,6 +76,7 @@ Spells.DRUID = {
 			PredatorySwiftness = {69369},
 			-- Berserk = {106951},
 			GalacticGuardian = {213708},
+            SurvivalInstincts = { 61336 },
 			Berserk = {50334},
 
         },
@@ -85,7 +87,8 @@ Spells.DRUID = {
         Talents = {
 			-- WarMachine = 22632, -- 262231
 			BloodTalons = 21649,
-			BrutalSlash = 21711
+			BrutalSlash = 21711,
+            IncarnationGuardianOfUrsoc = 22388
 		},
 
     },
@@ -158,6 +161,7 @@ Spells.DRUID = {
             Barkskin = {22812},
             RemoveCorruption = {2782},
             Sunfire = {93402},
+            StampedingRoar = {77761},
             Typhoon = {132469},
 			WildChargeCat = {102401},
 			WildChargeTravel = {102417},
