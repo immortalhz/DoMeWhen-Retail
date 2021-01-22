@@ -68,7 +68,8 @@ Spells.DRUID = {
 		   Swipe = {213764},
 		   MightyBash = {5211},
 		   Thrash = {106832},
-           IncarnationGuardianOfUrsoc = {102558}
+           IncarnationGuardianOfUrsoc = {102558},
+           Renewal = {108238}
         },
         Buffs = {
             EclipseLunar = {48518},
@@ -88,7 +89,8 @@ Spells.DRUID = {
 			-- WarMachine = 22632, -- 262231
 			BloodTalons = 21649,
 			BrutalSlash = 21711,
-            IncarnationGuardianOfUrsoc = 22388
+            IncarnationGuardianOfUrsoc = 22388,
+            Renewal = 18570
 		},
 
     },
@@ -159,7 +161,7 @@ Spells.DRUID = {
             Barkskin = {22812},
             RemoveCorruption = {2782},
             Sunfire = {93402},
-            StampedingRoar = {77761},
+            StampedingRoar = {106898},
             Typhoon = {132469},
 			WildChargeCat = {102401},
 			WildChargeTravel = {102417},
