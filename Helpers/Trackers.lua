@@ -184,7 +184,8 @@ function DMW.Helpers.Trackers.Run()
             end
         end
     end
-    if DMW.Settings.profile.Tracker.TrackPlayersNamePlates or (DMW.Settings.profile.Tracker.TrackPlayers ~= "") or DMW.Settings.profile.Tracker.TrackPlayersAny or DMW.Settings.profile.Tracker.TrackPlayersEnemy then
+	if DMW.Settings.profile.Tracker.TrackPlayersNamePlates or (DMW.Settings.profile.Tracker.TrackPlayers ~= "") or DMW.Settings.profile.Tracker.TrackPlayersAny or DMW.Settings.profile.Tracker.TrackPlayersEnemy then
+		if DMW.Player.Resting  then return end
         local Color
         local s = 1
         for _, Unit in pairs(DMW.Units) do

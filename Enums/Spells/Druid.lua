@@ -100,7 +100,6 @@ Spells.DRUID = {
             NaturesCure            = {88423},
             Ironbark            = {102342},
             Lifebloom            = {33763},
-            Rejuvenation            = {774},
             WildGrowth = {48438},
             Wrath = {5176},
             Starfire = {197628},
@@ -120,7 +119,6 @@ Spells.DRUID = {
             WildGrowth                 = {183415},
             Ironbark            = {102342},
             Lifebloom            = {33763},
-            Rejuvenation            = {774},
             Clearcasting = {16870},
             EclipseLunar = {48518},
             EclipseSonar = {48517},
@@ -171,6 +169,7 @@ Spells.DRUID = {
 			Prowl = {5215},
 			Soothe = {2908},
 			Rake = {1822},
+			Rejuvenation            = {774},
         },
         Buffs = {
             FormCat = {768},
@@ -182,9 +181,7 @@ Spells.DRUID = {
 			Prowl = {5215},
 			Clearcasting = {135700},
 			Ironfur = {192081},
-            --Fish bait
-            RevendrethBait = { 331699 }, -- Spinefin Piranha Bait
-            ArdenwealdBait = { 331692 } -- Iridescent Amberjack Bait
+			Rejuvenation            = {774},
         },
         Debuffs = {
             Moonfire  = 164812,
