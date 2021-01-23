@@ -181,7 +181,10 @@ Spells.DRUID = {
 			Prowl = {5215},
 			Clearcasting = {135700},
 			Ironfur = {192081},
-			Rejuvenation            = {774},
+			Rejuvenation = {774},
+            --Fish bait
+            RevendrethBait = { 331699 }, -- Spinefin Piranha Bait
+            ArdenwealdBait = { 331692 } -- Iridescent Amberjack Bait
         },
         Debuffs = {
             Moonfire  = 164812,
