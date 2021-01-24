@@ -128,7 +128,7 @@ function LocalPlayer:Update()
     self.Instance = select(2, IsInInstance())
     if self.Instance ~= "none" then self.InstanceID = select(8, GetInstanceInfo()) else self.InstanceID = nil end
     -- if self.Instance == "party" or self.Instance == "pvp" then self.InstanceMap = GetInstanceInfo() end
-    self.Moving = self:HasMovementFlag(DMW.Enums.MovementFlags.Moving)
+	self.Moving = self:HasMovementFlag(DMW.Enums.MovementFlags.Moving)
     self.PetActive = UnitIsVisible("pet")
 	self.InGroup = IsInGroup()
 	if self.InGroup then

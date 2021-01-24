@@ -43,14 +43,15 @@ function frame:Reader(event, ...)
         -- else
         --     print(param)
 		end
-		if param == "SPELL_MISSED" and spellType == "EVADE" then
-			local destobj = GetObjectWithGUID(destination)
-			local destUnit = DMW.Units[destobj]
-			if destUnit then
-				-- print(DMW.Time.. " evade start")
-				destUnit.Evaded = true
-			end
-		end
+		-- if param == "SPELL_MISSED" and spellType == "EVADE" then
+		-- 	local destobj = GetObjectWithGUID(destination)
+		-- 	local destUnit = DMW.Units[destobj]
+		-- 	if destUnit then
+
+		-- 		print(DMW.Time.. " evade start"..". Time = "..DMW.Time-destUnit.LastHitTime)
+		-- 		destUnit.Evaded = true
+		-- 	end
+		-- end
         -- if source == Player.GUID or destination == Player.GUID then
         --     local sourceobj = DMW.Tables.Misc.guid2pointer[source]
         --     local destobj = DMW.Tables.Misc.guid2pointer[destination]
