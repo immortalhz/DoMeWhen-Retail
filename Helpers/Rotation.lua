@@ -10,7 +10,7 @@ DMW.Helpers.Rotation.FlyingCheck = true
 function Rotation.Active()
     if DMW.Settings.profile.HUD.Rotation == 1 and not UnitIsDeadOrGhost("player") and
     (not DMW.Helpers.Rotation.CastingCheck or not DMW.Player.Casting) and
-    (not DMW.Helpers.Rotation.MountCheck or UnitIsMounted("player") == 0) and
+    (not DMW.Helpers.Rotation.MountCheck or not UnitIsMounted("player")) and
     (not DMW.Helpers.Rotation.FlyingCheck or not IsFlying()) and
     not DMW.Player.NoControl then --and (not DMW.Helpers.Rotation.StandingCheck or DMW.Player:Standing()) then
         return true

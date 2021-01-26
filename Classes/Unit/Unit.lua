@@ -49,7 +49,7 @@ function Unit:New(Pointer)
 	if self.Player then
         self.Height = 2
     else
-        self.Height = select(2,UnitCollisionBox(self.Pointer))
+        self.Height = 2 --select(2,UnitCollisionBox(self.Pointer))
     end
     if DMW.Player.Instance == "party" or DMW.Player.Instance == "raid" or DMW.Player.Instance == "scenario" then
         if not self.CCable then

@@ -42,28 +42,265 @@ function DMW.Helpers.ReloadSettings()
         end
     end
 end
+local function UnlockAPI()
+	if wmbapi ~= nil then
+        -- Active Player
+        StopFalling = wmbapi.StopFalling
+        FaceDirection = function(a) if wmbapi.GetObject(a) then wmbapi.FaceDirection(GetAnglesBetweenObjects(a,"player"),true) else wmbapi.FaceDirection(a,true) end end
+        -- Object
+        ObjectTypeFlags = wmbapi.ObjectTypeFlags
+        ObjectPointer = function(obj)
+            if UnitIsVisible(obj) then
+                return wmbapi.GetObject(obj)
+            else
+                return ""
+            end
+        end
+        ObjectExists = wmbapi.ObjectExists
+        ObjectIsVisible = UnitIsVisible
+        ObjectPosition = function(obj)
+            local x,y,z = wmbapi.ObjectPosition(obj)
+            if x then
+                return x,y,z
+            else
+                return 0,0,0
+            end
+        end
+        ObjectFacing = function(obj)
+            if UnitIsVisible(obj) then
+                return wmbapi.ObjectFacing(obj)
+            else
+                return 0
+            end
+        end
+        ObjectName = function(obj)
+            if UnitIsVisible(obj) then
+                return UnitName(obj)
+            else
+                return ""
+            end
+        end
+        ObjectID = function(obj)
+            if UnitIsVisible(obj) then
+                return wmbapi.ObjectId(obj)
+            else
+                return 0
+            end
+        end
+        ObjectIsUnit = function(obj) return UnitIsVisible(obj) and wmbapi.ObjectIsType(obj,wmbapi.GetObjectTypeFlagsTable().Unit) end
+        GetDistanceBetweenPositions = function(...) return (... and wmbapi.GetDistanceBetweenPositions(...)) or 0 end
+        GetDistanceBetweenObjects = function(obj1,obj2)
+            if UnitIsVisible(obj1) and UnitIsVisible(obj2) then
+                return wmbapi.GetDistanceBetweenObjects(obj1,obj2)
+            else
+                return 0
+            end
+        end
+        GetPositionBetweenObjects = function(obj1,obj2,dist)
+            if UnitIsVisible(obj1) and UnitIsVisible(obj2) then
+                return wmbapi.GetPositionBetweenObjects(obj1,obj2,dist)
+            else
+                return 0,0,0
+            end
+        end
+        GetPositionFromPosition = function(...) return (... and wmbapi.GetPositionFromPosition(...)) or 0,0,0 end
+        ObjectIsFacing = function(obj1,obj2,toler)
+            if UnitIsVisible(obj1) and UnitIsVisible(obj2) then
+                return (toler and wmbapi.ObjectIsFacing(obj1,obj2,toler)) or (not toler and wmbapi.ObjectIsFacing(obj1,obj2))
+            end
+        end
+        ObjectInteract = InteractUnit
+        -- Object Manager
+        GetObjectCount = wmbapi.GetObjectCount
+        GetObjectWithIndex = wmbapi.GetObjectWithIndex
+        GetObjectWithGUID = function(GUID)
+            if GUID and #GUID > 1 then
+                return wmbapi.GetObjectWithGUID(GUID)
+            else
+                return ""
+            end
+        end
+        -- Unit
+        UnitBoundingRadius = function(obj)
+            if UnitIsVisible(obj) then
+                return wmbapi.UnitBoundingRadius(obj)
+            else
+                return 0
+            end
+        end
+        UnitCombatReach = function(obj)
+            if UnitIsVisible(obj) then
+                return wmbapi.UnitCombatReach(obj)
+            else
+                return 0
+            end
+        end
+        UnitTarget = function(obj)
+            if UnitIsVisible(obj) then
+                return wmbapi.UnitTarget(obj)
+            else
+                return ""
+            end
+        end
+        UnitCastID = function(obj)
+            if UnitIsVisible(obj) then
+                local spellId,target = wmbapi.UnitCasting(obj)
+                return spellId or 0,spellId or 0,target or "",target or ""
+            else
+                return 0,0,"",""
+            end
+        end
+        UnitCreator = function(obj)
+            if UnitIsVisible(obj) then
+                return wmbapi.UnitCreator(obj)
+            else
+                return ""
+            end
+        end
+        -- World
+        TraceLine = wmbapi.TraceLine
+        GetCameraPosition = wmbapi.GetCameraPosition
+        CancelPendingSpell = wmbapi.CancelPendingSpell
+        ClickPosition = wmbapi.ClickPosition
+        IsAoEPending = wmbapi.IsAoEPending
+        GetTargetingSpell = wmbapi.IsAoEPending
+        WorldToScreen = function(...)
+            local scale, x, y = UIParent:GetEffectiveScale(), select(2,wmbapi.WorldToScreen(...))
+            local sx = GetScreenWidth() * scale
+            local sy = GetScreenHeight() * scale
+            return x * sx, y * sy
+        end
+        ScreenToWorld = function(X, Y)
+            local scale = UIParent:GetEffectiveScale()
+            local sx = GetScreenWidth() * scale
+            local sy = GetScreenHeight() * scale
+            return wmbapi.ScreenToWorld(X / sx, Y / sy)
+        end
+        GetMousePosition = function()
+            local def_x, def_y, real_x, real_y = 768*(GetScreenWidth()/GetScreenHeight()), 768, GetPhysicalScreenSize()
+            local cur_x, cur_y = GetCursorPosition()
+            local res_x, res_y = cur_x*(real_x/def_x), real_y-cur_y*(real_y/def_y)
+            return res_x, res_y, res_x, res_y
+        end
+        -- Hacks
+        IsHackEnabled = function() return end
+        SetHackEnabled = function() return true end
+        -- Files
+        GetDirectoryFiles = wmbapi.GetDirectoryFiles
+        ReadFile = wmbapi.ReadFile
+        WriteFile = wmbapi.WriteFile
+        CreateDirectory = wmbapi.CreateDirectory
+        GetWoWDirectory = wmbapi.GetWoWDirectory
+        DirectoryExists = wmbapi.DirectoryExists
+        -- Callbacks
+        AddEventCallback = function(Event, Callback)
+            if not BRFrames then
+                BRFrames = CreateFrame("Frame")
+                BRFrames:SetScript("OnEvent",BRFrames_OnEvent)
+            end
+            BRFrames:RegisterEvent(Event)
+            if not BRFramesEvent[Event] then
+                BRFramesEvent[Event] = Callback
+            end
+        end
+        -- Misc
+        SendHTTPRequest = wmbapi.SendHttpRequest
+        GetKeyState = wmbapi.GetKeyState
+        Offsets = {
+            ["cggameobjectdata__flags"]="CGGameObjectData__Flags",
+            ["cgobjectdata__dynamicflags"]="CGObjectData__DynamicFlags"
+        }
+        GetOffset = function(offset)
+            return wmbapi.GetObjectDescriptorsTable()[Offsets[string.lower(offset)]]
+        end
+        -- Drawing
+        GetWoWWindow = GetPhysicalScreenSize
+        -- Draw2DLine = LibDraw.Draw2DLine
+        -- Draw2DText = function(textX, textY, text)
+        --     local F = tremove(LibDraw.fontstrings) or LibDraw.canvas:CreateFontString(nil, "BACKGROUND")
+        --     F:SetFontObject("GameFontNormal")
+        --     F:SetText(text)
+        --     F:SetTextColor(LibDraw.line.r, LibDraw.line.g, LibDraw.line.b, LibDraw.line.a)
+        --     if p then
+        --         local width = F:GetStringWidth() - 4
+        --         local offsetX = width*0.5
+        --         local offsetY = F:GetStringHeight() + 3.5
+        --         local pwidth = width*p*0.01
+        --         FHAugment.drawLine(textX-offsetX, textY-offsetY, (textX+offsetX), textY-offsetY, 4, r, g, b, 0.25)
+        --         FHAugment.drawLine(textX-offsetX, textY-offsetY, (textX+offsetX)-(width-pwidth), textY-offsetY, 4, r, g, b, 1)
+        --     end
+        --     F:SetPoint("TOPLEFT", UIParent, "TOPLEFT", textX-(F:GetStringWidth()*0.5), textY)
+        --     F:Show()
+        --     tinsert(LibDraw.fontstrings_used, F)
+        -- end
+        WorldToScreenRaw = function(...)
+            local x, y = select(2,wmbapi.WorldToScreen(...))
+            return x, 1-y
+		end
+		ObjectIsUnit = function (obj)
+			return wmbapi.ObjectIsType(obj, 32)
+		end
+		ObjectIsGameObject = function (obj)
+			return wmbapi.ObjectIsType(obj, 256)
+		end
+		ObjectIsAreaTrigger = function (obj)
+			return wmbapi.ObjectIsType(obj, type)
+		end
+		UnitCreatureTypeID = function(obj)
+			return wmbapi.UnitCreatureTypeId(obj)
+		end
+		ObjectDescriptor = function(obj, offset, type)
+			-- print(obj , offset, type)
+			return wmbapi.ObjectDescriptor(obj, offset, type)
+		end
+		ObjectGUID = function(obj)
+			return wmbapi.ObjectDescriptor(obj, 0, 15)
+		end
+		UnitFlags = function(obj)
+			return wmbapi.UnitFlags(obj)
+		end
+		UnitMovementFlags = function(obj)
+			return wmbapi.UnitMovementFlags(obj)
+		end
+		IsQuestObject = function(obj)
+			return false, false
+		end
+		ObjectDynamicFlags = function(obj)
+			return wmbapi.ObjectDynamicFlags(obj)
+		end
+		UnitIsMounted = function(obj)
+			return wmbapi.UnitIsMounted(obj)
+		end
+		UnitIsFacing = function(obj1,obj2)
+			return ObjectIsFacing(obj1,obj2)
+		end
+	end
+end
 
 local function Init()
+	UnlockAPI()
     DMW.InitSettings()
     DMW.UI.Init()
     DMW.UI.HUD.Init()
-    DMW.Player = DMW.Classes.LocalPlayer(ObjectPointer("player"))
+	DMW.Player = DMW.Classes.LocalPlayer(ObjectPointer("player"))
     DMW.UI.InitQueue()
     -- DMW.Helpers.HealComm:OnInitialize()
 	DMW.Helpers.Dodgie.Init()
 	DMW.Locale = GetLocale()
 
-    InitializeNavigation(function(Result)
-        if Result then
-            if DMW.Settings.profile.Navigation.WorldMapHook then
-                DMW.Helpers.Navigation:InitWorldMap()
-            end
-            DMW.UI.InitNavigation()
-        end
-    end)
+    -- InitializeNavigation(function(Result)
+    --     if Result then
+    --         if DMW.Settings.profile.Navigation.WorldMapHook then
+    --             DMW.Helpers.Navigation:InitWorldMap()
+    --         end
+    --         DMW.UI.InitNavigation()
+    --     end
+    -- end)
 	Initialized = true
 	--Unlocks
-	SetupProtectedFuncHook('IsItemInRange')
+	-- SetupProtectedFuncHook('IsItemInRange')
+
+
 end
 
 local function ExecutePlugins()
@@ -78,7 +315,7 @@ local f = CreateFrame("Frame", "DoMeWhen", UIParent)
 f:SetScript(
     "OnUpdate",
     function(self, elapsed)
-        if GetObjectWithGUID then
+        if wmbapi then
             LibStub("LibDraw-1.0").clearCanvas()
             DMW.Time = GetTime()
             DMW.Pulses = DMW.Pulses + 1

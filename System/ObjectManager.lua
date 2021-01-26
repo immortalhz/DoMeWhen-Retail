@@ -220,15 +220,15 @@ function DMW.UpdateOM()
                 Units[v] = Unit(v)
             elseif ObjectIsGameObject(v) and not GameObjects[v] then
                 GameObjects[v] = GameObject(v)
-            elseif ObjectRawType(v) == 10 and not Corpses[v] then
-                Corpses[v] = GameObject(v)
+            -- elseif ObjectRawType(v) == 10 and not Corpses[v] then
+            --     Corpses[v] = GameObject(v)
                 -- print(ObjectDynamicFlags(v))
-            elseif ObjectIsAreaTrigger(v) and not AreaTriggers[v] then
-                AreaTriggers[v] = AreaTrigger(v)
-            else
-                if ObjectRawType(v) ~= 1 then
-                    -- print(ObjectName(v).. "   "..ObjectRawType(v))
-                end
+            -- elseif ObjectIsAreaTrigger(v) and not AreaTriggers[v] then
+            --     AreaTriggers[v] = AreaTrigger(v)
+            -- else
+                -- if ObjectRawType(v) ~= 1 then
+                --     -- print(ObjectName(v).. "   "..ObjectRawType(v))
+                -- end
             end
         end
     end

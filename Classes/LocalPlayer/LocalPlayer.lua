@@ -5,7 +5,7 @@ function LocalPlayer:New(Pointer)
     self.Pointer = Pointer
     self.CombatReach = 1.5
     self.BoundingRadius = UnitBoundingRadius(Pointer)
-    self.Scale = ObjectDescriptor(Pointer, GetOffset("CGObjectData__Scale"), "float")
+    -- self.Scale = ObjectDescriptor(Pointer, GetOffset("CGObjectData__Scale"), "float")
     self.PosX, self.PosY, self.PosZ = ObjectPosition(Pointer)
     self.GUID = ObjectGUID(Pointer)
     self.Class = select(2, UnitClass(Pointer)):gsub("%s+", "")
@@ -418,7 +418,7 @@ function LocalPlayer:Dispel(Spell)
 end
 
 function LocalPlayer:HasFlag(Flag)
-	local descr = ObjectDescriptor(self.Pointer, GetOffset("CGUnitData__Flags"), "int")
+	local descr = wmbapi.UnitFlags(self.Pointer)
 	return descr and bit.band(descr, Flag) > 0
 end
 

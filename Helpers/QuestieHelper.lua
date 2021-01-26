@@ -189,7 +189,7 @@ function DMW.Helpers.QuestieHelper.isQuestObject(objectID, Pointer) --Ty Ssatene
 		objectID == 151166 -- algan units
 		or objectID == 335709 or objectID == 334237 or objectID == 334228 or objectID == 334229 or objectID == 334232-- Uldum chest
     then return true end
-    local glow = ObjectDescriptor(Pointer,GetOffset("CGObjectData__DynamicFlags"),"uint")
+    local glow = ObjectDynamicFlags(Pointer)
     if glow and (bit.band(glow,0x4)~=0 or bit.band(glow,0x20)~=0) then
         return true
     end
