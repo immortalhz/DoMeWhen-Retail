@@ -6,17 +6,17 @@ local function FacingCast(SpellName, Target)
 	local CastTime = select(4, GetSpellInfo(SpellName))
 	if CastTime == 0 and UnitIsVisible(Target or "Target") and not ObjectIsFacing("Player", Target or "Target") and not UnitIsUnit("Player", Target or "Target") then
 		local Facing = ObjectFacing("Player")
-		local MouselookActive = false
-		if IsMouselooking() then
-			MouselookActive = true
-			MouselookStop()
-		end
+		-- local MouselookActive = false
+		-- if IsMouselooking() then
+		-- 	MouselookActive = true
+		-- 	MouselookStop()
+		-- end
 		FaceDirection(Target or "Target", true)
 		CastSpellByName(SpellName, Target)
 		FaceDirection(Facing)
-		if MouselookActive then
-			MouselookStart()
-		end
+		-- if MouselookActive then
+		-- 	MouselookStart()
+		-- end
 		C_Timer.After(
 			0.1,
 			function()

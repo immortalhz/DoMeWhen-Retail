@@ -232,27 +232,27 @@ local function UnlockAPI()
 			local res_x, res_y = cur_x*(real_x/def_x), real_y-cur_y*(real_y/def_y)
 			return res_x, res_y, res_x, res_y
 		end
-		if LibDraw then
-			SetDrawColor = LibDraw.SetColor
-			Draw2DLine = LibDraw.Draw2DLine
-			Draw2DText = function(textX, textY, text)
-				local F = tremove(LibDraw.fontstrings) or LibDraw.canvas:CreateFontString(nil, "BACKGROUND")
-				F:SetFontObject("GameFontNormal")
-				F:SetText(text)
-				F:SetTextColor(LibDraw.line.r, LibDraw.line.g, LibDraw.line.b, LibDraw.line.a)
-				if p then
-					local width = F:GetStringWidth() - 4
-					local offsetX = width*0.5
-					local offsetY = F:GetStringHeight() + 3.5
-					local pwidth = width*p*0.01
-					FHAugment.drawLine(textX-offsetX, textY-offsetY, (textX+offsetX), textY-offsetY, 4, r, g, b, 0.25)
-					FHAugment.drawLine(textX-offsetX, textY-offsetY, (textX+offsetX)-(width-pwidth), textY-offsetY, 4, r, g, b, 1)
-				end
-				F:SetPoint("TOPLEFT", UIParent, "TOPLEFT", textX-(F:GetStringWidth()*0.5), textY)
-				F:Show()
-				tinsert(LibDraw.fontstrings_used, F)
-			end
-		end
+		-- if LibDraw then
+		-- 	SetDrawColor = LibDraw.SetColor
+		-- 	Draw2DLine = LibDraw.Draw2DLine
+		-- 	Draw2DText = function(textX, textY, text)
+		-- 		local F = tremove(LibDraw.fontstrings) or LibDraw.canvas:CreateFontString(nil, "BACKGROUND")
+		-- 		F:SetFontObject("GameFontNormal")
+		-- 		F:SetText(text)
+		-- 		F:SetTextColor(LibDraw.line.r, LibDraw.line.g, LibDraw.line.b, LibDraw.line.a)
+		-- 		if p then
+		-- 			local width = F:GetStringWidth() - 4
+		-- 			local offsetX = width*0.5
+		-- 			local offsetY = F:GetStringHeight() + 3.5
+		-- 			local pwidth = width*p*0.01
+		-- 			FHAugment.drawLine(textX-offsetX, textY-offsetY, (textX+offsetX), textY-offsetY, 4, r, g, b, 0.25)
+		-- 			FHAugment.drawLine(textX-offsetX, textY-offsetY, (textX+offsetX)-(width-pwidth), textY-offsetY, 4, r, g, b, 1)
+		-- 		end
+		-- 		F:SetPoint("TOPLEFT", UIParent, "TOPLEFT", textX-(F:GetStringWidth()*0.5), textY)
+		-- 		F:Show()
+		-- 		tinsert(LibDraw.fontstrings_used, F)
+		-- 	end
+		-- end
 		ObjectRawType = function(obj)
 			local result = 0
 			local type_flags = ObjectTypeFlags(obj)
@@ -646,7 +646,9 @@ local function UnlockAPI()
 		GetSessionVariable = nil
 		SetSessionVariable = nil
 		SaveSessionConfig = nil
-		IsForeground = nil
+		IsForeground = function ()
+			return true
+		end
 		GetAsyncKeyState = nil
 		GetDescriptor = nil
 		CreateTimer = nil
@@ -872,6 +874,31 @@ local function UnlockAPI()
 		SendMovementUpdate = function()
 
 		end
+		CAST_SPELL_BY_NAME = CastSpellByName
+        CastSpellByName = function(spell,unit)
+            if select(3,UnitClass("player")) == 11 and GetShapeshiftForm() ~= 0 then
+                if unit then
+                    RunMacroText("/cast [@"..unit.."] "..spell)
+                else
+                    RunMacroText("/cast "..spell)
+                end
+            else
+                CAST_SPELL_BY_NAME(spell,unit)
+            end
+        end
+        CAST_SPELL_BY_ID = CastSpellByID
+        CastSpellByID = function(spell,unit)
+            if select(3,UnitClass("player")) == 11 and GetShapeshiftForm() ~= 0 then
+                local spellName = GetSpellInfo(spell)
+                if unit then
+                    RunMacroText("/cast [@"..unit.."] "..spellName)
+                else
+                    RunMacroText("/cast "..spellName)
+                end
+            else
+                CAST_SPELL_BY_ID(spell,unit)
+            end
+        end
 		unlocked = true
 	end
 end
@@ -1170,7 +1197,7 @@ f:SetScript(
 		if not unlocked then
 			UnlockAPI()
 		else
-            LibStub("LibDraw-1.0").clearCanvas()
+			LibStub("LibDraw-1.0").clearCanvas()
             DMW.Time = GetTime()
             DMW.Pulses = DMW.Pulses + 1
             if not Initialized and not DMW.UI.MinimapIcon then
