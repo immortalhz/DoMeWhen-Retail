@@ -4,7 +4,7 @@ local Corpse = DMW.Classes.Corpse
 
 function GameObject:New(Pointer)
     self.Pointer = Pointer
-    self.Name = ObjectName(Pointer)
+    self.Name = UnitName(Pointer)
     self.ObjectID = ObjectID(Pointer)
     self.GUID = UnitGUID(Pointer)
 
