@@ -621,7 +621,7 @@ local function UnlockAPI()
 		SetMovementFlags = nil
 		SendMovementUpdate = nil
 		ObjectDisplayID = nil
-		GetGameObjectType = nil
+		GetGameObjectType = GameObjectType
 		UnitSetDisplayID = nil
 		SetMountDisplayID = nil
 		SetVisibleItem = nil
@@ -1153,7 +1153,6 @@ local function Init()
 	Initialized = true
 	--Unlocks
 	-- SetupProtectedFuncHook('IsItemInRange')
-	UnlockAPI()
 end
 
 local function ExecutePlugins()

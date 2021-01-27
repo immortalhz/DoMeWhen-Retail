@@ -131,9 +131,9 @@ function LocalPlayer:Update()
 	self.Moving = self:HasMovementFlag(DMW.Enums.MovementFlags.Moving)
     self.PetActive = UnitIsVisible("pet")
 	self.InGroup = IsInGroup()
-	if self.InGroup then
-		self.PartyGUID = select(2, GetActiveParty())
-	end
+	-- if self.InGroup then
+	-- 	self.PartyGUID = select(2, GetActiveParty())
+	-- end
     self.CombatTime = self.Combat and (DMW.Time - self.Combat) or 0
     self.CombatLeftTime = self.CombatLeft and (DMW.Time - self.CombatLeft) or 0
     self.Resting = IsResting()
