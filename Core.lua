@@ -705,6 +705,16 @@ local function UnlockAPI()
 		unlocked = true
 	--LUABOX API
 	elseif __LB__ ~= nil then
+		-- local function lbUnitTagHandler(...)
+		-- 	local old = ...
+		-- 	_G[tostring(old).."Old"] = function() return _G[old] end
+		-- 	_G[old] =  function (...) return lb.UnitTagHandler(_G[tostring(old).."Old"], ...) end
+		-- end
+		-- local function lbUnlock(...)
+		-- 	local old = ...
+		-- 	_G[old.."Old"] = function() return old end
+		-- 	old =  function () return lb.Unlock(old.."Old") end
+		-- end
 		RunMacroText = function (...) return  lb.Unlock(_G.RunMacroText, ...); end
 		SpellIsTargeting = function (...) return lb.UnitTagHandler(SpellIsTargeting, ...) end
 		UnitGUIDOld = UnitGUID
@@ -716,6 +726,55 @@ local function UnlockAPI()
 		ObjectGUID = UnitGUID
 		UnitClassOld = UnitClass
 		UnitClass = function (...) return lb.UnitTagHandler(UnitClassOld, ...) end
+		ObjectIsUnit = function(...) local ObjType = lb.ObjectType(...); return ObjType == 5 or ObjType == 6 or ObjType == 7 end
+		ObjectIsGameObject = function(...) local ObjType = lb.ObjectType(...); return ObjType == 8 or ObjType == 11 end
+		ObjectID = function (...) return lb.ObjectId(...) end
+		UnitCreatureTypeIDOld = UnitCreatureTypeID
+		UnitCreatureTypeID = function (...) return lb.UnitTagHandler(UnitCreatureTypeIDOld, ...) end
+		UnitNameOld = UnitName
+		UnitName = function (...) return lb.UnitTagHandler(UnitNameOld, ...) end
+		-- lbUnitTagHandler(UnitName)
+		UnitMovementFlags = function(...) return lb.UnitMovementFlags(...) end
+		TraceLine = function(...)
+			lb.Raycast(...)
+		end
+		UnitTarget = function(...) return lb.UnitTarget(...) end
+		IsQuestObject = function(obj)
+			return false, false
+		end
+		UnitCastID = function(...)
+			local spellID, TargetGUID, timeLeft, NotInterruptible = lb.UnitCastingInfo(...)
+			if spellID then
+				return spellID, TargetGUID, timeLeft, NotInterruptible
+			end
+		end
+		UnitThreatSituationOld = UnitThreatSituation
+		UnitThreatSituation = function (...) return lb.UnitTagHandler(UnitThreatSituationOld, ...) end
+		GetWoWDirectory = function() return lb.GetGameDirectory() end
+		CreateDirectory = function() return lb.CreateDirectory() end
+		GetDirectoryFiles = lb.GetFiles
+		GetKeyState = lb.GetKeyState
+		-- GetWoWDirectory = function() return lb.GetGameDirectory() end
+		WorldToScreen = function (wX, wY, wZ)
+			local ResolutionCoef = _G.WorldFrame:GetWidth() / lb.GetWindowSize()
+			local sX, sY = lb.WorldToScreen(wX, wY, wZ)
+			if sX and sY then
+				return sX * ResolutionCoef, -sY * ResolutionCoef
+			else
+				return sX, sY
+			end
+		end
+		ScreenToWorld = function()
+			-- local x,y =
+			return 0,0
+		end
+		ObjectName = lb.ObjectName
+		UnitIsMounted = function (...)
+			return lb.UnitHasFlag(...,lb.EUnitFlags.Mount)
+		end
+		SetTargetClampingInsetsOld = SetTargetClampingInsets
+		SetTargetClampingInsets = function(...) return lb.Unlock(SetTargetClampingInsetsOld) end
+		ObjectDynamicFlags = lb.ObjectDynamicFlags
 		unlocked = true
 		-- print("lb")
 	end
@@ -785,8 +844,10 @@ f:SetScript(
             if not Initialized and not DMW.UI.MinimapIcon then
                 Init()
             end
-            DebugStart = debugprofilestop()
-            DMW.UpdateOM()
+			DebugStart = debugprofilestop()
+			if GetKeyState(0x01) then return true end
+			DMW.UpdateOM()
+
             DMW.Tables.Dodgie.DrawStuff()
             DMW.Timers.OM.Last = debugprofilestop() - DebugStart
             DMW.UI.Debug.Run()

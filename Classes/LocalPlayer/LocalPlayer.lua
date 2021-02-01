@@ -79,7 +79,7 @@ function LocalPlayer:Update()
     self.Health = UnitHealth(self.Pointer)
     self.HealthMax = UnitHealthMax(self.Pointer)
     self.HP = self.Health / self.HealthMax * 100
-	self.Casting = self:PlayerCastingCheck()
+	-- self.Casting = self:PlayerCastingCheck()
 
 	-- if self.Casting and self.Casting == 8613 then
 	-- 	local skinned = select(3,UnitCastID("player"))
@@ -87,7 +87,7 @@ function LocalPlayer:Update()
 	-- 		DMW.Units[skinned]["JustSkinned"] = true
 	-- 	end
 	-- end
-	self.Looting = self:HasFlag(DMW.Enums.UnitFlags.Looting)
+	-- self.Looting = self:HasFlag(DMW.Enums.UnitFlags.Looting)
     -- if self.Casting ~= nil then
     --     print(self.Casting)
     -- end

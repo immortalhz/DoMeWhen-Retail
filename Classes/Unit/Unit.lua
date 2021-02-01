@@ -6,7 +6,7 @@ function Unit:New(Pointer)
     self.Pointer = Pointer
 	self.Name = self.Pointer ~= DMW.Player.Pointer and UnitName(Pointer) or "LocalPlayer"
 	C_Timer.After(1, function() self.Name = self.Pointer ~= DMW.Player.Pointer and UnitName(Pointer) or "LocalPlayer" end)
-    self.GUID = UnitGUID(Pointer)
+    self.GUID = Pointer
     self.Player = UnitIsPlayer(Pointer)
     self.LoSCache = {}
     self.Friend = UnitIsFriend("player", self.Pointer)
@@ -40,8 +40,8 @@ function Unit:New(Pointer)
     --DurationLib
     -- DurationLib.nameplateUnitMap[self.GUID] = Pointer
     -- DurationLib.nameplateUnitMapBackwards[Pointer] = self.GUID
-    DMW.Tables.Misc.guid2pointer[self.GUID] = Pointer
-    DMW.Tables.Misc.pointer2guid[Pointer] = self.GUID
+    -- DMW.Tables.Misc.guid2pointer[self.GUID] = Pointer
+    -- DMW.Tables.Misc.pointer2guid[Pointer] = self.GUID
     self.Cache = {}
     -- DMW.Helpers.Swing.AddUnit(Pointer)
     -- self.UnitName = GetUnitName(Pointer)
@@ -115,7 +115,8 @@ function Unit:Update()
 	-- end
     -- self.Dead = UnitIsDeadOrGhost(self.Pointer) -- CalculateHP
     self.LoS = false
-    if self.Distance < 50 and not self.Dead then
+	if self.Distance < 50 and not self.Dead then
+		-- if not self.PosZ then print(self.Name) end
         self.LoS = self:LineOfSight()
     end
     self.CanAttack = UnitCanAttack("player", self.Pointer)
@@ -140,7 +141,7 @@ function Unit:Update()
     -- if self.Casting then
     --     self:PopulateCasting()
     -- end
-	local CastID, ChannelID = UnitCastID(self.Pointer)
+	local CastID, ChannelID --= UnitCastID(self.Pointer)
 	if CastID ~= 0 or ChannelID ~= 0 then
 		self:PopulateCasting()
 	else
@@ -203,7 +204,9 @@ function Unit:LineOfSight(OtherUnit)
         return self.LoSCache.Result
     end
     -- self.LoSCache.Result = TraceLine(self.PosX, self.PosY, self.PosZ + 2, OtherUnit.PosX, OtherUnit.PosY, OtherUnit.PosZ + 2, 0x100010) == nil
-
+	-- if not self.PosZ then
+	-- 	print(self.Name,lb.ObjectExists(self.Pointer))
+	-- end
     self.LoSCache.Result = TraceLine(self.PosX, self.PosY, self.PosZ + self.Height, OtherUnit.PosX, OtherUnit.PosY, OtherUnit.PosZ + 2, 0x100111) == nil
     self.LoSCache.PosX, self.LoSCache.PosY, self.LoSCache.PosZ = self.PosX, self.PosY, self.PosZ
     self.LoSCache.OPosX, self.LoSCache.OPosY, self.LoSCache.OPosZ = OtherUnit.PosX, OtherUnit.PosY, OtherUnit.PosZ
