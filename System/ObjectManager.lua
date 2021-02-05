@@ -210,18 +210,19 @@ local CurrentTable,OldTable
 local function copyTable(datatable)
     local tblRes={}
     if type(datatable)=="table" then
-      for k,v in pairs(datatable) do
-        tblRes[copyTable(k)] = copyTable(v)
-      end
+    	for k,v in pairs(datatable) do
+        	tblRes[copyTable(k)] = copyTable(v)
+      	end
     else
-      tblRes=datatable
+    	tblRes=datatable
     end
     return tblRes
-  end
+end
+
 local function GetObjectCount()
 	if not OldTable and not CurrentTable then
 		CurrentTable = lb.GetObjects()
-		return nil, true, CurrentTable
+		return #CurrentTable, true, CurrentTable, {}
 	else
 		OldTable = CurrentTable
 		CurrentTable = lb.GetObjects()
@@ -236,74 +237,14 @@ local function GetObjectCount()
 				end
 			end
 		end
-		return _, true, TempTable, TempTableOld
+		return #CurrentTable, true, TempTable, TempTableOld
 	end
 end
--- local function GetObjectCount()
--- 	if not OldTable and not CurrentTable then
--- 		CurrentTable = lb.GetObjects()
--- 		OldTable = CurrentTable
--- 		for _, GUID in ipairs(CurrentTable) do
--- 			if not CurrentOM[GUID] then
--- 				table.insert(addedOM, GUID)
--- 			end
--- 		end
--- 		return nil, true, CurrentTable
--- 	else
--- 		-- print("2")
--- 		local GUIDFound
--- 		for _, GUID in ipairs(OldTable) do
--- 			-- print(GUID)
--- 			CurrentOM[GUID] = true
--- 			-- table.insert()
--- 		end
--- 		CurrentTable = lb.GetObjects()
--- 		table.wipe(addedOM)
--- 		table.wipe(removedOM)
--- 		for _, GUID in ipairs(CurrentTable) do
--- 			if not CurrentOM[GUID] then
--- 				table.insert(addedOM, GUID)
--- 			end
--- 		end
--- 		-- if #addedOM ~= 0 then
--- 		-- 	print(#addedOM)
--- 		-- end
--- 		local TempTable = CurrentTable
--- 		local TempTableOld = OldTable
--- 		OldTable = CurrentTable
--- 		-- print(#CurrentTable,#OldTable)
--- 		for indexOld, GUID in ipairs(TempTableOld) do
--- 			GUIDFound = {false, GUID}
--- 			for indexCurrent, currentGUID in ipairs(TempTable) do
--- 				if GUID == currentGUID then
--- 					GUIDFound[1] = true
--- 					table.remove(TempTableOld, indexOld)
--- 					table.remove(TempTable, indexCurrent)
--- 					break
--- 				end
--- 			end
--- 			if GUIDFound[1] then
--- 				-- print(GUID, "still here")
--- 			else
--- 				print(GUID, "removed", DMW.Time)
--- 				tinsert(removedOM, GUID)
--- 			end
--- 		end
--- 		-- for _, v in ipairs(TempTable) do
--- 		-- 	-- print(v, "added")
--- 		-- end
-
--- 		OldTable = CurrentTable
--- 		-- print(#TempTable,#TempTableOld)
--- 		return _, true, addedOM, removedOM
--- 	end
--- end
 
 function DMW.UpdateOM()
-    local _, updated, added, removed = GetObjectCount(true)
+	local _, updated, added, removed = GetObjectCount(true)
 	if updated and removed and #removed > 0 then
 		for _, v in ipairs(removed) do
-			-- print(v)
             DMW.Remove(v)
 		end
     end

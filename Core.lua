@@ -23,7 +23,23 @@ DMW.Pulses = 0
 local Initialized = false
 local DebugStart
 local RotationCount = 0
-local unlocked = false
+DMW.Unlocked = false
+
+local UnitCreatureTypeList = {
+	["Beast"] = 1,
+	["Dragonkin"] = 2,
+	["Demon"] = 3,
+	["Elemental"] = 4,
+	["Giant"] = 5,
+	["Undead"] = 6,
+	["Humanoid"] = 7,
+	["Critter"] = 8,
+	["Mechanical"] = 9,
+	["Not specified"] = 10,
+	["Totem"] = 11,
+	["Non-combat Pet"] = 12,
+	["Gas Cloud"] = 13,
+}
 
 local function UnlockAPI()
 	if wmbapi ~= nil then -- Use wmbapi variable to detect whether MiniBot's API is fully loaded
@@ -702,80 +718,626 @@ local function UnlockAPI()
                 CAST_SPELL_BY_ID(spell,unit)
             end
         end
-		unlocked = true
+		DMW.Unlocked = true
 	--LUABOX API
 	elseif __LB__ ~= nil then
-		-- local function lbUnitTagHandler(...)
-		-- 	local old = ...
-		-- 	_G[tostring(old).."Old"] = function() return _G[old] end
-		-- 	_G[old] =  function (...) return lb.UnitTagHandler(_G[tostring(old).."Old"], ...) end
-		-- end
-		-- local function lbUnlock(...)
-		-- 	local old = ...
-		-- 	_G[old.."Old"] = function() return old end
-		-- 	old =  function () return lb.Unlock(old.."Old") end
-		-- end
-		RunMacroText = function (...) return  lb.Unlock(_G.RunMacroText, ...); end
-		SpellIsTargeting = function (...) return lb.UnitTagHandler(SpellIsTargeting, ...) end
-		UnitGUIDOld = UnitGUID
-		UnitGUID = function (...) return lb.UnitTagHandler(UnitGUIDOld, ...) end
-		ObjectPointer = UnitGUID
-		UnitBoundingRadiusOld = UnitBoundingRadius
-		UnitBoundingRadius = function (...) return lb.UnitTagHandler(UnitBoundingRadiusOld, ...) end
-		ObjectPosition = function (...) return lb.ObjectPosition(...) end
-		ObjectGUID = UnitGUID
-		UnitClassOld = UnitClass
-		UnitClass = function (...) return lb.UnitTagHandler(UnitClassOld, ...) end
-		ObjectIsUnit = function(...) local ObjType = lb.ObjectType(...); return ObjType == 5 or ObjType == 6 or ObjType == 7 end
-		ObjectIsGameObject = function(...) local ObjType = lb.ObjectType(...); return ObjType == 8 or ObjType == 11 end
-		ObjectID = function (...) return lb.ObjectId(...) end
-		UnitCreatureTypeIDOld = UnitCreatureTypeID
-		UnitCreatureTypeID = function (...) return lb.UnitTagHandler(UnitCreatureTypeIDOld, ...) end
-		UnitNameOld = UnitName
-		UnitName = function (...) return lb.UnitTagHandler(UnitNameOld, ...) end
-		-- lbUnitTagHandler(UnitName)
-		UnitMovementFlags = function(...) return lb.UnitMovementFlags(...) end
-		TraceLine = function(...)
-			lb.Raycast(...)
+			-- function HookUnlockLB(s)
+	-- 	return function (...) return lb.Unlock(s, ...) end
+	-- end
+-- 	local TagHandlerList = {"IsSpellInRange","IsItemInRange","UnitInRange","isCritter",
+-- 	"UnitPlayerControlled",
+-- 	"UnitIsVisible",
+-- 	"GetUnitSpeed",
+-- 	"UnitClass",
+-- 	"UnitIsTappedByPlayer",
+-- 	"UnitThreatSituation",
+-- 	"UnitCanAttack",
+-- 	"UnitCreatureType",
+-- 	"UnitIsDeadOrGhost",
+-- 	"UnitDetailedThreatSituation",
+-- 	"UnitIsUnit",
+-- 	"UnitHealthMax",
+-- 	"UnitAffectingCombat",
+-- 	-- "UnitReaction",
+-- 	"UnitIsPlayer",
+-- 	"UnitIsDead",
+-- 	"UnitInParty",
+-- 	"UnitInRaid",
+-- 	"UnitHealth",
+-- 	"UnitCastingInfo",
+-- 	"UnitChannelInfo",
+-- 	"UnitName",
+-- 	"UnitBuff",
+-- 	"UnitDebuff",
+-- 	"UnitInPhase",
+-- 	"UnitIsFriend",
+-- 	"UnitClassification",
+-- 	"UnitReaction",
+-- 	-- "UnitAura",
+-- 	"UnitGroupRolesAssigned",
+-- 	"SetPortraitTexture",
+-- 	"UnitXPMax",
+-- 	"UnitXP",
+-- 	-- "UnitUsingVehicle",
+-- 	"UnitStat",
+-- 	-- "UnitSex",
+-- 	-- "UnitSelectionColor",
+-- 	"UnitPhaseReason",
+-- 	"UnitResistance",
+-- 	-- "UnitReaction",
+-- 	"UnitRangedDamage",
+-- 	"UnitRangedAttackPower",
+-- 	"UnitRangedAttack",
+-- 	"UnitRace",
+-- 	"UnitPowerType",
+-- 	"UnitPowerMax",
+-- 	"UnitPower",
+-- 	"UnitPVPName",
+-- 	"UnitPlayerOrPetInRaid",
+-- 	"UnitPlayerOrPetInParty",
+-- 	"UnitManaMax",
+-- 	"UnitMana",
+-- 	"UnitLevel",
+-- 	"UnitIsTrivial",
+-- 	"UnitIsTapped",
+-- 	"UnitIsSameServer",
+-- 	"UnitIsPossessed",
+-- 	-- "UnitIsPVPSanctuary",
+-- 	-- "UnitIsPVPFreeForAll",
+-- 	"UnitIsPVP",
+-- 	"UnitIsGhost",
+-- 	"UnitIsFeignDeath",
+-- 	"UnitIsEnemy",
+-- 	"UnitIsDND",
+-- 	"UnitIsCorpse",
+-- 	"UnitIsConnected",
+-- 	"UnitIsCharmed",
+-- 	-- "UnitIsAFK",
+-- 	-- "UnitIsInMyGuild",
+-- 	"UnitInBattleground",
+-- 	-- "GetPlayerInfoByGUID",
+-- 	-- "UnitDefense",
+-- 	"UnitDamage",
+-- 	"UnitCreatureFamily",
+-- 	"UnitCanCooperate",
+-- 	"UnitCanAssist",
+-- 	"UnitAttackSpeed",
+-- 	"UnitAttackPower",
+-- 	"UnitAttackBothHands",
+-- 	"UnitArmor",
+-- 	-- "InviteUnit",
+-- 	"GetUnitPitch",
+-- 	-- "GetUnitName",
+-- 	"FollowUnit",
+-- 	"CheckInteractDistance",
+-- 	"InitiateTrade",
+-- 	"UnitOnTaxi",
+-- 	"AssistUnit",
+-- 	"SpellTargetUnit",
+-- 	"SpellCanTargetUnit",
+-- 	-- "CombatTextSetActiveUnit",
+-- 	-- "SummonFriend",
+-- 	-- "CanSummonFriend",
+-- 	-- "GrantLevel",
+-- 	-- "CanGrantLevel",
+-- 	"SetRaidTarget",
+-- 	-- "GetReadyCheckStatus",
+-- 	"GetRaidTargetIndex",
+-- 	-- "GetPartyAssignment",
+-- 	-- "DemoteAssistant",
+-- 	-- "PromoteToAssistant",
+-- 	"IsUnitOnQuest",
+-- 	"DropItemOnUnit",
+-- 	"GetDefaultLanguage",
+-- 	"GetCritChanceFromAgility",
+-- 	"GetSpellCritChanceFromIntellect",
+-- 	"UnitGetTotalHealAbsorbs",
+-- 	"UnitGetIncomingHeals",
+-- 	"CastSpellByName",
+-- 	"CastSpellByID",
+-- 	"UseItemByName",
+-- 	"SpellIsTargeting",
+-- 	"InteractUnit",
+-- 	"CancelUnitBuff",
+-- 	"TargetUnit","UnitGUID","C_NamePlate.SetTargetClampingInsets"}
+-- local UnlockList = {"RunMacroText",
+-- 	"UseInventoryItem",
+-- 	"SpellStopCasting",
+-- 	"CameraOrSelectOrMoveStart",
+-- 	"CameraOrSelectOrMoveStop",
+-- 	"CancelShapeshiftForm",
+-- 	"PetAssistMode",
+-- 	"PetPassiveMode",
+-- 	"SpellStopTargeting",
+-- 	"AscendStop",
+-- 	"JumpOrAscendStart",
+-- 	"JumpOrAscendStop",
+-- 	"MoveBackwardStart",
+-- 	"MoveBackwardStop",
+-- 	"MoveForwardStart",
+-- 	"StrafeLeftStart",
+-- 	"StrafeLeftStop",
+-- 	"StrafeRightStart",
+-- 	"StrafeRightStop",
+-- 	"TurnLeftStart",
+-- 	"TurnLeftStop",
+-- 	"TurnRightStart",
+-- 	"TurnRightStop",
+-- 	"PitchUpStart",
+-- 	"PitchDownStart",
+-- 	"PitchDownStop",
+-- 	"ClearTarget",
+-- 	"AcceptProposal",
+-- 	"CastPetAction",
+-- 	"CastShapeshiftForm",
+-- 	"CastSpell",
+-- 	-- "ChangeActionBarPage",
+-- 	-- "ClearOverrideBindings",
+-- 	"CreateMacro",
+-- 	"DeleteCursorItem",
+-- 	"DeleteMacro",
+-- 	"DescendStop",
+-- 	"DestroyTotem",
+-- 	"FocusUnit",
+-- 	"ForceQuit",
+-- 	-- "GetUnscaledFrameRect",
+-- 	-- "GuildControlSetRank",
+-- 	-- "GuildControlSetRankFlag",
+-- 	"GuildDemote",
+-- 	"GuildPromote",
+-- 	"GuildUninvite",
+-- 	"JoinBattlefield",
+-- 	"Logout",
+-- 	"PetAssistMode",
+-- 	"PetAttack",
+-- 	"PetDefensiveAssistMode",
+-- 	"PetDefensiveMode",
+-- 	"PetFollow",
+-- 	"PetStopAttack",
+-- 	"PetWait",
+-- 	"PickupAction",
+-- 	"PickupCompanion",
+-- 	"PickupMacro",
+-- 	"PickupPetAction",
+-- 	"PickupSpell",
+-- 	"PickupSpellBookItem",
+-- 	"Quit",
+-- 	-- "Region_GetBottom",
+-- 	-- "Region_GetCenter",
+-- 	-- "Region_GetPoint",
+-- 	-- "Region_GetRect",
+-- 	-- "Region_Hide",
+-- 	-- "Region_SetPoint",
+-- 	-- "Region_Show",
+-- 	-- "RegisterForSave",
+-- 	"ReplaceEnchant",
+-- 	"ReplaceTradeEnchant",
+-- 	"RunMacro",
+-- 	"SendChatMessage",
+-- 	-- "ClickPosition",
+-- 	-- "SetBinding",
+-- 	-- "SetBindingClick",
+-- 	-- "SetBindingItem",
+-- 	-- "SetBindingMacro",
+-- 	-- "SetBindingSpell",
+-- 	-- "SetCurrentTitle",
+-- 	-- "SetMoveEnabled",
+-- 	-- "SetOverrideBinding",
+-- 	-- "SetOverrideBindingClick",
+-- 	-- "SetOverrideBindingItem",
+-- 	-- "SetOverrideBindingMacro",
+-- 	-- "SetOverrideBindingSpell",
+-- 	-- "SetTurnEnabled",
+-- 	-- "ShowUIPanel",
+-- 	"SitStandOrDescendStart",
+-- 	"Stuck",
+-- 	-- "SwapRaidSubgroup",
+-- 	"TargetLastEnemy",
+-- 	"TargetLastTarget",
+-- 	"TargetNearestEnemy",
+-- 	"TargetNearestFriend",
+-- 	"ToggleAutoRun",
+-- 	"ToggleRun",
+-- 	"TurnOrActionStart",
+-- 	"TurnOrActionStop",
+-- 	-- "UIObject_SetForbidden",
+-- 	"UninviteUnit",
+-- 	"UseAction",
+-- 	"UseContainerItem",
+-- 	"UseToy",
+-- 	"UseToyByName",
+-- 	"AcceptBattlefieldPort",
+-- 	"AcceptProposal",
+-- 	"AcceptTrade",
+-- 	"AttackTarget",
+-- 	-- "CancelItemTempEnchantment",
+-- 	"CancelLogout","StartAttack","SetTargetClampingInsets","MainMenuBar.ClearAllPoints","MainMenuBar.SetPoint","MultiBarRight.SetShown"}
+local TagHandlerList = {
+	"IsSpellInRange","IsItemInRange","UnitInRange","isCritter","UnitAura","UnitAuraSlots",
+	"UnitPlayerControlled",
+	"UnitIsVisible",
+	"GetUnitSpeed",
+	"UnitClass",
+	"UnitIsTappedByPlayer",
+	"UnitThreatSituation",
+	"UnitCanAttack",
+	"UnitCreatureType",
+	"UnitIsDeadOrGhost",
+	"UnitDetailedThreatSituation",
+	"UnitIsUnit",
+	"UnitHealthMax",
+	"UnitAffectingCombat",
+	"UnitIsPlayer",
+	"UnitIsDead",
+	"UnitInParty",
+	"UnitInRaid",
+	"UnitHealth",
+	"UnitCastingInfo",
+	"UnitChannelInfo",
+	"UnitName",
+	"UnitBuff",
+	"UnitDebuff",
+	-- "CanLootUnit",
+	"UnitInPhase",
+	"UnitIsFriend",
+	"UnitClassification",
+	"UnitReaction",
+	"UnitGroupRolesAssigned",
+	-- "SetPortraitTexture",
+	"UnitXPMax",
+	"UnitXP",
+	-- "UnitUsingVehicle",
+	"UnitStat",
+	-- "UnitSex",
+	-- "UnitSelectionColor",
+	"UnitPhaseReason",
+	"UnitResistance",
+	"UnitRangedDamage",
+	"UnitRangedAttackPower",
+	"UnitRangedAttack",
+	"UnitRace",
+	"UnitPowerType",
+	"UnitPowerMax",
+	"UnitPower",
+	"UnitPVPName",
+	"UnitPlayerOrPetInRaid",
+	"UnitPlayerOrPetInParty",
+	"UnitManaMax",
+	"UnitMana",
+	"UnitLevel",
+	"UnitIsTrivial",
+	"UnitIsTapped",
+	"UnitIsSameServer",
+	"UnitIsPossessed",
+	-- "UnitIsPVPSanctuary",
+	-- "UnitIsPVPFreeForAll",
+	"UnitIsPVP",
+	"UnitIsGhost",
+	"UnitIsFeignDeath",
+	"UnitIsEnemy",
+	"UnitIsDND",
+	"UnitIsCorpse",
+	"UnitIsConnected",
+	"UnitIsCharmed",
+	-- "UnitIsAFK",
+	-- "UnitIsInMyGuild",
+	"UnitInBattleground",
+	-- "GetPlayerInfoByGUID",
+	-- "UnitDefense",
+	"UnitDamage",
+	"UnitCreatureFamily",
+	"UnitCanCooperate",
+	"UnitCanAssist",
+	"UnitAttackSpeed",
+	"UnitAttackPower",
+	"UnitAttackBothHands",
+	"UnitArmor",
+	-- "InviteUnit",
+	"GetUnitPitch",
+	-- "GetUnitName",
+	"FollowUnit",
+	"CheckInteractDistance",
+	"InitiateTrade",
+	"UnitOnTaxi",
+	"AssistUnit",
+	"SpellTargetUnit",
+	"CopyToClipboard",
+	"SpellTargetItem",
+	"SpellCanTargetUnit",
+	-- "CombatTextSetActiveUnit",
+	-- "SummonFriend",
+	-- "CanSummonFriend",
+	-- "GrantLevel",
+	-- "CanGrantLevel",
+	"SetRaidTarget",
+	-- "GetReadyCheckStatus",
+	"GetRaidTargetIndex",
+	-- "GetPartyAssignment",
+	-- "DemoteAssistant",
+	-- "PromoteToAssistant",
+	"IsUnitOnQuest",
+	"DropItemOnUnit",
+	"GetDefaultLanguage",
+	"GetCritChanceFromAgility",
+	"GetSpellCritChanceFromIntellect",
+	"UnitGetTotalHealAbsorbs",
+	"UnitGetIncomingHeals",
+	"CastSpellByName",
+	"CastSpellByID",
+	"UseItemByName",
+	"SpellIsTargeting",
+	"InteractUnit",
+	-- "CancelUnitBuff",
+	"TargetUnit",
+	"UnitGUID",
+	"C_NamePlate.SetTargetClampingInsets",
+	"AuraUtil.FindAuraBySpellId",
+	"AuraUtil.FindAuraByName",
+	"AuraUtil.FindAura",
+}
+local UnlockList = {
+	"ToggleGameMenu",
+	"RunMacroText",
+	"UseInventoryItem",
+	"SpellStopCasting",
+	"CameraOrSelectOrMoveStart",
+	"CameraOrSelectOrMoveStop",
+	"CancelShapeshiftForm",
+	"PetAssistMode",
+	"PetPassiveMode",
+	"SpellStopTargeting",
+	"AscendStop",
+	"JumpOrAscendStart",
+	"JumpOrAscendStop",
+	"MoveBackwardStart",
+	"MoveBackwardStop",
+	"MoveForwardStart",
+	"StrafeLeftStart",
+	"StrafeLeftStop",
+	"StrafeRightStart",
+	"StrafeRightStop",
+	"TurnLeftStart",
+	"TurnLeftStop",
+	"TurnRightStart",
+	"TurnRightStop",
+	"PitchUpStart",
+	"PitchDownStart",
+	"PitchDownStop",
+	"ClearTarget",
+	"AcceptProposal",
+	"CastPetAction",
+	"CastShapeshiftForm",
+	"CastSpell",
+	"ChangeActionBarPage",
+	"ClearOverrideBindings",
+	"CreateMacro",
+	"DeleteCursorItem",
+	"DeleteMacro",
+	"DescendStop",
+	"DestroyTotem",
+	"FocusUnit",
+	"ForceQuit",
+	"GetUnscaledFrameRect",
+	"GuildControlSetRank",
+	"GuildControlSetRankFlag",
+	"GuildDemote",
+	"GuildPromote",
+	"GuildUninvite",
+	"JoinBattlefield",
+	"Logout",
+	"PetAttack",
+	"PetDefensiveAssistMode",
+	"PetDefensiveMode",
+	"PetFollow",
+	"PetStopAttack",
+	"PetWait",
+	"PickupAction",
+	"PickupCompanion",
+	"PickupMacro",
+	"PickupPetAction",
+	"PickupSpell",
+	"PickupSpellBookItem",
+	"Quit",
+	"Region_GetBottom",
+	"Region_GetCenter",
+	"Region_GetPoint",
+	"Region_GetRect",
+	"Region_Hide",
+	"Region_SetPoint",
+	"Region_Show",
+	"RegisterForSave",
+	"ReplaceEnchant",
+	"ReplaceTradeEnchant",
+	"RunMacro",
+	"SendChatMessage",
+	"SetBinding",
+	"SetBindingClick",
+	"SetBindingItem",
+	"SetBindingMacro",
+	"SetBindingSpell",
+	"SetCurrentTitle",
+	"SetMoveEnabled",
+	"SetOverrideBinding",
+	"SetOverrideBindingClick",
+	"SetOverrideBindingItem",
+	"SetOverrideBindingMacro",
+	"SetOverrideBindingSpell",
+	"SetTurnEnabled",
+	"ShowUIPanel",
+	"SitStandOrDescendStart",
+	-- "Stuck",
+	-- "SwapRaidSubgroup",
+	"TargetLastEnemy",
+	"TargetLastTarget",
+	"TargetNearestEnemy",
+	"TargetNearestFriend",
+	-- "ToggleAutoRun",
+	-- "ToggleRun",
+	"TurnOrActionStart",
+	"TurnOrActionStop",
+	-- "UIObject_SetForbidden",
+	-- "UninviteUnit",
+	"UseAction",
+	-- "UseContainerItem",
+	"UseToy",
+	"UseToyByName",
+	-- "AcceptBattlefieldPort",
+	"AcceptTrade",
+	"AttackTarget",
+	-- "CancelItemTempEnchantment",
+	"CancelLogout",
+	"StartAttack", "MainMenuBar.ClearAllPoints", "UIParent.SetAttribute","MainMenuBar.SetPoint"
+}
+local function lbUnlock(method)
+	lb.RunString(method.."Old = "..method.."; "..method.." = function (...) return lb.Unlock(_G."..method.."Old, ...); end")
+end
+local function lbUnitTagHandler(method)
+	lb.RunString(method.."Old = "..method.."; "..method.." = function (...) return lb.UnitTagHandler(_G."..method.."Old, ...); end")
+end
+for _, method in ipairs(TagHandlerList) do
+	lbUnitTagHandler(method)
+end
+for _, method in ipairs(UnlockList) do
+	lbUnlock(method)
+end
+	UnitCreatureTypeID = function(...)
+		return UnitCreatureTypeList[UnitCreatureType(...)]
+	end
+-- RunMacroText = function (...) return  lb.Unlock(_G.RunMacroText, ...); end
+	-- UnitGUIDOld = UnitGUID
+	ObjectPointer = UnitGUID
+	ObjectPosition = lb.ObjectPosition
+	ObjectGUID = UnitGUID
+	ObjectIsUnit = function(...) local ObjType = lb.ObjectType(...); return ObjType == 5 or ObjType == 6 or ObjType == 7 end
+	ObjectIsGameObject = function(...) local ObjType = lb.ObjectType(...); return ObjType == 8 or ObjType == 11 end
+	ObjectID = lb.ObjectId
+	UnitMovementFlags = lb.UnitMovementFlags
+	TraceLine = lb.Raycast
+	UnitTarget = lb.UnitTarget
+	IsQuestObject = function(obj)
+		return false, false
+	end
+	UnitCastID = function(...)
+		local spellID, TargetGUID, timeLeft, NotInterruptible = lb.UnitCastingInfo(...)
+		if spellID then
+			return spellID, TargetGUID, timeLeft, NotInterruptible
 		end
-		UnitTarget = function(...) return lb.UnitTarget(...) end
-		IsQuestObject = function(obj)
-			return false, false
+	end
+
+
+	GetWoWDirectory = lb.GetGameDirectory
+	CreateDirectory = lb.CreateDirectory
+	GetDirectoryFiles = lb.GetFiles
+	GetKeyState = lb.GetKeyState
+	WorldToScreen = function (wX, wY, wZ)
+		local ResolutionCoef = _G.WorldFrame:GetWidth() / lb.GetWindowSize()
+		local sX, sY = lb.WorldToScreen(wX, wY, wZ)
+		if sX and sY then
+			return sX * ResolutionCoef, -sY * ResolutionCoef
+		else
+			return sX, sY
 		end
-		UnitCastID = function(...)
-			local spellID, TargetGUID, timeLeft, NotInterruptible = lb.UnitCastingInfo(...)
-			if spellID then
-				return spellID, TargetGUID, timeLeft, NotInterruptible
-			end
+	end
+	ScreenToWorld = function()
+		return 0,0
+	end
+	GetDistanceBetweenPositions = function(X1, Y1, Z1, X2, Y2, Z2)
+		return math.sqrt(math.pow(X2 - X1, 2) + math.pow(Y2 - Y1, 2) +  math.pow(Z2 - Z1, 2))
+	end
+
+	GetAnglesBetweenObjects = function(Object1,Object2)
+		local X1,Y1,Z1 = ObjectPosition(Object1)
+		local X2,Y2,Z2 = ObjectPosition(Object2)
+		-- print(Unit1,X1,Y1,Z1,unit2,X2,Y2,Z2)
+		return math.atan2(Y2 - Y1, X2 - X1) % (math.pi * 2),
+			math.atan((Z1 - Z2) / math.sqrt(math.pow(X1 - X2, 2) + math.pow(Y1 - Y2, 2))) % math.pi
+	end
+
+	GetAnglesBetweenPositions = function(X1, Y1, Z1, X2, Y2, Z2)
+		return math.atan2(Y2 - Y1, X2 - X1) % (math.pi * 2),
+			math.atan((Z1 - Z2) / math.sqrt(math.pow(X1 - X2, 2) + math.pow(Y1 - Y2, 2))) % math.pi
+	end
+
+	GetPositionFromPosition = function(X, Y, Z, Distance, AngleXY, AngleXYZ)
+		return math.cos(AngleXY) * Distance + X, math.sin(AngleXY) * Distance + Y, math.sin(AngleXYZ) * Distance + Z
+	end
+
+	GetPositionBetweenPositions = function(X1, Y1, Z1, X2, Y2, Z2, DistanceFromPosition1)
+		local AngleXY, AngleXYZ = GetAnglesBetweenPositions(X1, Y1, Z1, X2, Y2, Z2)
+		return GetPositionFromPosition(X1, Y1, Z1, DistanceFromPosition1, AngleXY, AngleXYZ)
+	end
+
+	GetPositionBetweenObjects = function(unit1,unit2,DistanceFromPosition1)
+		local X1,Y1,Z1 = ObjectPosition(unit1)
+
+		local X2,Y2,Z2 = ObjectPosition(unit2)
+		local AngleXY, AngleXYZ = GetAnglesBetweenPositions(X1, Y1, Z1, X2, Y2, Z2)
+		return GetPositionFromPosition(X1, Y1, Z1, DistanceFromPosition1, AngleXY, AngleXYZ)
+	end
+	ObjectFacing = lb.ObjectFacing
+	FaceDirection = function(arg)
+		if type(arg) == "number" then
+			lb.SetPlayerAngles (arg)
+		else
+			arg = GetAnglesBetweenObjects("player",arg)
+			lb.SetPlayerAngles (arg)
 		end
-		UnitThreatSituationOld = UnitThreatSituation
-		UnitThreatSituation = function (...) return lb.UnitTagHandler(UnitThreatSituationOld, ...) end
-		GetWoWDirectory = function() return lb.GetGameDirectory() end
-		CreateDirectory = function() return lb.CreateDirectory() end
-		GetDirectoryFiles = lb.GetFiles
-		GetKeyState = lb.GetKeyState
-		-- GetWoWDirectory = function() return lb.GetGameDirectory() end
-		WorldToScreen = function (wX, wY, wZ)
-			local ResolutionCoef = _G.WorldFrame:GetWidth() / lb.GetWindowSize()
-			local sX, sY = lb.WorldToScreen(wX, wY, wZ)
-			if sX and sY then
-				return sX * ResolutionCoef, -sY * ResolutionCoef
-			else
-				return sX, sY
-			end
-		end
-		ScreenToWorld = function()
-			-- local x,y =
-			return 0,0
-		end
-		ObjectName = lb.ObjectName
-		UnitIsMounted = function (...)
-			return lb.UnitHasFlag(...,lb.EUnitFlags.Mount)
-		end
-		SetTargetClampingInsetsOld = SetTargetClampingInsets
-		SetTargetClampingInsets = function(...) return lb.Unlock(SetTargetClampingInsetsOld) end
-		ObjectDynamicFlags = lb.ObjectDynamicFlags
-		unlocked = true
+	end
+	function UnitIsFacing(obj1,obj2, degrees)
+		local Facing = lb.ObjectFacing(obj1)
+		local AngleToUnit = GetAnglesBetweenObjects(obj1,obj2)
+		local AngleDifference = Facing > AngleToUnit and Facing - AngleToUnit or AngleToUnit - Facing
+		local ShortestAngle = AngleDifference < math.pi and AngleDifference or math.pi * 2 - AngleDifference
+		degrees = degrees and rad(degrees)/2 or math.pi/2
+		return ShortestAngle < degrees
+	end
+	ObjectIsFacing = UnitIsFacing
+	ObjectIsBehind = function(unit) return not UnitIsFacing("player",unit) end
+	-- getFacing = ObjectFacingObject
+	UnitCreator = lb.ObjectCreator
+	ObjectName = lb.ObjectName
+	GetDistanceBetweenPositions = lb.GetDistance3D
+	GetMapId = lb.GetMapId
+	UnitIsMounted = function (...)
+		return lb.UnitHasFlag(...,lb.EUnitFlags.Mount)
+	end
+	SendMovementUpdate = lb.UpdatePlayerMovement
+
+	ObjectDynamicFlags = lb.ObjectDynamicFlags
+
+	IsHackEnabled = function (...)
+		print(...)
+		return false
+
+	end
+	UnitCombatReach = lb.UnitCombatReach
+	ReadFile = lb.ReadFile
+	DirectoryExists = lb.DirectoryExists
+	WriteFile = function(file,string,boolean)
+		-- print(file,string,boolean)
+		lb.WriteFile(file,string,boolean)
+	end
+	-- local addedOM,removedOM = {}, {}
+
+	function GetObjectWithIndex(n)
+		return CurrentTable[n]
+	end
+	function GetObjectWithGUID(n)
+		return n
+	end
+	ObjectIsVisible = lb.ObjectExists
+	ObjectExists = lb.ObjectExists
+	-- GetUnitIsVisible = lb.ObjectExists
+	IsAoEPending = lb.IsAoEPending
+	ClickPosition = lb.ClickPosition
+	UnitBoundingRadius = lb.UnitBoundingRadius
+	UnitCanBeLooted = lb.UnitIsLootable
+	UnitCanBeSkinned = function (...) return lb.UnitHasFlag(..., 67108864) end
+	IsForeground = function ()
+		return true
+	end
+	UnitFlags = lb.UnitFlags
+		DMW.Unlocked = true
 		-- print("lb")
 	end
 end
@@ -834,7 +1396,7 @@ local f = CreateFrame("Frame", "DoMeWhen", UIParent)
 f:SetScript(
     "OnUpdate",
 	function(self, elapsed)
-		if not unlocked then
+		if not DMW.Unlocked then
 			-- print("123")
 			UnlockAPI()
 		else
@@ -845,9 +1407,7 @@ f:SetScript(
                 Init()
             end
 			DebugStart = debugprofilestop()
-			if GetKeyState(0x01) then return true end
 			DMW.UpdateOM()
-
             DMW.Tables.Dodgie.DrawStuff()
             DMW.Timers.OM.Last = debugprofilestop() - DebugStart
             DMW.UI.Debug.Run()

@@ -29,7 +29,7 @@ Libs\LibDBIcon-1.0\LibDBIcon-1.0\lib.xml
 Libs\LibRangeCheck-2.0\LibRangeCheck-2.0.lua
 # Libs\LibClassicDurations\LibClassicDurations.xml
 # Libs\LibClassicCasterino\LibClassicCasterino.lua
-Libs\!LibDraw\LibDraw.lua
+# Libs\!LibDraw\LibDraw.lua
 Libs\!LibDraw\LibDraw.lua
 Libs\DRList-1.0\DRList-1.0.xml
 Libs\LibBossIDs-1.0\LibBossIDs-1.0.lua

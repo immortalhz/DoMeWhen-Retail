@@ -76,8 +76,8 @@ function LocalPlayer:Update()
         TODO: Time Check refresh
     ]]
     -- DMW.Functions.AuraCache.Refresh(self.Pointer, self.GUID)
-    self.Health = UnitHealth(self.Pointer)
-    self.HealthMax = UnitHealthMax(self.Pointer)
+    self.Health = UnitHealth("player")
+    self.HealthMax = UnitHealthMax("player")
     self.HP = self.Health / self.HealthMax * 100
 	-- self.Casting = self:PlayerCastingCheck()
 

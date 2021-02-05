@@ -20,11 +20,10 @@ frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 frame:SetScript("OnEvent", function(self, event) self:Reader(event, CombatLogGetCurrentEventInfo()) end)
 
 function frame:Reader(event, ...)
-    if GetObjectWithGUID then
+    if DMW.Unlocked then
         timeStamp, param, hideCaster, source, sourceName, sourceFlags, sourceRaidFlags, destination, destName, destFlags, destRaidFlags, spell, spellName, _, spellType =
             ...
 		Locals()
-
         DMW.Functions.AuraCache.Event(...)
         if spellType == "DEBUFF" then
             local category = DRList:GetCategoryBySpellID(spell)

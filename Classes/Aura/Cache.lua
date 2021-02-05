@@ -38,7 +38,7 @@ function AuraCache.Refresh(Unit)
         Name, Source = GetSpellInfo(AuraReturn[10]), AuraReturn[7]
         if Name == nil then
             break
-        end
+		end
         if DMW.Tables.AuraCache[Unit] == nil then
             DMW.Tables.AuraCache[Unit] = {}
         end
@@ -70,10 +70,10 @@ function AuraCache.Event(...)
         (event == "SPELL_AURA_APPLIED" or event == "SPELL_AURA_APPLIED_DOSE" or event == "SPELL_AURA_REMOVED_DOSE" or event ==
             "SPELL_AURA_REFRESH" or event == "SPELL_AURA_REMOVED" or event == "SPELL_PERIODIC_AURA_REMOVED"))
             or forceUse[spellID]) then
-                -- print(spellName)
-                local destobj = GetObjectWithGUID(destGUID)
-                if destobj then --and (not DMW.Tables.AuraCache[destobj] or DMW.Time > DMW.Tables.AuraCache[destobj].CacheTime) then
-                    AuraCache.Refresh(destobj)
+				local destobj = DMW.Units[destGUID]
+				-- print(destobj)
+				if destobj then --and (not DMW.Tables.AuraCache[destobj] or DMW.Time > DMW.Tables.AuraCache[destobj].CacheTime) then
+                    AuraCache.Refresh(destGUID)
                 end
                 if DMW.Player.SpecID == "Assassination" then
                     if sourceGUID == DMW.Player.GUID and (spellID == 1943 or spellID == 703) then

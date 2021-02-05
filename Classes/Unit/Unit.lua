@@ -207,7 +207,7 @@ function Unit:LineOfSight(OtherUnit)
 	-- if not self.PosZ then
 	-- 	print(self.Name,lb.ObjectExists(self.Pointer))
 	-- end
-    self.LoSCache.Result = TraceLine(self.PosX, self.PosY, self.PosZ + self.Height, OtherUnit.PosX, OtherUnit.PosY, OtherUnit.PosZ + 2, 0x100111) == nil
+    self.LoSCache.Result = TraceLine(self.PosX, self.PosY, self.PosZ + self.Height, OtherUnit.PosX, OtherUnit.PosY, OtherUnit.PosZ + 2, 0x100010) == nil
     self.LoSCache.PosX, self.LoSCache.PosY, self.LoSCache.PosZ = self.PosX, self.PosY, self.PosZ
     self.LoSCache.OPosX, self.LoSCache.OPosY, self.LoSCache.OPosZ = OtherUnit.PosX, OtherUnit.PosY, OtherUnit.PosZ
     return self.LoSCache.Result
