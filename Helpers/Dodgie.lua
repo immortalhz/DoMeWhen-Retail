@@ -6,7 +6,7 @@ local Dodgie = DMW.Helpers.Dodgie
 local LibDraw = LibStub("LibDraw-1.0")
 DMW.Tables.Dodgie.DrawUnits = {}
 DMW.Tables.Dodgie.SpellsToDraw = {
-	-- [308742] = {"rect", 35, 50}, -- tests
+	[308742] = {"rect", 35, 50}, -- tests
 	--Shadowlands
 
 	--NecroticWake
@@ -121,7 +121,7 @@ function Unit:DrawCleave()
     -- if self.Dead or UnitCastingInfo(self.Pointer) == nil then return true end
     self:UpdatePosition()
     local drawType, size1, size2 = self.DrawDodgie[1], self.DrawDodgie[2], self.DrawDodgie[3]
-    local rotation = select(2, ObjectFacing(self.Pointer))
+    local rotation = ObjectFacing(self.Pointer)
     DMW.Helpers.DrawColor(0, 1, 0)
 
     if drawType == "rect" then
@@ -152,8 +152,7 @@ local function CacheCasts(_, event, _, source, sourceName, sourceFlag, _, destin
     -- print(sourceName, event)
     if event == "SPELL_CAST_START" then
         -- print(sourceName, event)
-        local sourceobj = GetObjectWithGUID(source)
-        local Unit = DMW.Units[sourceobj]
+        local Unit = DMW.Units[source]
 		if Unit then
             -- print(Unit.Name)
             -- print(UnitCastingInfo(Unit.Pointer), "start")

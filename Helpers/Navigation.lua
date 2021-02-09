@@ -148,7 +148,7 @@ function Navigation:SearchNext()
         for _, Unit in ipairs(Table) do
             if Unit.Distance <= 100 and Unit.Dead and UnitCanBeLooted(Unit.Pointer) then
                 if self:MoveTo(Unit.PosX, Unit.PosY, Unit.PosZ) then
-                    TargetUnit(Unit.Pointer)
+                    Unlocked.TargetUnit(Unit.Pointer)
                     DMW.Player.Target = Unit
                     return true
                 end
@@ -156,9 +156,9 @@ function Navigation:SearchNext()
         end
     end
     for _, Unit in ipairs(Table) do
-        if not Unit.Dead and not Unit.Player and math.abs(DMW.Player.Level - Unit.Level) <= Settings.LevelRange and UnitCanAttack("player", Unit.Pointer) and not UnitIsTapDenied(Unit.Pointer) then
+        if not Unit.Dead and not Unit.Player and math.abs(DMW.Player.Level - Unit.Level) <= Settings.LevelRange and Unlocked.UnitCanAttack("player", Unit.Pointer) and not UnitIsTapDenied(Unit.Pointer) then
             if self:MoveTo(Unit.PosX, Unit.PosY, Unit.PosZ) then
-                TargetUnit(Unit.Pointer)
+                Unlocked.TargetUnit(Unit.Pointer)
                 DMW.Player.Target = Unit
                 return true
             end
@@ -183,7 +183,7 @@ function Navigation:SearchEnemy()
     for _, Unit in ipairs(DMW.Enemies) do
         if Unit.Distance <= 100 then
             if self:MoveTo(Unit.PosX, Unit.PosY, Unit.PosZ) then
-                TargetUnit(Unit.Pointer)
+                Unlocked.TargetUnit(Unit.Pointer)
                 DMW.Player.Target = Unit
                 return true
             end
@@ -198,12 +198,12 @@ function Navigation:Grinding()
     if DMW.Player.Target and DMW.Player.Target.ValidEnemy and DMW.Player.Target.Distance <= Settings.AttackDistance then
         self:ClearPath()
         if DMW.Player.Moving then
-            MoveForwardStart()
-            MoveForwardStop()
+            Unlocked.MoveForwardStart()
+            Unlocked.MoveForwardStop()
         end
         return
     end
-    if DMW.Player.Combat and (not DMW.Player.Target or not UnitAffectingCombat(DMW.Player.Target.Pointer)) then
+    if DMW.Player.Combat and (not DMW.Player.Target or not Unlocked.UnitAffectingCombat(DMW.Player.Target.Pointer)) then
         self:SearchEnemy()
     elseif (not DMW.Player.Looting or DMW.Player:GetFreeBagSlots() == 0) and (not DMW.Player.Target or (DMW.Player.Target.Dead and (not DMW.Settings.profile.Helpers.AutoLoot or DMW.Player:GetFreeBagSlots() == 0 or not UnitCanBeLooted(DMW.Player.Target.Pointer))) or UnitIsTapDenied(DMW.Player.Target.Pointer)) and DMW.Player.HP > Settings.FoodHP  then
         self:SearchNext()

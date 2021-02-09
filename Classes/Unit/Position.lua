@@ -1,21 +1,22 @@
 local DMW = DMW
 local Unit = DMW.Classes.Unit
+local Unlocked = DMW.Functions.Unlocked
 
 function Unit:GetDistance(OtherUnit)
     OtherUnit = OtherUnit or DMW.Player
-    -- if OtherUnit == DMW.Player and DMW.Enums.MeleeSpell[DMW.Player.SpecID] and IsSpellInRange(GetSpellInfo(DMW.Enums.MeleeSpell[DMW.Player.SpecID]), self.Pointer) == 1 then
+    -- if OtherUnit == DMW.Player and DMW.Enums.MeleeSpell[DMW.Player.SpecID] and Unlocked.IsSpellInRange(GetSpellInfo(DMW.Enums.MeleeSpell[DMW.Player.SpecID]), self.Pointer) == 1 then
     --     return 0
 	-- end
-	if OtherUnit == DMW.Player and not self.Dead and IsItemInRange(8149, self.Pointer) then
+	if OtherUnit == DMW.Player and not self.Dead and Unlocked.IsItemInRange(8149, self.Pointer) then
         return 0
 	end
-    if OtherUnit == DMW.Player and DMW.Enums.Range40Spell[DMW.Player.Class] and IsSpellInRange(GetSpellInfo(DMW.Enums.Range40Spell[DMW.Player.Class]), self.Pointer) == 1 then
+    if OtherUnit == DMW.Player and DMW.Enums.Range40Spell[DMW.Player.Class] and Unlocked.IsSpellInRange(GetSpellInfo(DMW.Enums.Range40Spell[DMW.Player.Class]), self.Pointer) == 1 then
         return 40
 	end
-	if DMW.Player.Target and UnitIsUnit(self.Pointer,"target") and DMW.Enums.MeleeForced[self.ObjectID] then return 0 end
+	if DMW.Player.Target and Unlocked.UnitIsUnit(self.Pointer,"target") and DMW.Enums.MeleeForced[self.ObjectID] then return 0 end
     if self.PosX == nil then return 0 end
     local Dist = sqrt(((self.PosX - OtherUnit.PosX) ^ 2) + ((self.PosY - OtherUnit.PosY) ^ 2) + ((self.PosZ - OtherUnit.PosZ) ^ 2)) - ((OtherUnit.CombatReach or 0) + (self.CombatReach or 0))
-    -- if UnitIsUnit(self.Pointer, "target") then
+    -- if Unlocked.UnitIsUnit(self.Pointer, "target") then
     --     print(self.Distance, math.max(self.CombatReach + 4/3 + DMW.Player.CombatReach, 5), self.CombatReach, DMW.Player.CombatReach )
     -- end
     if Dist < 0 then
@@ -65,7 +66,7 @@ end
 -- --         currentDist = currentDist - (currentDist * 0.12)
 -- --     end
 -- --     if meleeSpell ~= nil then
--- --         if IsSpellInRange(select(1,GetSpellInfo(meleeSpell)),Unit2) == 1 then
+-- --         if Unlocked.IsSpellInRange(select(1,GetSpellInfo(meleeSpell)),Unit2) == 1 then
 -- --             currentDist = 0
 -- --         end
 -- --     end
@@ -84,7 +85,7 @@ function Unit:AggroDistance()
     local creatureLevel = self.Level
     local leveldif = creatureLevel - playerLevel
 
-    if UnitReaction(self.Pointer, "player") >= 4 then --neutral mob
+    if Unlocked.UnitReaction(self.Pointer, "player") >= 4 then --neutral mob
         return 0
     end
 

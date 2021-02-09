@@ -3,6 +3,7 @@ local DMW = DMW
 local AlertTimer = GetTime()
 DMW.Helpers.QuestieHelper = {}
 DMW.Cache.QuestieCache = {}
+local Unlocked = DMW.Functions.Unlocked
 
 function DMW.Helpers.QuestieHelper.Run()
     if DMW.Settings.profile.Tracker.QuestieHelper then
@@ -122,7 +123,7 @@ function DMW.Helpers.QuestieHelper.isQuestieUnit(Pointer, GUID)
 			end
 		end
 	end
-	if isQuestUnit and atLeastOneQuestUnfinished and (not UnitIsDeadOrGhost(Pointer) or UnitCanBeLooted(Pointer) or UnitIsFriend("player", Pointer)) then
+	if isQuestUnit and atLeastOneQuestUnfinished and (not Unlocked.UnitIsDeadOrGhost(Pointer) or UnitCanBeLooted(Pointer) or Unlocked.UnitIsFriend("player", Pointer)) then
 		return true
 	-- elseif DMW.Units[Pointer].ObjectID and visionsNPCs[DMW.Units[Pointer].ObjectID] then
 	-- 	return true

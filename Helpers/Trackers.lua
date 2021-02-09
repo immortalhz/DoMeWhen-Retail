@@ -224,7 +224,7 @@ function DMW.Helpers.Trackers.Run()
                     DMW.Helpers.DrawLine(tX, tY, tZ, DMW.Player.PosX, DMW.Player.PosY, DMW.Player.PosZ + 2)
                 end
             end
-            if DMW.Settings.profile.Tracker.TrackPlayersNamePlates and Unit.Player and not Unit.Dead and not UnitIsFriend("player", Unit.Pointer) and not C_NamePlate.GetNamePlateForUnit(Unit.Pointer) then
+            if DMW.Settings.profile.Tracker.TrackPlayersNamePlates and Unit.Player and not Unit.Dead and not Unlocked.UnitIsFriend("player", Unit.Pointer) and not C_NamePlate.GetNamePlateForUnit(Unit.Pointer) then
                 Unit:UpdatePosition()
                 Color = DMW.Enums.ClassColor[Unit.Class]
                 DMW.Helpers.DrawColor(Color.r, Color.g, Color.b)

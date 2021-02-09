@@ -49,6 +49,35 @@ function Queue.GetBindings()
                 end
             end
         end
+	elseif IsAddOnLoaded('Bartender4') then
+        for i = 1, 10 do
+            for k = 1, 12 do
+				if not _G["BT4Bar"..i] or not _G["BT4Bar"..i].buttons[k] then return end
+				local Type, ID = GetActionInfo(_G["BT4Bar" .. i].buttons[k]._state_action)
+				local Hotkey = _G["BT4Bar" .. i].buttons[k]["HotKey"]:GetText()
+                if ID then
+                    if strsub(Hotkey, 1, 1) == 'S' and strlen(Hotkey) == 2 then
+                        local Key = strsub(Hotkey, 2, 2)
+                        DMW.Tables.Bindings["SHIFT-" .. Key] = {["Type"] = Type, ["ID"] = ID}
+                    elseif strsub(Hotkey, 1, 1) == 'C' and strlen(Hotkey) == 2 then
+                        local Key = strsub(Hotkey, 2, 2)
+                        DMW.Tables.Bindings["CTRL-" .. Key] = {["Type"] = Type, ["ID"] = ID}
+                    elseif strsub(Hotkey, 1, 1) == 'A' and strlen(Hotkey) == 2  then
+                        local Key = strsub(Hotkey, 2, 2)
+                        DMW.Tables.Bindings["ALT-" .. Key] = {["Type"] = Type, ["ID"] = ID}
+                    elseif strsub(Hotkey, 1, 1) == 'M' and strlen(Hotkey) == 2 then
+                        local Key = strsub(Hotkey, 2, 2)
+                        DMW.Tables.Bindings["BUTTON" .. Key] = {["Type"] = Type, ["ID"] = ID}
+                    elseif strsub(Hotkey, 1, 1) == 'F' and strlen(Hotkey) == 2 then
+                        local Key = strsub(Hotkey, 2, 2)
+                        DMW.Tables.Bindings[Hotkey] = {["Type"] = Type, ["ID"] = ID}
+                    elseif strlen(Hotkey) == 1 then
+                        local Key = strsub(Hotkey, 1, 1)
+                        DMW.Tables.Bindings[Key] = {["Type"] = Type, ["ID"] = ID}
+                    end
+                end
+            end
+        end
     end
 end
 
@@ -175,7 +204,7 @@ function Queue.Run()
     end
     if Queue.Spell and DMW.Player.Combat then
         if Queue.Type == 2 then
-            if Queue.Target then--and IsSpellInRange(Queue.Spell.SpellName, Queue.Target.Pointer) ~= nil then
+            if Queue.Target then--and Unlocked.IsSpellInRange(Queue.Spell.SpellName, Queue.Target.Pointer) ~= nil then
                 if Queue.Spell:Cast(Queue.Target) then
                     print(Queue.Target.Name, Queue.Spell.SpellName)
                     return true
@@ -205,7 +234,7 @@ function Queue.Run()
                 return true
             end
             if Queue.Spell:IsReady() and not IsAoEPending() then
-                CastSpellByName(Queue.Spell.SpellName)
+                Unlocked.CastSpellByName(Queue.Spell.SpellName)
                 return true
             end
         end

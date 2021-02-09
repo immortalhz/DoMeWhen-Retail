@@ -3,12 +3,13 @@ local DMW = DMW
 local magicScale = 5/256
 
 local function WorldToScreen(wX, wY, wZ)
-    local sX, sY = _G.WorldToScreen(wX, wY, wZ)
-    if sX and sY then
-        return sX, -(WorldFrame:GetTop() - sY)
-    else
-        return sX, sY
-    end
+	local ResolutionCoef = WorldFrame:GetWidth() / lb.GetWindowSize()
+	local sX, sY = lb.WorldToScreen(wX, wY, wZ);
+	if sX and sY then
+		return sX * ResolutionCoef, -sY * ResolutionCoef;
+	else
+		return sX, sY;
+	end
 end
 
 -- local function WorldToScreenRaw(wX, wY, wZ)
@@ -30,8 +31,7 @@ function DMW.Helpers.DrawLine(sx, sy, sz, ex, ey, ez)
                 endx, endy = WorldToScreen(GetPositionBetweenPositions(ex, ey, ez, sx, sy, sz, i))
                 i = i + 1
             end
-        end
-        if (startx == nil or starty == nil) and (endx and endy) then
+        elseif (startx == nil or starty == nil) and (endx and endy) then
             local i = 1
             while (startx == nil or starty == nil) and i < 50 do
                 startx, starty = WorldToScreen(GetPositionBetweenPositions(sx, sy, sz, ex, ey, ez, i))
@@ -50,7 +50,7 @@ function DMW.Helpers.DrawLine(sx, sy, sz, ex, ey, ez)
 end
 
 function DMW.Helpers.DrawText(text, font, x, y, z)
-    if not DMW.Settings.profile.Helpers.DirectX then
+	if not DMW.Settings.profile.Helpers.DirectX then
 		LibDraw.Text(text, font, x, y, z)
     else
         local sWidth, sHeight = GetWoWWindow()

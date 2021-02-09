@@ -25,7 +25,7 @@ DMW.Helpers.Swing.AddUnit = function(Pointer, player) -- Pointer
     if DMW.Tables.Swing.Units[Pointer] == nil then
         DMW.Tables.Swing.Units[Pointer] = {}
         local Unit = DMW.Tables.Swing.Units[Pointer]
-        local mainSpeed, offSpeed = UnitAttackSpeed(Pointer)
+        local mainSpeed, offSpeed = Unlocked.UnitAttackSpeed(Pointer)
         local rangeSpeed = UnitRangedDamage(Pointer)
         offSpeed = offSpeed or 0
         Unit.mainSpeed, Unit.offSpeed = mainSpeed, offSpeed
@@ -104,7 +104,7 @@ local function swingTimerCLEUCheck(ts, event, _, sourceGUID, _, _, _, destGUID, 
             -- print(DMW.Helpers.Swing.GetSwing(DMW.Player.Pointer, "main"))
             -- local currentTime = GetTime()
             -- if Unit == nil then print(Unit) end
-            Unit.mainSpeed, Unit.offSpeed = UnitAttackSpeed(sourcePointer)
+            Unit.mainSpeed, Unit.offSpeed = Unlocked.UnitAttackSpeed(sourcePointer)
             Unit.offSpeed = Unit.offSpeed or 0
             if not isOffHand then
                 DMW.Helpers.Swing.resetMH(sourcePointer)
@@ -144,7 +144,7 @@ local function swingTimerCLEUCheck(ts, event, _, sourceGUID, _, _, _, destGUID, 
             if select(2, ...) == "Flurry" then
                 -- print("flurry")
                 Unit = DMW.Tables.Swing.Units[destPointer]
-                -- local mainSpeedNew, offSpeedNew = UnitAttackSpeed("player")
+                -- local mainSpeedNew, offSpeedNew = Unlocked.UnitAttackSpeed("player")
                 -- offSpeedNew = offSpeedNew or 0
                 if Unit.lastSwingMain then
                     Unit.TimeCache = DMW.Time
@@ -182,7 +182,7 @@ local function swingTimerEventCheck(event, unit, guid, spell)
         if event == "UNIT_ATTACK_SPEED" then
             -- C_Timer.After(0.5, function()
             -- local mainSpeed, offSpeed = Unit.mainSpeed, Unit.offSpeed
-            local mainSpeedNew, offSpeedNew = UnitAttackSpeed("player")
+            local mainSpeedNew, offSpeedNew = Unlocked.UnitAttackSpeed("player")
             offSpeedNew = offSpeedNew or 0
             if Unit.lastSwingMain then
                 if mainSpeedNew ~= Unit.mainSpeed and Unit.TimeCache then

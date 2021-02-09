@@ -1,5 +1,6 @@
 local DMW = DMW
 local Unit = DMW.Classes.Unit
+local Unlocked = DMW.Functions.Unlocked
 -- CLH = LibStub("LibCombatLogHealth-2.0")
 -- CLH.RegisterCallback("DMW", "COMBAT_LOG_HEALTH", function(event, unit, eventType)
     -- local health = CLH.UnitHealth(unit)
@@ -21,8 +22,8 @@ local Unit = DMW.Classes.Unit
 --     self.Health = LibCLHealth.UnitHealth(self.GUID)
 -- end
 function Unit:CalculateHP()
-    self.Health = UnitHealth(self.Pointer)
-    self.HealthMax = UnitHealthMax(self.Pointer)
+    self.Health = Unlocked.UnitHealth(self.Pointer)
+    self.HealthMax = Unlocked.UnitHealthMax(self.Pointer)
     self.HP = self.Health / self.HealthMax * 100
     self.HealthDeficit = self.HealthMax - self.Health
 end

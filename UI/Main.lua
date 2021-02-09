@@ -1359,17 +1359,17 @@ function UI.ShowPartyRoles()
 end
 
 local function UpdateButton(unit)
-            UI.RoleGroup[unit].userdata.Name = UnitName(unit)
-            UI.RoleGroup[unit].userdata.Class = string.upper(UnitClass(unit))
-            UI.RoleGroup[unit]:SetText(UI.RoleGroup[unit].userdata.Name)
-            UI.RoleGroup[unit].userdata.Color = DMW.Enums.ClassColor[UI.RoleGroup[unit].userdata.Class]
-            UI.RoleGroup[unit].frame.backdrop:SetBackdropColor(UI.RoleGroup[unit].userdata.Color.r/255, UI.RoleGroup[unit].userdata.Color.g/255, UI.RoleGroup[unit].userdata.Color.b/255, 1)
-            for _, Friend in pairs(DMW.Friends.Units) do
-                if UnitGUID(unit) == Friend.GUID then
-                    UI.RoleGroup[unit]["Unit"] = Friend
-                    break
-                end
-            end
+	UI.RoleGroup[unit].userdata.Name = UnitName(unit)
+	UI.RoleGroup[unit].userdata.Class = string.upper(UnitClass(unit))
+	UI.RoleGroup[unit]:SetText(UI.RoleGroup[unit].userdata.Name)
+	UI.RoleGroup[unit].userdata.Color = DMW.Enums.ClassColor[UI.RoleGroup[unit].userdata.Class]
+	UI.RoleGroup[unit].frame.backdrop:SetBackdropColor(UI.RoleGroup[unit].userdata.Color.r/255, UI.RoleGroup[unit].userdata.Color.g/255, UI.RoleGroup[unit].userdata.Color.b/255, 1)
+	for _, Friend in pairs(DMW.Friends.Units) do
+		if UnitGUID(unit) == Friend.GUID then
+			UI.RoleGroup[unit]["Unit"] = Friend
+			break
+		end
+	end
 end
 
 local function CreateIconMenu()

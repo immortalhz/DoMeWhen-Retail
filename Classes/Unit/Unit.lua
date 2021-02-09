@@ -1,25 +1,25 @@
 local DMW = DMW
 local Unit = DMW.Classes.Unit
 local DRList = LibStub("DRList-1.0")
+local Unlocked = DMW.Functions.Unlocked
 
 function Unit:New(Pointer)
     self.Pointer = Pointer
-	self.Name = self.Pointer ~= DMW.Player.Pointer and UnitName(Pointer) or "LocalPlayer"
-	C_Timer.After(1, function() self.Name = self.Pointer ~= DMW.Player.Pointer and UnitName(Pointer) or "LocalPlayer" end)
+	self.Name = self.Pointer ~= DMW.Player.Pointer and  Unlocked.UnitName(Pointer) or "LocalPlayer"
+	C_Timer.After(1, function() self.Name = self.Pointer ~= DMW.Player.Pointer and Unlocked.UnitName(Pointer) or "LocalPlayer" end)
     self.GUID = Pointer
-    self.Player = UnitIsPlayer(Pointer)
+    self.Player = Unlocked.UnitIsPlayer(Pointer)
     self.LoSCache = {}
-    self.Friend = UnitIsFriend("player", self.Pointer)
+    self.Friend = Unlocked.UnitIsFriend("player", self.Pointer)
     -- if self.Player then
     --     self.Class = select(2, UnitClass(Pointer)):gsub("%s+", "")
     -- end
     self.TTD = 999
-    self.Health = UnitHealth(self.Pointer)
-        self.HealthMax = UnitHealthMax(self.Pointer)
+    self.Health = Unlocked.UnitHealth(self.Pointer)
+        self.HealthMax = Unlocked.UnitHealthMax(self.Pointer)
         self.HP = self.Health / self.HealthMax * 100
         self.HealthDeficit = self.HealthMax - self.Health
     self.Distance = self:GetDistance()
-    self.HealthMax = UnitHealthMax(self.Pointer)
     -- self.CombatReach = UnitCombatReach(Pointer)
     -- self.BoundingRadius = UnitBoundingRadius(Pointer)
     -- print(self.Name)
@@ -32,10 +32,10 @@ function Unit:New(Pointer)
     end
     self:IsDummy()
     self:NoLoS()
-    self.Level = UnitLevel(Pointer)
+    self.Level = Unlocked.UnitLevel(Pointer)
     -- self.DistanceAggro = self:AggroDistance()
     self.CreatureType = DMW.Enums.CreatureType[UnitCreatureTypeID(Pointer)]
-    self.Classification = UnitClassification(Pointer)
+    self.Classification = Unlocked.UnitClassification(Pointer)
     -- DMW.Functions.AuraCache.Refresh(Pointer, self.GUID)
     --DurationLib
     -- DurationLib.nameplateUnitMap[self.GUID] = Pointer
@@ -44,13 +44,17 @@ function Unit:New(Pointer)
     -- DMW.Tables.Misc.pointer2guid[Pointer] = self.GUID
     self.Cache = {}
     -- DMW.Helpers.Swing.AddUnit(Pointer)
-    -- self.UnitName = GetUnitName(Pointer)
+    -- self. Unlocked.UnitName( = Get Unlocked.UnitName((Pointer)
 	--NoTouchChecks
 	if self.Player then
         self.Height = 2
     else
         self.Height = 2 --select(2,UnitCollisionBox(self.Pointer))
     end
+	if Unlocked.UnitIsDeadOrGhost(self.Pointer) then
+		self.Dead = true
+		self.Pulled = DMW.Time
+	end
     if DMW.Player.Instance == "party" or DMW.Player.Instance == "raid" or DMW.Player.Instance == "scenario" then
         if not self.CCable then
             self.CCable = {}
@@ -102,29 +106,29 @@ function Unit:Update()
         self.NextUpdate = DMW.Time + (math.random(300, 1500) / 10000)
     end
 
-    -- if DMW.Player.Target and UnitIsUnit(self.Pointer,"target") then
+    -- if DMW.Player.Target and fu.UnitIsUnit(self.Pointer,"target") then
     --     print("Update")
     -- end
     self:UpdatePosition()
     self.Distance = self:GetDistance()
 	-- self:CastingCheck()
-	if not self.Dead and UnitIsDeadOrGhost(self.Pointer) then
+	if not self.Dead and Unlocked.UnitIsDeadOrGhost(self.Pointer) then
 		self.CanBeLootedTime = DMW.Time
 		self.Dead = true
 	end
 	-- end
-    -- self.Dead = UnitIsDeadOrGhost(self.Pointer) -- CalculateHP
+    -- self.Dead = Unlocked.UnitIsDeadOrGhost(self.Pointer) -- CalculateHP
     self.LoS = false
 	if self.Distance < 50 and not self.Dead then
 		-- if not self.PosZ then print(self.Name) end
         self.LoS = self:LineOfSight()
     end
-    self.CanAttack = UnitCanAttack("player", self.Pointer)
+    self.CanAttack = Unlocked.UnitCanAttack("player", self.Pointer)
     self.Attackable = self.LoS and self.CanAttack or false
     self.ValidEnemy = self.Attackable and self.CreatureType ~= "Critter" and self:IsEnemy() or false
     if self.ValidEnemy or self.Friend then
-        self.Health = UnitHealth(self.Pointer)
-        self.HealthMax = UnitHealthMax(self.Pointer)
+        self.Health = Unlocked.UnitHealth(self.Pointer)
+        self.HealthMax = Unlocked.UnitHealthMax(self.Pointer)
         self.HP = self.Health / self.HealthMax * 100
         self.HealthDeficit = self.HealthMax - self.Health
         self.TTD = self:GetTTD()
@@ -155,7 +159,7 @@ function Unit:Update()
 
     -- if HonorAssist ~= nil and self.Player and self.CanAttack then --DMW.Player.Instance == "pvp" and
     --     -- local dailyKillCount, totalKillCount = HonorAssist:GetPlayerDailyKillCount(self.Name)
-	-- 	local timesKilledToday = HonorAssist:GetTotalKillsDailyDatabase(self.UnitName)
+	-- 	local timesKilledToday = HonorAssist:GetTotalKillsDailyDatabase(self. Unlocked.UnitName()
     --     local honorPercentLeft, realisticHonor = HonorAssist:GetPlayerEstimatedHonor(timesKilledToday, 1, self.Level, self.rankPVP)
     --     self.RealisticHonor = realisticHonor or nil
     -- end
@@ -214,7 +218,7 @@ function Unit:LineOfSight(OtherUnit)
 end
 
 function Unit:IsEnemy()
-    return self:HasThreat() and not self.Dead and (not self.Friend or UnitIsUnit(self.Pointer, "target")) --and not self:CCed()
+    return self:HasThreat() and not self.Dead and (not self.Friend or Unlocked.UnitIsUnit(self.Pointer, "target")) --and not self:CCed()
 end
 
 function Unit:IsBoss()
@@ -224,7 +228,7 @@ function Unit:IsBoss()
         return true
     elseif DMW.Player.EID then
         for i = 1, 5 do
-            if UnitIsUnit("boss" .. i, self.Pointer) then
+            if Unlocked.UnitIsUnit("boss" .. i, self.Pointer) then
                 return true
             end
         end
@@ -237,19 +241,19 @@ function Unit:HasThreat()
 		return true
     elseif DMW.Enums.EnemyBlacklist[self.ObjectID] then
         return false
-    elseif DMW.Player.Instance == "pvp" and (self.Player or UnitAffectingCombat(self.Pointer)) then
+    elseif DMW.Player.Instance == "pvp" and (self.Player or Unlocked.UnitAffectingCombat(self.Pointer)) then
         return true
     elseif DMW.Player.Instance == "party" then
-        if #DMW.Friends.Tanks > 0 and UnitThreatSituation(DMW.Friends.Tanks[1].Pointer, self.Pointer) then
+        if #DMW.Friends.Tanks > 0 and  Unlocked.UnitThreatSituation(DMW.Friends.Tanks[1].Pointer, self.Pointer) then
             return true
         end
-        if UnitThreatSituation(DMW.Player.Pointer, self.Pointer) then return true end
-    elseif DMW.Player.Instance ~= "none" and UnitAffectingCombat(self.Pointer) then
+        if  Unlocked.UnitThreatSituation(DMW.Player.Pointer, self.Pointer) then return true end
+    elseif DMW.Player.Instance ~= "none" and Unlocked.UnitAffectingCombat(self.Pointer) then
         return true
-    elseif DMW.Player.Instance == "none" and (self.Dummy or (UnitIsVisible("target") and UnitIsUnit(self.Pointer, "target"))) then
+    elseif DMW.Player.Instance == "none" and (self.Dummy or (UnitIsVisible("target") and Unlocked.UnitIsUnit(self.Pointer, "target"))) then
         return true
     end
-    if self.Target and (UnitIsUnit(self.Target, "player") or UnitIsUnit(self.Target, "pet") or UnitInParty(self.Target)) then
+    if self.Target and (UnitIsUnit(self.Target, "player") or Unlocked.UnitIsUnit(self.Target, "pet") or Unlocked.UnitInParty(self.Target)) then
         return true
 	end
     return false
@@ -319,9 +323,9 @@ end
 
 function Unit:Interrupt()
     local InterruptTarget = DMW.Settings.profile.Enemy.InterruptTarget
-    if DMW.Settings.profile.HUD.Interrupts == 3 or (InterruptTarget == 2 and not UnitIsUnit(self.Pointer, "target")) or
-    (InterruptTarget == 3 and not UnitIsUnit(self.Pointer, "focus")) or
-    (InterruptTarget == 4 and (not GetRaidTargetIndex(self.Pointer) or GetRaidTargetIndex(self.Pointer) ~= DMW.Settings.profile.Enemy.InterruptMark)) then
+    if DMW.Settings.profile.HUD.Interrupts == 3 or (InterruptTarget == 2 and not Unlocked.UnitIsUnit(self.Pointer, "target")) or
+    (InterruptTarget == 3 and not Unlocked.UnitIsUnit(self.Pointer, "focus")) or
+    (InterruptTarget == 4 and (not Unlocked.GetRaidTargetIndex(self.Pointer) or Unlocked.GetRaidTargetIndex(self.Pointer) ~= DMW.Settings.profile.Enemy.InterruptMark)) then
         return false
     end
     if not self:IsInterruptible() then return false end
@@ -401,14 +405,14 @@ function Unit:Dispel(Spell)
 end
 
 function Unit:PredictPosition(Time)
-    local MoveDistance = GetUnitSpeed(self.Pointer) * Time
+    local MoveDistance =  Unlocked.UnitIsVisible(self.Pointer) * Time
     if MoveDistance > 0 then
         local X, Y, Z = self.PosX, self.PosY, self.PosZ
         local Angle = ObjectFacing(self.Pointer)
         local UnitTargetDist = 0
         if self.Target then
             local TX, TY, TZ = ObjectPosition(self.Target)
-            local TSpeed = GetUnitSpeed(self.Target)
+            local TSpeed =  Unlocked.UnitIsVisible(self.Target)
             if TSpeed > 0 then
                 local TMoveDistance = TSpeed * Time
                 local TAngle = ObjectFacing(self.Target)
@@ -542,7 +546,7 @@ function Unit:IsTrackable()
                 return true
             end
         end
-    elseif self.Player and (DMW.Settings.profile.Tracker.TrackPlayersAny and DMW.Player.Pointer ~= self.Pointer) or (DMW.Settings.profile.Tracker.TrackPlayersEnemy and UnitCanAttack("player", self.Pointer)) then
+    elseif self.Player and (DMW.Settings.profile.Tracker.TrackPlayersAny and DMW.Player.Pointer ~= self.Pointer) or (DMW.Settings.profile.Tracker.TrackPlayersEnemy and Unlocked.UnitCanAttack("player", self.Pointer)) then
         return true
     elseif self.Player and DMW.Settings.profile.Tracker.TrackPlayers ~= nil and DMW.Settings.profile.Tracker.TrackPlayers ~= "" then
         for k in string.gmatch(DMW.Settings.profile.Tracker.TrackPlayers, "([^,]+)") do
@@ -558,8 +562,8 @@ function Unit:IsTrackable()
 end
 
 function Unit:PowerPct()
-    local Power = UnitPower(self.Pointer)
-    local PowerMax = UnitPowerMax(self.Pointer)
+    local Power = Unlocked.UnitPower(self.Pointer)
+    local PowerMax = Unlocked.UnitPowerMax(self.Pointer)
     return Power / PowerMax * 100
 end
 
@@ -680,7 +684,7 @@ end
 
 function Unit:MarkCheck()
     if not self.MarkCached or (DMW.Cache.CacheMarkTimer and self.MarkCachedPulse < DMW.Cache.CacheMarkTimer) then
-        self.MarkCached = GetRaidTargetIndex(self.Pointer) or 0
+        self.MarkCached = Unlocked.GetRaidTargetIndex(self.Pointer) or 0
         self.MarkCachedPulse = DMW.Pulses
     end
     return self.MarkCached
@@ -759,7 +763,7 @@ function Unit:isInstanceBoss()
 		for i=1,encountersTotal do
 			if UnitExists(self.Pointer) then
 				local bossName = GetInstanceLockTimeRemainingEncounter(i)
-				local targetName = UnitName(self.Pointer)
+				local targetName =  Unlocked.UnitName(self.Pointer)
 				-- Print("Target: "..targetName.." | Boss: "..bossName.." | Match: "..tostring(targetName == bossName))
 				if targetName == bossName then return true end
 			end

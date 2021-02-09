@@ -1,12 +1,13 @@
 local DMW = DMW
 local GameObject = DMW.Classes.GameObject
 local Corpse = DMW.Classes.Corpse
+local Unlocked = DMW.Functions.Unlocked
 
 function GameObject:New(Pointer)
     self.Pointer = Pointer
     self.Name = ObjectName(Pointer)
     self.ObjectID = ObjectID(Pointer)
-    self.GUID = UnitGUID(Pointer)
+    self.GUID = Unlocked.UnitGUID(Pointer)
 
 end
 
@@ -29,7 +30,7 @@ function GameObject:Update()
 end
 
 function GameObject:AlreadyUsed()
-    return bit.band(ObjectDescriptor(self.Pointer, GetOffset("CGObjectData__DynamicFlags"), "int"), 0x0000000016) ~= 0
+    return false
 end
 
 function GameObject:GetDistance(OtherUnit)

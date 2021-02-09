@@ -4,6 +4,7 @@ DMW.Functions.AuraCache = {}
 local AuraCache = DMW.Functions.AuraCache
 local Buff = DMW.Classes.Buff
 local Debuff = DMW.Classes.Debuff
+local Unlocked = DMW.Functions.Unlocked
 
 
 function AuraCache.Refresh(Unit)
@@ -12,7 +13,7 @@ function AuraCache.Refresh(Unit)
     end
     local AuraReturn, Name, Source
     for i = 1, 40 do
-        AuraReturn = {UnitBuff(Unit, i)}
+        AuraReturn = {Unlocked.UnitBuff(Unit, i)}
         Name, Source = GetSpellInfo(AuraReturn[10]), AuraReturn[7]
         if Name == nil then
             break
@@ -34,7 +35,7 @@ function AuraCache.Refresh(Unit)
         end
     end
     for i = 1, 40 do
-        AuraReturn = {UnitDebuff(Unit, i)}
+        AuraReturn = {Unlocked.UnitDebuff(Unit, i)}
         Name, Source = GetSpellInfo(AuraReturn[10]), AuraReturn[7]
         if Name == nil then
             break

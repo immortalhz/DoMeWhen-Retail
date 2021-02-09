@@ -69,9 +69,9 @@ local function updateUnit(unit)
             if GetPartyAssignment("MAINTANK", unit) then
                 -- print("tank")
                 DMW.Units[pointer].MainTank = true
-            elseif UnitGroupRolesAssigned(pointer) == "TANK" then
+            elseif Unlocked.UnitGroupRolesAssigned(pointer) == "TANK" then
                 DMW.Units[pointer].MainTank = true
-            elseif UnitGroupRolesAssigned(pointer) == "HEALER" then
+            elseif Unlocked.UnitGroupRolesAssigned(pointer) == "HEALER" then
                 DMW.Units[pointer].Healer = true
             end
         end
@@ -243,7 +243,7 @@ end
 --             if IsAddOnLoaded("HPH") then
 --                 local HPH = LibStub("AceAddon-3.0"):GetAddon("HPH")
 --                 hooksecurefunc(Unit, "New", function(Table, Pointer)
---                     if Table.Player and Table.Level >= 48 and UnitCanAttack("player", Table.Pointer) then
+--                     if Table.Player and Table.Level >= 48 and Unlocked.UnitCanAttack("player", Table.Pointer) then
 --                         -- Table.rankPVP = UnitPVPRank(Pointer);
 --                         -- Table.UnitName = GetUnitName(Pointer)
 --                         local timesKilled = HPH.GetTimesKilled(HPH.GetName(Table.Name))

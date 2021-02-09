@@ -254,11 +254,11 @@ function Spell:CastBestConeFriend(Length, Angle, MinHit, HP)
 		if IsMouselooking() then
 			mouselookActive = true
 			MouselookStop()
-			TurnOrActionStop()
-			MoveAndSteerStop()
+			Unlocked.TurnOrActionStop()
+			Unlocked.MoveAndSteerStop()
 		end
 		FaceDirection(BestAngle, true)
-		CastSpellByName(self.SpellName)
+		Unlocked.CastSpellByName(self.SpellName)
 		FaceDirection(CurrentFacing)
 		if mouselookActive then
 			MouselookStart()

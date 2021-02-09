@@ -38,7 +38,7 @@ function LocalPlayer:AutoTarget(Yards, Facing)
     if (not self.Target or self.Target.Dead) and self.Combat then
         for _, Unit in ipairs(DMW.Enemies) do
             if Unit.Distance <= Yards and (not Facing or Unit.Facing) then
-                TargetUnit(Unit.Pointer)
+                Unlocked.TargetUnit(Unit.Pointer)
                 DMW.Player.Target = Unit
                 return true
             end
@@ -51,7 +51,7 @@ function LocalPlayer:AutoTargetQuest(Yards, Facing)
     if not self.Target or self.Target.Dead then
         for _, Unit in ipairs(DMW.Attackable) do
             if Unit.Distance <= Yards and (not Facing or Unit.Facing) and Unit.Quest and not Unit.Dead and not Unit.Target and not UnitIsTapDenied(Unit.Pointer) then
-                TargetUnit(Unit.Pointer)
+                Unlocked.TargetUnit(Unit.Pointer)
                 DMW.Player.Target = Unit
                 return true
             end
@@ -65,7 +65,7 @@ function LocalPlayer:AutoTargetAny(Yards, Facing)
     if not self.Target or self.Target.Dead then
         for _, Unit in ipairs(DMW.Attackable) do
             if Unit.Distance <= Yards and (not Facing or Unit.Facing) and not Unit.Dead and not Unit.Target and not UnitIsTapDenied(Unit.Pointer) then
-                TargetUnit(Unit.Pointer)
+                Unlocked.TargetUnit(Unit.Pointer)
                 DMW.Player.Target = Unit
                 return true
             end
@@ -79,7 +79,7 @@ function LocalPlayer:AutoTargetMelee(Yards, Facing)
     if not self.Target or self.Target.Dead or not self.Target.Facing or self.Target.Distance > Yards then
         for _, Unit in ipairs(DMW.Attackable) do
             if Unit.Distance <= Yards and (not Facing or Unit.Facing) and not Unit.Dead and (not self.Target or self.Target.Pointer ~= Unit.Pointer) and not UnitIsTapDenied(Unit.Pointer) then
-                TargetUnit(Unit.Pointer)
+                Unlocked.TargetUnit(Unit.Pointer)
                 DMW.Player.Target = Unit
                 return true
             end
@@ -120,7 +120,7 @@ local function SortEnemies()
                 if v.TTD > 1.5 then
                     EnemyScore = EnemyScore + 5
                 end
-                RaidTarget = GetRaidTargetIndex(v.Pointer)
+                RaidTarget = Unlocked.GetRaidTargetIndex(v.Pointer)
                 if RaidTarget ~= nil then
                     EnemyScore = EnemyScore + RaidTarget * 3
                     if RaidTarget == 8 then
@@ -151,7 +151,7 @@ local function SortEnemies()
                 end
             )
         end
-        if DMW.Settings.profile.Enemy.SortingTarget and UnitIsVisible("target") then
+        if DMW.Settings.profile.Enemy.SortingTarget and Unlocked.UnitIsVisible("target") then
             table.sort(
                 Enemies,
                 function(x)

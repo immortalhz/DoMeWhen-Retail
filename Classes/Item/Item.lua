@@ -1,5 +1,6 @@
 local DMW = DMW
 local Item = DMW.Classes.Item
+local Unlocked = DMW.Functions.Unlocked
 DMW.Tables.ItemInfo = {}
 
 function Item:New(ItemID)
@@ -52,7 +53,7 @@ end
 function Item:Use(Unit)
     Unit = Unit or DMW.Player
     if self.SpellID and self:IsReady() then
-        UseItemByName(self.ItemName, Unit.Pointer)
+        Unlocked.UseItemByName(self.ItemName, Unit.Pointer)
         return true
     end
     return false

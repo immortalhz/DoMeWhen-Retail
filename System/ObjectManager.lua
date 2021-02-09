@@ -1,4 +1,6 @@
 local DMW = DMW
+local Unlocked = DMW.Functions.Unlocked
+
 DMW.Enemies, DMW.Attackable, DMW.Units, DMW.Friends, DMW.GameObjects, DMW.Corpses, DMW.AreaTriggers = {}, {}, {}, {}, {}, {}, {}
 DMW.Friends.Units = {}
 DMW.Friends.Tanks = {}
@@ -150,10 +152,10 @@ local function UpdateUnits()
         if Unit.ValidEnemy then
             table.insert(Enemies, Unit)
         end
-        if Unit.Player and UnitIsUnit(Pointer, "player") then
+        if Unit.Player and Unlocked.UnitIsUnit(Pointer, "player") then
             -- Unit:CalculateHP()
             table.insert(Friends, Unit)
-        elseif (DMW.Player.InGroup and Unit.Player and not Unit.Attackable and (UnitInRaid(Pointer) or UnitInParty(Pointer))) then
+        elseif (DMW.Player.InGroup and Unit.Player and not Unit.Attackable and (UnitInRaid(Pointer) or Unlocked.UnitInParty(Pointer))) then
             -- Unit:CalculateHP()
             if DMW.Tables.Misc.PlayerGroup ~= nil then
                 if DMW.Tables.Misc.PlayerGroupFunc(Unit.GUID) then

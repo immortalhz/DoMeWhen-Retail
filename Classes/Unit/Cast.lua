@@ -1,5 +1,6 @@
 local DMW = DMW
 local Unit = DMW.Classes.Unit
+local Unlocked = DMW.Functions.Unlocked
 
 function Unit:GetProperCastingInfo()
     if self.Cast == "Channel" then
@@ -10,7 +11,8 @@ function Unit:GetProperCastingInfo()
 end
 
 function Unit:PopulateCasting()
-    if not self.CacheCasting or DMW.Time > self.CacheCasting then
+	if not self.CacheCasting or DMW.Time > self.CacheCasting then
+		-- print()
         local castingInfo = self:GetCastingInfo()
         self.CacheCasting = DMW.Time
         if castingInfo[1] then
@@ -21,7 +23,7 @@ function Unit:PopulateCasting()
 				self.NextUpdate = DMW.Time
             end
 			-- print("cast")
-            return
+			return
         end
         local channelInfo = self:GetChannelingInfo()
         if channelInfo[1] then
@@ -44,7 +46,7 @@ function Unit:PopulateCasting()
 end
 
 function Unit:GetCastingInfo()
-    return {UnitCastingInfo(self.Pointer)}
+    return { Unlocked.UnitCastingInfo(self.Pointer)}
 end
 
 
@@ -212,13 +214,13 @@ function Unit:ClearCastingInfo()
 end
 
 function Unit:CheckCastingInfo()
-    if self.Casting and UnitCastingInfo(self.Pointer) == nil then
+    if self.Casting and Unlocked.UnitCastingInfo(self.Pointer) == nil then
         self:ClearCastingInfo()
         return true
     end
     -- if self.Casting then
     --     -- name, nameSubtext, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible, spellID
-    --     self.Casting = {UnitCastingInfo(self.Pointer)}
+    --     self.Casting = { Unlocked.UnitCastingInfo((self.Pointer)}
     -- end
 end
 

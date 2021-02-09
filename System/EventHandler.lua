@@ -179,7 +179,7 @@ function EHFrame.EventHandler(self, event, ...)
             DMW.Player.Level = UnitLevel("player")
         elseif event == "LFG_PROPOSAL_SHOW" and DMW.Settings.profile.Helpers.AcceptQueues then
 
-            C_Timer.After(1, AcceptProposal)
+            C_Timer.After(1, Unlocked.AcceptProposal)
         end
     end
 end

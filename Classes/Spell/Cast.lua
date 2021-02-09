@@ -1,10 +1,11 @@
 local DMW = DMW
 local Spell = DMW.Classes.Spell
 local CastTimer = GetTime()
+local Unlocked = DMW.Functions.Unlocked
 
 local function FacingCast(SpellName, Target)
 	local CastTime = select(4, GetSpellInfo(SpellName))
-	if CastTime == 0 and UnitIsVisible(Target or "Target") and not ObjectIsFacing("Player", Target or "Target") and not UnitIsUnit("Player", Target or "Target") then
+	if CastTime == 0 and Unlocked.UnitIsVisible(Target or "Target") and not ObjectIsFacing("Player", Target or "Target") and not Unlocked.UnitIsUnit("Player", Target or "Target") then
 		local Facing = ObjectFacing("Player")
 		-- local MouselookActive = false
 		-- if IsMouselooking() then
@@ -12,7 +13,7 @@ local function FacingCast(SpellName, Target)
 		-- 	MouselookStop()
 		-- end
 		FaceDirection(Target or "Target", true)
-		CastSpellByName(SpellName, Target)
+		Unlocked.CastSpellByName(SpellName, Target)
 		FaceDirection(Facing)
 		-- if MouselookActive then
 		-- 	MouselookStart()
@@ -24,7 +25,7 @@ local function FacingCast(SpellName, Target)
 			end
 		)
 	else
-		CastSpellByName(SpellName, Target)
+		Unlocked.CastSpellByName(SpellName, Target)
 	end
 end
 
@@ -37,7 +38,7 @@ function Spell:FacingCast(Unit)
 			MouselookStop()
 		end
 		FaceDirection(Unit.Pointer, true)
-        CastSpellByName(self.SpellName, Unit.Pointer)
+        Unlocked.CastSpellByName(self.SpellName, Unit.Pointer)
 		FaceDirection(Facing)
 		if MouselookActive then
 			MouselookStart()
@@ -46,7 +47,7 @@ function Spell:FacingCast(Unit)
 			FaceDirection(ObjectFacing("player"), true)
         end)
 	else
-        CastSpellByName(self.SpellName, Unit.Pointer)
+        Unlocked.CastSpellByName(self.SpellName, Unit.Pointer)
 	end
 end
 
@@ -59,7 +60,7 @@ function Spell:FacingCastRevenge(Facing)
 			MouselookStop()
 		end
 		FaceDirection(Facing, true)
-        CastSpellByName(self.SpellName)
+        Unlocked.CastSpellByName(self.SpellName)
 		FaceDirection(FacingOld)
 		if MouselookActive then
 			MouselookStart()
@@ -111,7 +112,7 @@ function Spell:Cast(Unit, Extra)
         end
         if self.CastType == "Ground" then
 			if Unit == DMW.Player then
-				RunMacroText("/cast [@player] " .. self.SpellName)
+				Unlocked.RunMacroText("/cast [@player] " .. self.SpellName)
 			elseif self:CastGround(Unit.PosX, Unit.PosY, Unit.PosZ) then
 				self.LastBotTarget = Unit.Pointer
 			else
@@ -140,8 +141,8 @@ function Spell:CastNoGCD(Unit)
 			return false
 		end
 	end
-    -- if self:Known() and self:IsReady() and ((Unit.Distance <= self.MaxRange and (self.MinRange == 0 or Unit.Distance >= self.MinRange)) or IsSpellInRange(self.SpellName, Unit.Pointer) == 1) then
-    if self:IsReady() and (Unit.Distance <= self.MaxRange or IsSpellInRange(self.SpellName, Unit.Pointer) == 1) then
+    -- if self:Known() and self:IsReady() and ((Unit.Distance <= self.MaxRange and (self.MinRange == 0 or Unit.Distance >= self.MinRange)) or Unlocked.IsSpellInRange(self.SpellName, Unit.Pointer) == 1) then
+    if self:IsReady() and (Unit.Distance <= self.MaxRange or Unlocked.IsSpellInRange(self.SpellName, Unit.Pointer) == 1) then
         -- if self:CD() == 0 and (DMW.Time - CastTimer) >= 0 then
         --     CastTimer = DMW.Time
         --     if self.CastType == "Ground" then
@@ -162,7 +163,7 @@ function Spell:CastNoGCD(Unit)
         end
         if self.CastType == "Ground" then
 			if Unit == DMW.Player then
-				RunMacroText("/cast [@player] " .. self.SpellName)
+				Unlocked.RunMacroText("/cast [@player] " .. self.SpellName)
 			elseif self:CastGround(Unit.PosX, Unit.PosY, Unit.PosZ) then
 				self.LastBotTarget = Unit.Pointer
 			else
@@ -188,7 +189,7 @@ function Spell:CastSpellGround(Unit)
             return false
         end
     end
-    if self:Known() and self:IsReady() and ((Unit.Distance <= self.MaxRange and (self.MinRange == 0 or Unit.Distance >= self.MinRange)) or IsSpellInRange(self.SpellName, Unit.Pointer) == 1) then
+    if self:Known() and self:IsReady() and ((Unit.Distance <= self.MaxRange and (self.MinRange == 0 or Unit.Distance >= self.MinRange)) or Unlocked.IsSpellInRange(self.SpellName, Unit.Pointer) == 1) then
         if self:CD() == 0 and (DMW.Time - CastTimer) >= 0 then
             CastTimer = DMW.Time
             if self:CastGround(Unit.PosX, Unit.PosY, Unit.PosZ) then
@@ -213,7 +214,7 @@ function Spell:CastSpellGroundRandom(Unit, Dif)
         end
 	end
 	Dif = Dif or 3
-    if self:Known() and self:IsReady() and ((Unit.Distance <= self.MaxRange and (self.MinRange == 0 or Unit.Distance >= self.MinRange)) or IsSpellInRange(self.SpellName, Unit.Pointer) == 1) then
+    if self:Known() and self:IsReady() and ((Unit.Distance <= self.MaxRange and (self.MinRange == 0 or Unit.Distance >= self.MinRange)) or Unlocked.IsSpellInRange(self.SpellName, Unit.Pointer) == 1) then
         if self:CD() == 0 and (DMW.Time - CastTimer) >= 0 then
             CastTimer = DMW.Time
             if self:CastGround(Unit.PosX + math.random(-Dif, Dif), Unit.PosY + math.random(-Dif, Dif), Unit.PosZ) then
@@ -260,7 +261,7 @@ function Spell:CastGround(X, Y, Z)
                 MouseLooking = true
                 MouselookStop()
             end
-				CastSpellByName(self.SpellName)
+				Unlocked.CastSpellByName(self.SpellName)
             ClickPosition(X, Y, Z)
             if MouseLooking then
                 MouselookStart()
@@ -283,7 +284,7 @@ function Spell:CastBestConeEnemy(Length, Angle, MinHit, TTD)
 		return false
 	end
 	if not DMW.Settings.profile.Enemy.AutoFace then
-		CastSpellByName(self.SpellName)
+		Unlocked.CastSpellByName(self.SpellName)
 		BestConeTime = DMW.Time + 0.3
 		return true
 	end
@@ -325,11 +326,11 @@ function Spell:CastBestConeEnemy(Length, Angle, MinHit, TTD)
 		if IsMouselooking() then
 			mouselookActive = true
 			MouselookStop()
-			TurnOrActionStop()
-			MoveAndSteerStop()
+			Unlocked.TurnOrActionStop()
+			Unlocked.MoveAndSteerStop()
 		end
 		FaceDirection(BestAngle, true)
-		CastSpellByName(self.SpellName)
+		Unlocked.CastSpellByName(self.SpellName)
 		FaceDirection(CurrentFacing)
 		if mouselookActive then
 			MouselookStart()

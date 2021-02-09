@@ -69,12 +69,24 @@ function LibDraw.SetWidth(w)
 end
 
 function LibDraw.Line(sx, sy, sz, ex, ey, ez)
-	if not WorldToScreen then return end
-
-	local sx, sy = WorldToScreen(sx, sy, sz)
-	local ex, ey = WorldToScreen(ex, ey, ez)
-
-	LibDraw.Draw2DLine(sx, sy, ex, ey)
+	if not WorldToScreen or not sx or not sy or not ex or not ey then return end
+	local startx, starty = WorldToScreen(sx, sy, sz)
+	local endx, endy = WorldToScreen(ex, ey, ez)
+	if (endx == nil or endy == nil) and (startx and starty) then
+		local i = 1
+		while (endx == nil or endy == nil) and i < 50 do
+			endx, endy = WorldToScreen(GetPositionBetweenPositions(ex, ey, ez, sx, sy, sz, i))
+			i = i + 1
+		end
+	end
+	if (startx == nil or starty == nil) and (endx and endy) then
+		local i = 1
+		while (startx == nil or starty == nil) and i < 50 do
+			startx, starty = WorldToScreen(GetPositionBetweenPositions(sx, sy, sz, ex, ey, ez, i))
+			i = i + 1
+		end
+	end
+	LibDraw.Draw2DLine(startx, starty, endx, endy)
 end
 
 function LibDraw.rotateX(cx, cy, cz, px, py, pz, r)

@@ -1,5 +1,6 @@
 local DMW = DMW
 local LocalPlayer = DMW.Classes.LocalPlayer
+local Unlocked = DMW.Functions.Unlocked
 
 function LocalPlayer:New(Pointer)
     self.Pointer = Pointer
@@ -8,10 +9,10 @@ function LocalPlayer:New(Pointer)
     -- self.Scale = ObjectDescriptor(Pointer, GetOffset("CGObjectData__Scale"), "float")
     self.PosX, self.PosY, self.PosZ = ObjectPosition(Pointer)
     self.GUID = ObjectGUID(Pointer)
-    self.Class = select(2, UnitClass(Pointer)):gsub("%s+", "")
-    self.Level = UnitLevel(Pointer)
+    self.Class = select(2, UnitClass("player")):gsub("%s+", "")
+    self.Level = UnitLevel("player")
     self.Distance = 0
-    self.Combat = UnitAffectingCombat(self.Pointer) and DMW.Time or false
+    self.Combat = UnitAffectingCombat("player") and DMW.Time or false
     self.CombatLeft = false
     self.EID = false
     self.NoControl = false
@@ -57,7 +58,7 @@ function LocalPlayer:UpdateVariables()
 end
 
 function LocalPlayer:PlayerCastingCheck()
-    if not UnitIsVisible("player") then return nil end
+    if not Unlocked.UnitIsVisible("player") then return nil end
     local cast, channel, castTarget, channelTarget = UnitCastID(self.Pointer)
     -- print(UnitCastID("player"))
     if cast ~= 0 then
@@ -79,7 +80,7 @@ function LocalPlayer:Update()
     self.Health = UnitHealth("player")
     self.HealthMax = UnitHealthMax("player")
     self.HP = self.Health / self.HealthMax * 100
-	-- self.Casting = self:PlayerCastingCheck()
+	self.Casting = self:PlayerCastingCheck()
 
 	-- if self.Casting and self.Casting == 8613 then
 	-- 	local skinned = select(3,UnitCastID("player"))
@@ -129,7 +130,7 @@ function LocalPlayer:Update()
     if self.Instance ~= "none" then self.InstanceID = select(8, GetInstanceInfo()) else self.InstanceID = nil end
     -- if self.Instance == "party" or self.Instance == "pvp" then self.InstanceMap = GetInstanceInfo() end
 	self.Moving = self:HasMovementFlag(DMW.Enums.MovementFlags.Moving)
-    self.PetActive = UnitIsVisible("pet")
+    self.PetActive = Unlocked.UnitIsVisible("pet")
 	self.InGroup = IsInGroup()
 	-- if self.InGroup then
 	-- 	self.PartyGUID = select(2, GetActiveParty())
@@ -189,8 +190,8 @@ function LocalPlayer:UpdatePower(arg, PowerType)
                 -- print(powerName)
                 local typeNum = DMW.Enums.PowerTypes[powerName][2]
                 -- print(typeNum)
-                self[powerName] = UnitPower(self.Pointer, typeNum)
-                self[powerName .. "Max"] = UnitPowerMax(self.Pointer, typeNum)
+                self[powerName] = UnitPower("player", typeNum)
+                self[powerName .. "Max"] = UnitPowerMax("player", typeNum)
                 self[powerName .. "Deficit"] = self[powerName .. "Max"] - self[powerName]
                 self[powerName .. "Pct"] = self[powerName] / self[powerName .. "Max"] * 100
             end
@@ -207,9 +208,9 @@ function LocalPlayer:UpdatePower(arg, PowerType)
         local powerName = DMW.Enums.PowerTypesToCheck[PowerType][2]
         if not self[powerName] then return end
         if arg == "Max" then
-            self[powerName .. "Max"] = UnitPowerMax(self.Pointer, typeNum)
+            self[powerName .. "Max"] = UnitPowerMax("player", typeNum)
         elseif arg == "Current" then
-            self[powerName] = UnitPower(self.Pointer, typeNum)
+            self[powerName] = UnitPower("player", typeNum)
         end
         self[powerName .. "Deficit"] = self[powerName .. "Max"] - self[powerName]
         self[powerName .. "Pct"] = self[powerName] / self[powerName .. "Max"] * 100
@@ -586,9 +587,9 @@ end
 
 function LocalPlayer:UseTrinket(TrinketID)
     if DMW.Player.Equipment[13] == TrinketID then
-        RunMacroText("/use 13")
+        Unlocked.RunMacroText("/use 13")
     elseif DMW.Player.Equipment[14] == TrinketID then
-        RunMacroText("/use 14")
+        Unlocked.RunMacroText("/use 14")
     end
 end
 

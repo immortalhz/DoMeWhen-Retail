@@ -6,7 +6,7 @@ function AreaTrigger:New(Pointer)
     self.Pointer = Pointer
     self.Name = ObjectName(Pointer)
     self.ObjectID = ObjectID(Pointer)
-    self.GUID = UnitGUID(Pointer)
+    self.GUID = Unlocked.UnitGUID(Pointer)
 end
 
 function AreaTrigger:Update()

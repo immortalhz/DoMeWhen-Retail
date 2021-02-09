@@ -1,14 +1,15 @@
 local DMW = DMW
 local Unit = DMW.Classes.Unit
+local Unlocked = DMW.Functions.Unlocked
 
 function Unit:IsTanking(ThreatThreshold)
 	local ThreatThreshold = ThreatThreshold or 2
-	local ThreatSituation = UnitThreatSituation(DMW.Player.Pointer, self.Pointer)
+	local ThreatSituation =  Unlocked.UnitThreatSituation(DMW.Player.Pointer, self.Pointer)
 	return ThreatSituation and ThreatSituation >= ThreatThreshold or false
 end
 
 function Unit:ThreatLevel()
-	local ThreatSituation = UnitThreatSituation(DMW.Player.Pointer, self.Pointer)
+	local ThreatSituation =  Unlocked.UnitThreatSituation(DMW.Player.Pointer, self.Pointer)
 	-- if ThreatSituation then print(ThreatSituation) end
 	return ThreatSituation and ThreatSituation or -1
 end
@@ -32,7 +33,7 @@ end
 
 -- function Unit:IsTanking()
 -- 	for _, Unit in pairs(DMW.Enemies) do
--- 		if (Unit:UnitThreatSituation(self) and Unit:UnitThreatSituation(self) > 1) or (Unit.Target and UnitIsUnit(self.Pointer, Unit.Target)) then
+-- 		if (Unit: Unlocked.UnitThreatSituation(self) and Unit: Unlocked.UnitThreatSituation(self) > 1) or (Unit.Target and Unlocked.UnitIsUnit(self.Pointer, Unit.Target)) then
 -- 			return true
 -- 		end
 -- 	end

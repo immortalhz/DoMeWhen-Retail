@@ -2,9 +2,10 @@ local DMW = DMW
 DMW.Helpers.Gatherers = {}
 local Looting = false
 local Skinning = false
+local Unlocked = DMW.Functions.Unlocked
 
 function DMW.Helpers.Gatherers.Run()
-    if not DMW.Player.Casting and not IsMounted() and not UnitIsDeadOrGhost("player") then
+    if not DMW.Player.Casting and not IsMounted() and not Unlocked.UnitIsDeadOrGhost("player") then
         if Looting and (DMW.Time - Looting) > 0 and not DMW.Player.Looting then
             Looting = false
         end
@@ -12,7 +13,7 @@ function DMW.Helpers.Gatherers.Run()
             if not Looting and (not DMW.Player.Combat or DMW.Player.Instance == "pvp") then
                 for _, Unit in pairs(DMW.Units) do
                     if Unit.Dead and Unit.Distance < 5 and UnitCanBeLooted(Unit.Pointer) then
-                        InteractUnit(Unit.Pointer)
+                        Unlocked.InteractUnit(Unit.Pointer)
                         Looting = DMW.Time + 0.6
                     end
                 end
@@ -25,7 +26,7 @@ function DMW.Helpers.Gatherers.Run()
             if not Skinning and not DMW.Player.Combat and not DMW.Player.Moving and not DMW.Player.Casting then
                 for _, Unit in pairs(DMW.Units) do
                     if Unit.Dead and Unit.Distance < 5 and UnitCanBeSkinned(Unit.Pointer) then
-                        InteractUnit(Unit.Pointer)
+                        Unlocked.InteractUnit(Unit.Pointer)
                         Skinning = DMW.Time
                     end
                 end
